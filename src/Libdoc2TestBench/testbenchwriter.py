@@ -21,27 +21,137 @@ from robot.utils import WINDOWS, XmlWriter, unicode
 
 class Libdoc2TestBenchWriter:
 
+    project_name = 'RF Import'
+    testobject_name = 'RF Import'
+    testobject_state = 'planned'
+    created_time = '2021-03-20 09:29:29' #TODO: datetime.now
+
+    project_settings = {
+            'overwrite-exec-responsible': 'false',
+            'optional-checkin': 'false',
+            #'hide-exec-auto-checkin': 'false',
+            'filter-sync-interval': '30',
+            'ignore-not-edited': 'false',
+            'ignore-not-planned': 'true',
+            'designers-may-manage-baselines': 'false',
+            'designers-may-import-baselines': 'false',
+            'only-admins-manage-udfs': 'false',
+            'variants-management-enabled': 'false'
+        }
+
     def write(self, libdoc, outfile):
         writer = XmlWriter(outfile, usage='Libdoc spec')
         self._write_start(libdoc, writer)
-        self._write_keywords('inits', 'init', libdoc.inits, libdoc.source, writer)
-        self._write_keywords('keywords', 'kw', libdoc.keywords, libdoc.source, writer)
-        self._write_data_types(libdoc.data_types, writer)
+        self._write_testobjectversion(libdoc, writer)
+        # self._write_keywords('inits', 'init', libdoc.inits, libdoc.source, writer)
+        # self._write_keywords('keywords', 'kw', libdoc.keywords, libdoc.source, writer)
+        # self._write_data_types(libdoc.data_types, writer)
         self._write_end(writer)
 
     def _write_start(self, libdoc, writer):
-        generated = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
-        attrs = {'name': libdoc.name,
-                 'type': libdoc.type,
-                 'format': libdoc.doc_format,
-                 'scope': libdoc.scope,
-                 'generated': generated,
-                 'specversion': '3'}
-        self._add_source_info(attrs, libdoc, writer.output)
-        writer.start('keywordspec', attrs)
-        writer.element('version', libdoc.version)
-        writer.element('doc', libdoc.doc)
-        self._write_tags(libdoc.all_tags, writer)
+        # generated = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
+        # attrs = {'name': libdoc.name,
+        #          'type': libdoc.type,
+        #          'format': libdoc.doc_format,
+        #          'scope': libdoc.scope,
+        #          'generated': generated,
+        #          'specversion': '3'}
+        # self._add_source_info(attrs, libdoc, writer.output)
+
+        #TODO: Values for attributes
+        writer.start('project-dump', {
+            'version': "2.6.1",
+            'build-number': "201215/dcee",
+            'repository': "itba"
+        })
+        writer.start('details')
+        writer.element('name', self.project_name)
+        writer.element('id', '')
+        writer.element('testobjectname', self.testobject_name)
+        writer.element('state', self.testobject_state) # planned, active, finished, closed
+        for tag in ['customername', 'customeradress', 'contactperson', 'testlab', 'checklocation']:
+            writer.element(tag, '')
+        #writer.element('visibleForTesters', 'true')
+        for tag in ['startdate', 'enddate']:
+            writer.element(tag, '')
+        writer.element('status', 'planned')
+        writer.element('description', '')
+        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
+        writer.element('testingIntelligence', 'false')
+        writer.element('createdTime', self.created_time)
+        writer.start('settings')
+        for key, value in self.project_settings.items():
+            writer.element(key, value)
+        writer.end('settings')
+        for tag in ['requirement-repositories', 'requirement-projects', 'requirement-udfs']: #TODO: check minoccurs
+            writer.element(tag, '')
+        writer.end('details')
+        for tag in ['userroles', 'UserDefinedFields', 'DefectUserDefinedFields']: #TODO: check minoccurs
+            writer.element(tag, '')
+        
+        writer.element('keywords', '') #TODO: xsd fault?
+        writer.start('labels') #TODO xsd <-> tb more strict
+        for tag in ['public', 'private']:
+            writer.element(tag, '')
+        writer.end('labels')
+        writer.element('references', '') #TODO xsd fault?
+        writer.start('testobjectversions')
+        
+        #writer.start('keywordspec', attrs)
+        #writer.element('version', libdoc.version)
+        #writer.element('doc', libdoc.doc)
+        #self._write_tags(libdoc.all_tags, writer)
+    def _write_testobjectversion(self, libdoc, writer):
+        testobjectversion_tags = {
+        'pk': '38243',
+        'id': libdoc.name,
+        'startdate': '2021-03-01',
+        'enddate': '',
+        'status': 'planned',
+        'createdTime': '2021-03-01 09:29:50 +0100',
+        'description': libdoc.doc,
+        'html-description': '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;',
+        'testingIntelligence': 'false',
+        'baselines': '',
+        'placeholders': '',
+        'variantsDefinitions': '',
+        'variantsMarkers': '',
+        'placeholderValues': '',
+        'testcycles': '',
+        'testthemes': ''
+        }
+
+        writer.start('testobjectversion')
+        for key, value in testobjectversion_tags.items():
+            writer.element(key, value)
+        writer.start('test-elements')
+        #TODO: Use model to insert values here!
+        writer.start('element', {'type': 'subdivision'})
+        writer.element('pk', '221')
+        writer.element('name', 'RF')
+        #writer.element('uid', 'itba-SD-221')
+        writer.element('locker', '') #TODO:default value? ''
+        writer.element('description', 'Robot Framework test elements import')
+        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
+        writer.element('historyPK', '221')
+        writer.element('identicalVersionPK', '-1')
+        writer.element('references', '')
+
+        writer.start('element', {'type': 'subdivision'})
+        writer.element('pk', '222')
+        writer.element('name', 'Neue Subdivision')
+        #writer.element('uid', 'itba-SD-222')
+        writer.element('locker', '') #TODO:default value? '' 
+        writer.element('description', '')
+        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
+        writer.element('historyPK', '222')
+        writer.element('identicalVersionPK', '-1')
+        writer.element('references', '')
+        writer.end('element')
+
+        writer.end('element')
+        writer.end('test-elements')
+        writer.end('testobjectversion')
 
     def _add_source_info(self, attrs, item, outfile, lib_source=None):
         if item.source and item.source != lib_source:
@@ -145,5 +255,14 @@ class Libdoc2TestBenchWriter:
         writer.end('datatypes')
 
     def _write_end(self, writer):
-        writer.end('keywordspec')
+        # writer.end('keywordspec')
+        writer.end('testobjectversions')
+        writer.element('requirements', '')
+        writer.start('referenced-user-names')
+        #writer.element('user-name', 'tt-admin')
+        #writer.element('user-pk', '0')
+        writer.end('referenced-user-names')
+        writer.element('errors', '')
+        writer.element('warnings', '')
+        writer.end('project-dump')
         writer.close()

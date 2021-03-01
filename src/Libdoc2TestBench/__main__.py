@@ -7,5 +7,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         create_project_dump(sys.argv[1], sys.argv[2])
     else:
-        pass
-        # RBGLibrary out.xml
+        create_project_dump("RBGLibrary", 'project-dump.xml')
