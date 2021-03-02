@@ -19,6 +19,20 @@ from datetime import datetime
 from robot.utils import WINDOWS, XmlWriter, unicode
 
 
+class Element_Types(enum.Enum):
+    subdivision = 'subdivision'
+    datatype = 'datatype'
+    interaction = 'interaction'
+    condition = 'condition'
+
+
+class Project_States(enum.Enum):
+    planned = 'planned'
+    active = 'active'
+    finished = 'finished'
+    closed = 'closed'
+
+
 class PK_Generator():
     def __init__(self, pk_start: int = 230):
         self.pk_counter = pk_start
@@ -33,7 +47,7 @@ class Libdoc2TestBenchWriter:
 
     project_name = 'RF Import'
     testobject_name = 'RF Import'
-    testobject_state = 'planned'
+    testobject_state = Project_States.active.value
     testobject_desc = "RF import generated via Libdoc2TestBench.py"
     created_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z") + \
         ' +0100'
@@ -80,39 +94,32 @@ class Libdoc2TestBenchWriter:
         writer.element('name', self.project_name)
         writer.element('id', '')
         writer.element('testobjectname', self.testobject_name)
-        writer.element('state', self.testobject_state) # planned, active, finished, closed
-        for tag in ['customername', 'customeradress', 'contactperson', 'testlab', 'checklocation']:
+        writer.element('state', self.testobject_state)
+        for tag in ['customername', 'customeradress', 'contactperson', 'testlab', 'checklocation', 'startdate', 'enddate']:
             writer.element(tag, '')
-        #writer.element('visibleForTesters', 'true')
-        for tag in ['startdate', 'enddate']:
-            writer.element(tag, '')
-        writer.element('status', 'planned')
-        writer.element('description', '')
-        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
+        writer.element('status', self.testobject_state)
+        writer.element('description', self.testobject_desc)
+        writer.element('html-description', '')
         writer.element('testingIntelligence', 'false')
         writer.element('createdTime', self.created_time)
         writer.start('settings')
         for key, value in self.project_settings.items():
             writer.element(key, value)
         writer.end('settings')
-        for tag in ['requirement-repositories', 'requirement-projects', 'requirement-udfs']: #TODO: check minoccurs
+        for tag in ['requirement-repositories', 'requirement-projects', 'requirement-udfs']:
             writer.element(tag, '')
         writer.end('details')
-        for tag in ['userroles', 'UserDefinedFields', 'DefectUserDefinedFields']: #TODO: check minoccurs
-            writer.element(tag, '')
-        
-        writer.element('keywords', '') #TODO: xsd fault?
-        writer.start('labels') #TODO xsd <-> tb more strict
+
+        writer.element('userroles', '')
+        writer.element('keywords', '')  # TODO: XSD?
+        # TODO xsd <-> tb more strict public/private needs to be there
+        writer.start('labels')
         for tag in ['public', 'private']:
             writer.element(tag, '')
         writer.end('labels')
-        writer.element('references', '') #TODO xsd fault?
+        writer.element('references', '')  # TODO XSD?
         writer.start('testobjectversions')
-        
-        #writer.start('keywordspec', attrs)
-        #writer.element('version', libdoc.version)
-        #writer.element('doc', libdoc.doc)
-        #self._write_tags(libdoc.all_tags, writer)
+
     def _write_testobjectversion(self, libdoc, writer):
         testobjectversion_tags = {
             'pk': '38243',
@@ -136,27 +143,27 @@ class Libdoc2TestBenchWriter:
         writer.start('testobjectversion')
         for key, value in testobjectversion_tags.items():
             writer.element(key, value)
+
         writer.start('test-elements')
-        #TODO: Use model to insert values here!
-        writer.start('element', {'type': 'subdivision'})
+        writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', 'RF')
         #writer.element('uid', 'itba-SD-221')
-        writer.element('locker', '') #TODO:default value? ''
+        writer.element('locker', '')
         writer.element('description', 'Robot Framework test elements import')
-        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
+        writer.element('html-description', '')
         writer.element('historyPK', '221')
         writer.element('identicalVersionPK', '-1')
-        writer.element('references', '')
+        writer.element('references', '')  # min occurs = 0
 
-        writer.start('element', {'type': 'subdivision'})
-        writer.element('name', 'Neue Subdivision')
+        writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
+        writer.element('name', libdoc.name)
         #writer.element('uid', 'itba-SD-222')
-        writer.element('locker', '') #TODO:default value? '' 
-        writer.element('description', '')
-        writer.element('html-description', '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;')
-        writer.element('historyPK', '222')
+        writer.element('locker', '')
+        writer.element('description', libdoc.doc)
+        writer.element('html-description', '')
+        writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
