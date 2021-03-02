@@ -43,6 +43,27 @@ class PK_Generator():
         self.pk_counter += 1
         return str(self.pk_counter)
 
+
+class Element():
+    all_elements = {}
+
+    def __init__(self, pk_generator: PK_Generator, element):
+        self.pk = pk_generator.get_pk()
+        self.name = element.name
+        self.desc = element.doc
+        self.hmtl_desc = self.desc
+        Element.all_elements[self.name] = self.pk
+
+class Data_Type(Element):
+
+    def __init__(self, pk_generator: PK_Generator, data_type):
+        super().__init__(pk_generator, data_type)
+        self.members = data_type.members
+        self.type = data_type.type
+        # self.equivalence_classes = self._get_equivalence_classes()
+
+
+
 class Libdoc2TestBenchWriter:
     pk_generator = PK_Generator()
 
