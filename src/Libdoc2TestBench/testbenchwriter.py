@@ -177,18 +177,18 @@ class Libdoc2TestBenchWriter:
                 'SUITE': 'test suite',
                 'TEST': 'test case'}[libdoc.scope]
 
-    def _write_keywords(self, list_name, kw_type, keywords, lib_source, writer):
-        writer.start(list_name)
-        for kw in keywords:
-            attrs = self._get_start_attrs(kw, lib_source, writer)
-            writer.start(kw_type, attrs)
-            self._write_arguments(kw, writer)
-            writer.element('doc', kw.doc)
-            writer.element('shortdoc', kw.shortdoc)
-            if kw_type == 'kw' and kw.tags:
-                self._write_tags(kw.tags, writer)
-            writer.end(kw_type)
-        writer.end(list_name)
+    # def _write_keywords(self, list_name, kw_type, keywords, lib_source, writer):
+    #     writer.start(list_name)
+    #     for kw in keywords:
+    #         attrs = self._get_start_attrs(kw, lib_source, writer)
+    #         writer.start(kw_type, attrs)
+    #         self._write_arguments(kw, writer)
+    #         writer.element('doc', kw.doc)
+    #         writer.element('shortdoc', kw.shortdoc)
+    #         if kw_type == 'kw' and kw.tags:
+    #             self._write_tags(kw.tags, writer)
+    #         writer.end(kw_type)
+    #     writer.end(list_name)
 
     def _write_tags(self, tags, writer):
         writer.start('tags')
@@ -218,37 +218,37 @@ class Libdoc2TestBenchWriter:
         self._add_source_info(attrs, kw, writer.output, lib_source)
         return attrs
 
-    def _write_data_types(self, data_types, writer):
-        writer.start('datatypes')
-        if data_types.enums:
-            writer.start('enums')
-            for enum in data_types.enums:
-                writer.start('enum', {'name': enum.name})
-                writer.element('doc', enum.doc)
-                writer.start('members')
-                for member in enum.members:
-                    writer.element('member', attrs=member)
-                writer.end('members')
-                writer.end('enum')
-            writer.end('enums')
-        if data_types.typed_dicts:
-            writer.start('typeddicts')
-            for typ_dict in data_types.typed_dicts:
-                writer.start('typeddict', {'name': typ_dict.name})
-                writer.element('doc', typ_dict.doc)
-                writer.start('items')
-                for item in typ_dict.items:
-                    if item['required'] is None:
-                        item.pop('required')
-                    elif item['required']:
-                        item['required'] = 'true'
-                    else:
-                        item['required'] = 'false'
-                    writer.element('item', attrs=item)
-                writer.end('items')
-                writer.end('typeddict')
-            writer.end('typeddicts')
-        writer.end('datatypes')
+    # def _write_data_types(self, data_types, writer):
+    #     writer.start('datatypes')
+    #     if data_types.enums:
+    #         writer.start('enums')
+    #         for enum in data_types.enums:
+    #             writer.start('enum', {'name': enum.name})
+    #             writer.element('doc', enum.doc)
+    #             writer.start('members')
+    #             for member in enum.members:
+    #                 writer.element('member', attrs=member)
+    #             writer.end('members')
+    #             writer.end('enum')
+    #         writer.end('enums')
+    #     if data_types.typed_dicts:
+    #         writer.start('typeddicts')
+    #         for typ_dict in data_types.typed_dicts:
+    #             writer.start('typeddict', {'name': typ_dict.name})
+    #             writer.element('doc', typ_dict.doc)
+    #             writer.start('items')
+    #             for item in typ_dict.items:
+    #                 if item['required'] is None:
+    #                     item.pop('required')
+    #                 elif item['required']:
+    #                     item['required'] = 'true'
+    #                 else:
+    #                     item['required'] = 'false'
+    #                 writer.element('item', attrs=item)
+    #             writer.end('items')
+    #             writer.end('typeddict')
+    #         writer.end('typeddicts')
+    #     writer.end('datatypes')
 
     def _write_end(self, writer):
         writer.end('element')  # close Library Subdivision
