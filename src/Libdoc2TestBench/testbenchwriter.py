@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import os.path
+import enum
 from datetime import datetime
 
 from robot.utils import WINDOWS, XmlWriter, unicode
