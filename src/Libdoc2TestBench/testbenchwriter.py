@@ -19,7 +19,17 @@ from datetime import datetime
 from robot.utils import WINDOWS, XmlWriter, unicode
 
 
+class PK_Generator():
+    def __init__(self, pk_start: int = 230):
+        self.pk_counter = pk_start
+    # TODO: maybe insert here logic to get pk for specific objects
+
+    def get_pk(self):
+        self.pk_counter += 1
+        return str(self.pk_counter)
+
 class Libdoc2TestBenchWriter:
+    pk_generator = PK_Generator()
 
     project_name = 'RF Import'
     testobject_name = 'RF Import'
@@ -103,22 +113,22 @@ class Libdoc2TestBenchWriter:
         #self._write_tags(libdoc.all_tags, writer)
     def _write_testobjectversion(self, libdoc, writer):
         testobjectversion_tags = {
-        'pk': '38243',
-        'id': libdoc.name,
-        'startdate': '2021-03-01',
-        'enddate': '',
-        'status': 'planned',
-        'createdTime': '2021-03-01 09:29:50 +0100',
-        'description': libdoc.doc,
-        'html-description': '&#60;html&#62;&#60;body&#62;&#60;/body&#62;&#60;/html&#62;',
-        'testingIntelligence': 'false',
-        'baselines': '',
-        'placeholders': '',
-        'variantsDefinitions': '',
-        'variantsMarkers': '',
-        'placeholderValues': '',
-        'testcycles': '',
-        'testthemes': ''
+            'pk': '38243',
+            'id': 'RF Import',
+            'startdate': '2021-03-01',
+            'enddate': '',
+            'status': self.testobject_state,
+            'createdTime': self.created_time,
+            'description': 'Robot Framework import',
+            'html-description': '',
+            'testingIntelligence': 'false',
+            'baselines': '',
+            'placeholders': '',
+            'variantsDefinitions': '',
+            'variantsMarkers': '',
+            'placeholderValues': '',
+            'testcycles': '',
+            'testthemes': ''
         }
 
         writer.start('testobjectversion')
@@ -127,7 +137,7 @@ class Libdoc2TestBenchWriter:
         writer.start('test-elements')
         #TODO: Use model to insert values here!
         writer.start('element', {'type': 'subdivision'})
-        writer.element('pk', '221')
+        writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', 'RF')
         #writer.element('uid', 'itba-SD-221')
         writer.element('locker', '') #TODO:default value? ''
@@ -138,8 +148,8 @@ class Libdoc2TestBenchWriter:
         writer.element('references', '')
 
         writer.start('element', {'type': 'subdivision'})
-        writer.element('pk', '222')
         writer.element('name', 'Neue Subdivision')
+        writer.element('pk', self.pk_generator.get_pk())
         #writer.element('uid', 'itba-SD-222')
         writer.element('locker', '') #TODO:default value? '' 
         writer.element('description', '')
