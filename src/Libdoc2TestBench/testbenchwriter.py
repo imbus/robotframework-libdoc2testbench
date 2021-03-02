@@ -53,22 +53,24 @@ class Libdoc2TestBenchWriter:
         ' +0100'
 
     project_settings = {
-            'overwrite-exec-responsible': 'false',
-            'optional-checkin': 'false',
-            #'hide-exec-auto-checkin': 'false',
-            'filter-sync-interval': '30',
-            'ignore-not-edited': 'false',
-            'ignore-not-planned': 'true',
-            'designers-may-manage-baselines': 'false',
-            'designers-may-import-baselines': 'false',
-            'only-admins-manage-udfs': 'false',
-            'variants-management-enabled': 'false'
-        }
+        'overwrite-exec-responsible': 'false',
+        'optional-checkin': 'false',
+        # 'hide-exec-auto-checkin': 'false',
+        'filter-sync-interval': '30',
+        'ignore-not-edited': 'false',
+        'ignore-not-planned': 'true',
+        'designers-may-manage-baselines': 'false',
+        'designers-may-import-baselines': 'false',
+        'only-admins-manage-udfs': 'false',
+        'variants-management-enabled': 'false'
+    }
 
     def write(self, libdoc, outfile):
         writer = XmlWriter(outfile, usage='Libdoc spec')
         self._write_start(libdoc, writer)
         self._write_testobjectversion(libdoc, writer)
+        self._write_data_types(libdoc.data_types, writer)
+        self._write_interactions(libdoc.keywords, writer)
         # self._write_keywords('inits', 'init', libdoc.inits, libdoc.source, writer)
         # self._write_keywords('keywords', 'kw', libdoc.keywords, libdoc.source, writer)
         # self._write_data_types(libdoc.data_types, writer)
@@ -84,7 +86,7 @@ class Libdoc2TestBenchWriter:
         #          'specversion': '3'}
         # self._add_source_info(attrs, libdoc, writer.output)
 
-        #TODO: Values for attributes
+        # TODO: Values for attributes
         writer.start('project-dump', {
             'version': "2.6.1",
             'build-number': "201215/dcee",
@@ -167,6 +169,32 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
+    def _write_interactions(self, keywords, writer):
+        # TODO: Keywords -> Interactions
+        keyword = keywords[1]
+        attris = vars(keyword)
+        #print(', '.join("%s: %s" % item for item in attris.items()))
+
+        for keyword in keywords:
+            writer.start('element', {'type': Element_Types.interaction.value})
+            writer.element('pk', self.pk_generator.get_pk())
+            writer.element('name', keyword.name)
+            writer.element('locker', '')
+            writer.element('description', keyword.doc)
+            writer.element('html-description', '')
+            writer.element('historyPK', '-1')
+            writer.element('identicalVersionPK', '-1')
+            writer.element('references', '')
+            writer.end('element')
+
+    def _write_data_types(self, data_types, writer):
+        # TODO
+        datatype = data_types.enums[0]
+        attris = vars(datatype)
+        print(', '.join("%s: %s" % item for item in attris.items()))
+
+        for data_type in data_types.enums:
+            Data_Type(self.pk_generator, data_type)
 
     def _add_source_info(self, attrs, item, outfile, lib_source=None):
         if item.source and item.source != lib_source:
