@@ -147,11 +147,7 @@ class Libdoc2TestBenchWriter:
         writer.element('historyPK', '222')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
-        writer.end('element')
 
-        writer.end('element')
-        writer.end('test-elements')
-        writer.end('testobjectversion')
 
     def _add_source_info(self, attrs, item, outfile, lib_source=None):
         if item.source and item.source != lib_source:
@@ -255,12 +251,13 @@ class Libdoc2TestBenchWriter:
         writer.end('datatypes')
 
     def _write_end(self, writer):
-        # writer.end('keywordspec')
+        writer.end('element')  # close Library Subdivision
+        writer.end('element')  # close RF Subdivision
+        writer.end('test-elements')
+        writer.end('testobjectversion')
         writer.end('testobjectversions')
         writer.element('requirements', '')
         writer.start('referenced-user-names')
-        #writer.element('user-name', 'tt-admin')
-        #writer.element('user-pk', '0')
         writer.end('referenced-user-names')
         writer.element('errors', '')
         writer.element('warnings', '')
