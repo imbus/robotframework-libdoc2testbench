@@ -34,7 +34,9 @@ class Libdoc2TestBenchWriter:
     project_name = 'RF Import'
     testobject_name = 'RF Import'
     testobject_state = 'planned'
-    created_time = '2021-03-20 09:29:29' #TODO: datetime.now
+    testobject_desc = "RF import generated via Libdoc2TestBench.py"
+    created_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z") + \
+        ' +0100'
 
     project_settings = {
             'overwrite-exec-responsible': 'false',
