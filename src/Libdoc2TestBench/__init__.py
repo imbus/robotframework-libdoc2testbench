@@ -10,3 +10,4 @@ def create_project_dump(lib_or_res: str, outfile_path: str):
     with open(outfile_path, "w") as outfile:
         Libdoc2TestBenchWriter().write(libdoc, outfile)
     make_archive(outfile_path, 'zip')
+    print("Successfully written zip file")
