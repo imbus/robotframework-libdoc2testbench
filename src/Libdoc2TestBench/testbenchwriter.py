@@ -51,6 +51,7 @@ class PK_Generator():
 
 class Element():
     """A class to represent imbus TestBench related test elements."""
+
     # Remember all created element objects and their associated pk.
     all_elements = {}
 
@@ -72,11 +73,11 @@ class Element():
         else:
             self.name = self.element.name
 
-        # Register element for later access to element's uniuqe pk
+        # Register element for later access to element's unique pk
         Element.all_elements[self.name] = self.pk
 
     def get_name(self) -> str:
-        # Returns the element's name without the partent-prefix.
+        # Returns the element's name without the parent-prefix.
         return self.name.split('.', 1)[-1]
 
 
@@ -122,10 +123,8 @@ class Libdoc2TestBenchWriter:
     testobject_desc = "Robot Framework import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
     libdoc_name = None
+
     # Attributes used in the header of the xml-file
-    # TODO: This writer works with the following version, if the xsd.file or the
-    # format of the needed xml file changes,
-    # so should this writer to ensure compatibility
     xml_attributes = {
         'version': "2.6.1",
         'build-number': "201215/dcee",
@@ -228,19 +227,19 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', 'RF')
-        writer.element('uid', self._generate_UID('SD', 'RF'))  # TODO: OK?
+        writer.element('uid', self._generate_UID('SD', 'RF'))
         writer.element('locker', '')
         writer.element('description', 'Robot Framework import')
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
-        writer.element('references', '')  # min occurs = 0
+        writer.element('references', '')
 
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
         writer.element('uid', self._generate_UID(
-            'SD', libdoc.name))  # TODO OK?
+            'SD', libdoc.name))
         writer.element('locker', '')
         writer.element('html-description', f"<html>{libdoc.doc}</html>")
         writer.element('historyPK', '-1')
@@ -350,9 +349,9 @@ class Libdoc2TestBenchWriter:
         writer.close()
 
     def _generate_UID(self, element_type: str, element_name: str) -> str:
-        # UIDs have the following format:
+        # UIDs format:
         # RepositoryAttribute-AbreviationElementType-LibraryName.ElementName
-        # => SHA1 Hash, 10 Chars
+        # => SHA1 Hash, first 10 Chars
         prefix_repo = self.xml_attributes.get('repository', 'itb')
         prefix_lib = self.libdoc_name
         string = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
