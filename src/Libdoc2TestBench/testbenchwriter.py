@@ -13,13 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os.path
-import enum, json, pytz
-from pygments import highlight, lexers, formatters
-from datetime import datetime, tzinfo
+import enum
+from datetime import datetime
 from hashlib import sha1
 
-from robot.utils import WINDOWS, XmlWriter, unicode
+from robot.utils import XmlWriter
 
 
 class Element_Types(enum.Enum):
