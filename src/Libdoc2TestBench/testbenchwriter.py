@@ -17,6 +17,7 @@ import os.path
 import enum, json, pytz
 from pygments import highlight, lexers, formatters
 from datetime import datetime, tzinfo
+from hashlib import sha1
 
 from robot.utils import WINDOWS, XmlWriter, unicode
 
@@ -35,7 +36,6 @@ class Project_States(enum.Enum):
     active = 'active'
     finished = 'finished'
     closed = 'closed'
-
 
 class PK_Generator():
     """A class used to generate unique primary keys for test elements.
@@ -116,12 +116,10 @@ class Libdoc2TestBenchWriter:
     pk_generator = PK_Generator()
 
     # Values used to fill project view fields.
-    project_name = 'RF Import'
-    testobject_name = 'RF Import'
     testobject_state = Project_States.active.value
     testobject_desc = "Robot Framework import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
-
+    libdoc_name = None
     # Attributes used in the header of the xml-file
     # TODO: This writer works with the following version, if the xsd.file or the
     # format of the needed xml file changes, 
@@ -164,7 +162,10 @@ class Libdoc2TestBenchWriter:
             'testcycles': '',
             'testthemes': ''
         }
-
+    def __init__(self, project_name='RF Import', testobject_name='RF Import'):
+        self.project_name = project_name
+        self.testobject_name = testobject_name
+        
     def write(self, libdoc, outfile):
         """Writes an imbus TestBench readable xml-file.
 
@@ -176,6 +177,7 @@ class Libdoc2TestBenchWriter:
             IO stream to write files to.
         """
         writer = XmlWriter(outfile, usage='Libdoc spec')
+        self.libdoc_name = libdoc.name
         self._write_start(libdoc, writer)
         self._write_testobjectversion(libdoc, writer)
         self._write_data_types(libdoc.data_types, writer)
@@ -223,16 +225,18 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', 'RF')
+        writer.element('uid', self._generate_UID('SD', 'RF')) # TODO: OK?
         writer.element('locker', '')
         writer.element('description', 'Robot Framework import')
         writer.element('html-description', '')
-        writer.element('historyPK', '221')
+        writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')  # min occurs = 0
 
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
+        writer.element('uid', self._generate_UID('SD', libdoc.name)) # TODO
         writer.element('locker', '')
         writer.element('html-description', f"<html>{libdoc.doc}</html>")
         writer.element('historyPK', '-1')
@@ -244,6 +248,7 @@ class Libdoc2TestBenchWriter:
             writer.start('element', {'type': Element_Types.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', keyword.name)
+            writer.element('uid', self._generate_UID('IA', keyword.name))
             writer.element('locker', '')
             writer.element('html-description', f"<html>{keyword.doc}</html>")
             writer.element('historyPK', '-1') 
@@ -280,8 +285,8 @@ class Libdoc2TestBenchWriter:
 
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
-        writer.element('name', '_DataTypes')
-        #writer.element('uid', 'itba-SD-222') TODO
+        writer.element('name', '_Datatypes')
+        writer.element('uid', self._generate_UID('SD', '_Datatypes'))
         writer.element('locker', '')
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
@@ -292,6 +297,7 @@ class Libdoc2TestBenchWriter:
             writer.start('element', {'type': Element_Types.datatype.value})
             writer.element('pk', data_type.pk)
             writer.element('name', data_type.get_name())
+            writer.element('uid', self._generate_UID('DT', data_type.name))
             writer.element('locker', '')
             writer.element('html-description', data_type.html_desc)
             writer.element('historyPK', '-1')
@@ -338,3 +344,13 @@ class Libdoc2TestBenchWriter:
         writer.element('warnings', '')
         writer.end('project-dump')
         writer.close()
+
+    def _generate_UID(self, element_type: str, element_name: str) -> str:
+        # UIDs have the following format:
+        # RepositoryAttribute-AbreviationElementType-LibraryName.ElementName
+        # => SHA1 Hash, 10 Chars
+        prefix_repo = self.xml_attributes.get('repository', 'itb')
+        prefix_lib = self.libdoc_name
+        string  = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
+        encoded = sha1(string.encode())
+        return encoded.hexdigest()[:10]
