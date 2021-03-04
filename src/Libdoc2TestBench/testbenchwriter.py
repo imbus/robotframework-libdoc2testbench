@@ -278,6 +278,16 @@ class Libdoc2TestBenchWriter:
             for data_type in data_types.enums:
                 datatypes.append(Data_Type(self.pk_generator, data_type))
 
+        writer.start('element', {'type': Element_Types.subdivision.value})
+        writer.element('pk', self.pk_generator.get_pk())
+        writer.element('name', '_DataTypes')
+        #writer.element('uid', 'itba-SD-222') TODO
+        writer.element('locker', '')
+        writer.element('html-description', '')
+        writer.element('historyPK', '-1')
+        writer.element('identicalVersionPK', '-1')
+        writer.element('references', '')
+
         for idx, data_type in enumerate(datatypes):
             writer.start('element', {'type': Element_Types.datatype.value})
             writer.element('pk', data_type.pk)
@@ -310,7 +320,9 @@ class Libdoc2TestBenchWriter:
             writer.element('default-representative-ref', '', {'pk': default_pk})
             writer.end('equivalence-class')
             writer.end('equivalence-classes')
-            writer.end('element') # close datatype tag
+            writer.end('element') # close dataType tag
+        writer.end('element') # close datatype subdivision tag
+
 
 
     def _write_end(self, writer):
