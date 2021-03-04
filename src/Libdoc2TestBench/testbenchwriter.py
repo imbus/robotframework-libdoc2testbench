@@ -102,6 +102,7 @@ class Data_Type(Element):
                 self.representatives[key] = value
 
                 # Register in all_elements dic for later access of pks.
+                Element.all_elements[key] = pk_generator.get_pk()
 
 class Libdoc2TestBenchWriter:
     """A class to generate imbus TestBench readable xml-files from Robot Framework
