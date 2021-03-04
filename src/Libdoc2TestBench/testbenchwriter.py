@@ -44,14 +44,12 @@ class PK_Generator():
     def __init__(self, pk_start: int = 230):
         self.pk_counter = pk_start
 
-    def get_pk(self):
     def get_pk(self) -> str:
         self.pk_counter += 1
         return str(self.pk_counter)
 
 
 class Element():
-    # Remember all created element objects with pks
     """A class to represent imbus TestBench related test elements."""
     # Remember all created element objects and their associated pk.
     all_elements = {}
@@ -62,21 +60,21 @@ class Element():
         self.parent = parent_element
 
         if element.doc:
-            self.desc = element.doc
-            self.html_desc = f"<HTML>{self.desc}</HTML>"
+            self.html_desc = f"<HTML>{element.doc}</HTML>"
 
         self._set_name_and_register_in_all_elements()
 
     def _set_name_and_register_in_all_elements(self):
-        if self.parent is None:
-            self.name = self.element.name
-        else:
+        # Each element's name is build via its hierarchy.
+        # If it has a parent, the parent's name will be the prefix.
+        if self.parent:
             self.name = self.parent.name + '.' + self.element.name
+        else:
+            self.name = self.element.name
 
         # Register element for later access to element's uniuqe pk
         Element.all_elements[self.name] = self.pk
 
-    def get_name(self):
     def get_name(self) -> str:
         # Returns the element's name without the partent-prefix.
         return self.name.split('.', 1)[-1]
@@ -91,12 +89,7 @@ class Data_Type(Element):
     def __init__(self, pk_generator: PK_Generator, data_type, parent_element=None):
         super().__init__(pk_generator, data_type)
         self.type = data_type.type
-        self.equivalence_classes = {}
 
-        if self.type == 'TypedDict':
-            pass
-            # TODO TypedDict Processing
-            # print('YAY dicts')
         # Holds all enum values, typed_dics are considered to be
         # generic for imbus TestBench purposes.
         self.representatives = {}
@@ -104,10 +97,9 @@ class Data_Type(Element):
         if self.type == 'Enum':
             self.members = data_type.members
             for member in self.members:
-                key = self.name + '.' + member['name']
-                value = self.name + '.' + member['value']
-                self.equivalence_classes[key] = value
-                Element.all_elements[key] = pk_generator.get_pk()
+                key = f"{self.name}.{member['name']}"
+                value = f"{self.name}.{member['value']}"
+                self.representatives[key] = value
 
                 # Register in all_elements dic for later access of pks.
 
@@ -128,7 +120,6 @@ class Libdoc2TestBenchWriter:
     testobject_state = Project_States.active.value
     testobject_desc = "Robot Framework import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
-    print(f'createdTime: {created_time}')
 
     # Attributes used in the header of the xml-file
     # TODO: This writer works with the following version, if the xsd.file or the
@@ -253,9 +244,7 @@ class Libdoc2TestBenchWriter:
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', keyword.name)
             writer.element('locker', '')
-            # writer.element('description', '')
-            writer.element('html-description', '<html>'+keyword.doc+'</html>')
-            # print(highlight('<html>'+keyword.doc+'</html>', lexers.HtmlLexer(), formatters.TerminalFormatter()))
+            writer.element('html-description', f"<html>{keyword.doc}</html>")
             writer.element('historyPK', '-1') 
             writer.element('identicalVersionPK', '-1')
             writer.element('references', '')
@@ -288,7 +277,7 @@ class Libdoc2TestBenchWriter:
             for data_type in data_types.enums:
                 datatypes.append(Data_Type(self.pk_generator, data_type))
 
-        for data_type in datatypes:
+        for idx, data_type in enumerate(datatypes):
             writer.start('element', {'type': Element_Types.datatype.value})
             writer.element('pk', data_type.pk)
             writer.element('name', data_type.get_name())
@@ -301,11 +290,11 @@ class Libdoc2TestBenchWriter:
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', 'members')
             writer.element('description', 'Valid members')
-            writer.element('ordering', '1024')
+            writer.element('ordering', str(1024 * idx))
             
             writer.start('representatives')
             default_pk = '-1'
-            for idx, representative in enumerate(data_type.equivalence_classes.keys()):
+            for idx, representative in enumerate(data_type.representatives.keys()):
                 writer.start('representative')
                 pk = Element.all_elements[representative]
                 if idx == 0:
