@@ -9,8 +9,8 @@ if __name__ == "__main__":
         usage=f"Libdoc2TestBench <LIBRARY> -o <output.zip>",
         prog='Libdoc2TestBench')
     parser.add_argument("library_or_resource",
-                        help="RF library or resource", default='project-dump.zip')
-    parser.add_argument('-o', '--outfile_path', nargs='?',
+                        help="RF library or resource")
+    parser.add_argument('-o', '--outfile_path', nargs='?', default='project-dump.zip',
                         help="path to write output, default=project-dump.zip")
     args = parser.parse_args()
 
