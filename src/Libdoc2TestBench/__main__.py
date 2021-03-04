@@ -1,6 +1,6 @@
 import sys
 import argparse
-from os import path
+
 from Libdoc2TestBench import create_project_dump
 
 if __name__ == "__main__":

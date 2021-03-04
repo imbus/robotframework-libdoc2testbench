@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from zipfile import ZipFile
+
 from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
 from robot.utils.robotio import file_writer
@@ -17,7 +18,7 @@ def create_project_dump(lib_or_res: str, outfile_path: str):
         if user_input.lower() not in ['y', 'yes']:
             print('stopped execution')
             sys.exit()
-            
+
     libdoc = LibraryDocumentation(lib_or_res)
     libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
