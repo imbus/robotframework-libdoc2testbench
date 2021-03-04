@@ -35,10 +35,12 @@ class Project_States(enum.Enum):
     finished = 'finished'
     closed = 'closed'
 
+
 class PK_Generator():
     """A class used to generate unique primary keys for test elements.
     Only one instance should be created and used to ensure continuous  
     unique pks."""
+
     def __init__(self, pk_start: int = 230):
         self.pk_counter = pk_start
 
@@ -77,6 +79,7 @@ class Element():
         # Returns the element's name without the partent-prefix.
         return self.name.split('.', 1)[-1]
 
+
 class Data_Type(Element):
     """ A class used to gather information for imbus TestBench 
     data types from the associated Robot Framework data type.
@@ -102,10 +105,11 @@ class Data_Type(Element):
                 # Register in all_elements dic for later access of pks.
                 Element.all_elements[key] = pk_generator.get_pk()
 
+
 class Libdoc2TestBenchWriter:
     """A class to generate imbus TestBench readable xml-files from Robot Framework
     libraries.
-    
+
     Methods
     -------
     write(libdoc, outfile)
@@ -120,12 +124,12 @@ class Libdoc2TestBenchWriter:
     libdoc_name = None
     # Attributes used in the header of the xml-file
     # TODO: This writer works with the following version, if the xsd.file or the
-    # format of the needed xml file changes, 
+    # format of the needed xml file changes,
     # so should this writer to ensure compatibility
     xml_attributes = {
-    'version': "2.6.1",
-    'build-number': "201215/dcee",
-    'repository': "itba"
+        'version': "2.6.1",
+        'build-number': "201215/dcee",
+        'repository': "itba"
     }
 
     # Values used to fill imbus TestBench project settings.
@@ -140,30 +144,31 @@ class Libdoc2TestBenchWriter:
         'only-admins-manage-udfs': 'false',
         'variants-management-enabled': 'false'
     }
-    
+
     # Values used to fill testobject version fields.
     testobjectversion_tags = {
-            'pk': pk_generator.get_pk(),
-            'id': 'RF Import',
-            'startdate': '',
-            'enddate': '',
-            'status': testobject_state,
-            'createdTime': created_time,
-            'description': 'Robot Framework import',
-            'html-description': '',
-            'testingIntelligence': 'false',
-            'baselines': '',
-            'placeholders': '',
-            'variantsDefinitions': '',
-            'variantsMarkers': '',
-            'placeholderValues': '',
-            'testcycles': '',
-            'testthemes': ''
-        }
+        'pk': pk_generator.get_pk(),
+        'id': 'RF Import',
+        'startdate': '',
+        'enddate': '',
+        'status': testobject_state,
+        'createdTime': created_time,
+        'description': 'Robot Framework import',
+        'html-description': '',
+        'testingIntelligence': 'false',
+        'baselines': '',
+        'placeholders': '',
+        'variantsDefinitions': '',
+        'variantsMarkers': '',
+        'placeholderValues': '',
+        'testcycles': '',
+        'testthemes': ''
+    }
+
     def __init__(self, project_name='RF Import', testobject_name='RF Import'):
         self.project_name = project_name
         self.testobject_name = testobject_name
-        
+
     def write(self, libdoc, outfile):
         """Writes an imbus TestBench readable xml-file.
 
@@ -189,8 +194,8 @@ class Libdoc2TestBenchWriter:
         writer.element('id', '')
         writer.element('testobjectname', self.testobject_name)
         writer.element('state', self.testobject_state)
-        for tag in ['customername', 'customeradress', 'contactperson', 
-        'testlab', 'checklocation', 'startdate', 'enddate']:
+        for tag in ['customername', 'customeradress', 'contactperson',
+                    'testlab', 'checklocation', 'startdate', 'enddate']:
             writer.element(tag, '')
         writer.element('status', self.testobject_state)
         writer.element('description', self.testobject_desc)
@@ -201,8 +206,8 @@ class Libdoc2TestBenchWriter:
         for key, value in self.project_settings.items():
             writer.element(key, value)
         writer.end('settings')
-        for tag in ['requirement-repositories', 'requirement-projects', 
-        'requirement-udfs']:
+        for tag in ['requirement-repositories', 'requirement-projects',
+                    'requirement-udfs']:
             writer.element(tag, '')
         writer.end('details')
 
@@ -223,7 +228,7 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', 'RF')
-        writer.element('uid', self._generate_UID('SD', 'RF')) # TODO: OK?
+        writer.element('uid', self._generate_UID('SD', 'RF'))  # TODO: OK?
         writer.element('locker', '')
         writer.element('description', 'Robot Framework import')
         writer.element('html-description', '')
@@ -234,7 +239,8 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
-        writer.element('uid', self._generate_UID('SD', libdoc.name)) # TODO
+        writer.element('uid', self._generate_UID(
+            'SD', libdoc.name))  # TODO OK?
         writer.element('locker', '')
         writer.element('html-description', f"<html>{libdoc.doc}</html>")
         writer.element('historyPK', '-1')
@@ -249,7 +255,7 @@ class Libdoc2TestBenchWriter:
             writer.element('uid', self._generate_UID('IA', keyword.name))
             writer.element('locker', '')
             writer.element('html-description', f"<html>{keyword.doc}</html>")
-            writer.element('historyPK', '-1') 
+            writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.element('references', '')
 
@@ -258,8 +264,8 @@ class Libdoc2TestBenchWriter:
                 writer.start('parameter')
                 writer.element('pk', self.pk_generator.get_pk())
                 writer.element('name', arg.name)
-                # For each parameter of the keyword, check whether 
-                # it is already in the all_elements dic 
+                # For each parameter of the keyword, check whether
+                # it is already in the all_elements dic
                 # and thus already has a key.
                 # If not, its a generic data type => -1
                 typ_pk = '-1'
@@ -273,7 +279,7 @@ class Libdoc2TestBenchWriter:
                 writer.element('use-type', '1')
                 writer.end('parameter')
             writer.end('parameters')
-            writer.end('element') # close interaction tag
+            writer.end('element')  # close interaction tag
 
     def _write_data_types(self, data_types, writer):
         datatypes = []
@@ -301,12 +307,12 @@ class Libdoc2TestBenchWriter:
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.start('equivalence-classes')
-            writer.start('equivalence-class')   
+            writer.start('equivalence-class')
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', 'members')
             writer.element('description', 'Valid members')
             writer.element('ordering', str(1024 * idx))
-            
+
             writer.start('representatives')
             default_pk = '-1'
             for idx, representative in enumerate(data_type.representatives.keys()):
@@ -316,18 +322,18 @@ class Libdoc2TestBenchWriter:
                     # if non-generic => set default-representative
                     default_pk = pk
                 writer.element('pk', pk)
-                writer.element('name', representative.split(f"{data_type.get_name()}.", 1)[-1])
+                writer.element('name', representative.split(
+                    f"{data_type.get_name()}.", 1)[-1])
                 writer.element('ordering', str(1024 * idx))
                 writer.end('representative')
 
             writer.end('representatives')
-            writer.element('default-representative-ref', '', {'pk': default_pk})
+            writer.element('default-representative-ref',
+                           '', {'pk': default_pk})
             writer.end('equivalence-class')
             writer.end('equivalence-classes')
-            writer.end('element') # close dataType tag
-        writer.end('element') # close datatype subdivision tag
-
-
+            writer.end('element')  # close dataType tag
+        writer.end('element')  # close datatype subdivision tag
 
     def _write_end(self, writer):
         writer.end('element')  # close Library Subdivision tag
@@ -349,6 +355,6 @@ class Libdoc2TestBenchWriter:
         # => SHA1 Hash, 10 Chars
         prefix_repo = self.xml_attributes.get('repository', 'itb')
         prefix_lib = self.libdoc_name
-        string  = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
+        string = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
         encoded = sha1(string.encode())
         return encoded.hexdigest()[:10]
