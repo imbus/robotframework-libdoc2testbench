@@ -5,7 +5,6 @@ from zipfile import ZipFile
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
-from robot.utils.robotio import file_writer
 
 __version__ = "0.0.1"
 
