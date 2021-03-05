@@ -7,7 +7,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.",
         usage=f"Libdoc2TestBench <LIBRARY> -o <output.zip>",
-        prog='Libdoc2TestBench')
+        prog='Libdoc2TestBench',
+        epilog='Example: python -m Libdoc2TestBench Browser -o My-Browser-Dump.zip')
     parser.add_argument("library_or_resource",
                         help="RF library or resource")
     parser.add_argument('-o', '--outfile_path', nargs='?', default='project-dump.zip',
