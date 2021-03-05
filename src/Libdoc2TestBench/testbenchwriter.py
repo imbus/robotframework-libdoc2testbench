@@ -353,7 +353,11 @@ class Libdoc2TestBenchWriter:
         # RepositoryAttribute-AbreviationElementType-LibraryName.ElementName
         # => SHA1 Hash, first 10 Chars
         prefix_repo = self.xml_attributes.get('repository', 'itb')
-        prefix_lib = self.libdoc_name
+        prefix_lib = self.libdoc_name.lower()
+        element_name = element_name.replace('_', '')
+        element_name = element_name.replace(' ', '')
+        element_name = element_name.lower()
+
         string = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
         encoded = sha1(string.encode())
         return encoded.hexdigest()[:10]
