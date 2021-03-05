@@ -122,7 +122,7 @@ class Libdoc2TestBenchWriter:
     testobject_state = Project_States.active.value
     testobject_desc = "Robot Framework import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
-    libdoc_name = None
+    libdoc_name = None  # set-up in write() method.
 
     # Attributes used in the header of the xml-file
     xml_attributes = {
