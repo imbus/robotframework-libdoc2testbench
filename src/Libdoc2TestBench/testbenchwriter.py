@@ -61,7 +61,7 @@ class Element():
         self.parent = parent_element
 
         if element.doc:
-            self.html_desc = f"<HTML>{element.doc}</HTML>"
+            self.html_desc = f"<html>{element.doc}</html>"
 
         self._set_name_and_register_in_all_elements()
 
