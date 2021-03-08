@@ -12,9 +12,9 @@ setup(
     name="robotframework-libdoc2testbench",
     version=VERSION,
     author="imbus AG",
-    author_email="maximilian.birkenhagen@imbus.de",
-    description="Tool to create TestBench imports.",
-    url="https://www.imbus.de",
+    author_email="info@imbus.de",
+    description="Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.",
+    url="https://github.com/imbus/robotframework-libdoc2testbench",
     package_dir={"": "src"},
     packages=find_packages("src"),
     classifiers=[

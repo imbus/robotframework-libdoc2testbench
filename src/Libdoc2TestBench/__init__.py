@@ -24,7 +24,7 @@ def create_project_dump(lib_or_res: str, outfile_path: str):
         Libdoc2TestBenchWriter().write(libdoc, outfile)
     write_zip_file(outfile_path)
     os.remove('project-dump.xml')
-    print("Successfully written zip file")
+    print(f"Successfully written zip file to {outfile_path}")
 
 
 def write_zip_file(outfile_path):
