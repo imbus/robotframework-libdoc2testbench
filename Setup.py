@@ -11,8 +11,8 @@ with open(join(CURDIR, "src", "Libdoc2TestBench", "__init__.py"), encoding="utf-
 setup(
     name="robotframework-libdoc2testbench",
     version=VERSION,
-    author="imbus AG",
-    author_email="info@imbus.de",
+    author="imbus AG | Maximilian Birkenhagen",
+    author_email="maximilian.birkenhagen@imbus.de",
     description="Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.",
     url="https://github.com/imbus/robotframework-libdoc2testbench",
     package_dir={"": "src"},
