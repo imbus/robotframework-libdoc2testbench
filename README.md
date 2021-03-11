@@ -20,7 +20,7 @@ The generated zip-file can be imported via the "Import Project..." command in th
 
 ___
 
-There are several optional arguments, that follow the structure of the libdoc module. When generating imports from a RF library, these values should already be set. If importing from .json or .xml files
+There are several optional arguments, that follow the structure of the robot.libdoc module. When generating imports from a RF library, these values should already be set up correctly. You may overwrite the docformat by setting the associated arguments written below.
 
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
