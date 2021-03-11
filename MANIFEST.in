@@ -1,2 +1,6 @@
 include *.py
 include LICENSE
+
+
+# added by check-manifest
+include *.bat
