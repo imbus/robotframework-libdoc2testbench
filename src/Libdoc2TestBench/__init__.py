@@ -41,7 +41,7 @@ def run():
                         help="RF library or resource")
     parser.add_argument('outfile_path', nargs='?', default='project-dump.zip',
                         help="optional path to write output, default = project-dump.zip")
-    parser.add_argument('-s', '--specdocformat', choices=['HTML', 'RAW'],
+    parser.add_argument('-s', '--specdocformat', default= 'RAW', choices=['HTML', 'RAW'],
                         help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.")
     parser.add_argument('-F', '--docformat', choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
                         help="Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in library source code and the initial default value is `ROBOT`.")
