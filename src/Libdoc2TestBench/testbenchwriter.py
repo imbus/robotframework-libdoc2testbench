@@ -120,7 +120,7 @@ class Libdoc2TestBenchWriter:
 
     # Values used to fill project view fields.
     testobject_state = Project_States.active.value
-    testobject_desc = "Robot Framework import"
+    testobject_desc = "Robot Framework Import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
     libdoc_name = None  # set-up in write() method.
 
@@ -152,7 +152,7 @@ class Libdoc2TestBenchWriter:
         'enddate': '',
         'status': testobject_state,
         'createdTime': created_time,
-        'description': 'Robot Framework import',
+        'description': 'Robot Framework Import',
         'html-description': '',
         'testingIntelligence': 'false',
         'baselines': '',
@@ -229,7 +229,7 @@ class Libdoc2TestBenchWriter:
         writer.element('name', 'RF')
         writer.element('uid', self._generate_UID('SD', 'RF'))
         writer.element('locker', '')
-        writer.element('description', 'Robot Framework import')
+        writer.element('description', 'Robot Framework Import')
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
@@ -241,7 +241,8 @@ class Libdoc2TestBenchWriter:
         writer.element('uid', self._generate_UID(
             'SD', libdoc.name))
         writer.element('locker', '')
-        writer.element('html-description', f"<html>{libdoc.doc}</html>")
+        writer.element(
+            'html-description', f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>")
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
