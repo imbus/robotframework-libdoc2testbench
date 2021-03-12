@@ -1,12 +1,13 @@
 # robotframework-libdoc2testbench
 Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.
+
 ___
 
-**Installation**:
+### Installation:
 
 	pip install robotframework-libdoc2testbench
 ___
-**Usage**:
+### Usage:
 
 The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framework Library as input and saves a zip-file named "project-dump.zip" in the current working directory containing the needed information for the import.
 
@@ -14,9 +15,7 @@ The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framewor
 By using a second positional argument you can additionally specify the output filename:
 
 	Libdoc2TestBench <LIBRARY or *.robot or *.py> <output.zip>
-
-
-The generated zip-file can be imported via the "Import Project..." command in the Project Management view of the imbus TestBench.
+The generated zip-file can be imported via the `Import Project...` command in the Project Management view of the imbus TestBench.
 
 ___
 
@@ -29,6 +28,24 @@ There are several optional arguments, that follow the structure of the robot.lib
 | -n, --name 	| Sets the name of the documented library or resource for the import. 	|  	|
 | -v, --version 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
 ___
-**Dependencies**:
+
+### Demo
+First create a zip-file from a Robot Framework library:
+![LibDoc2TestBench command demo](res/example_usage.gif)
+___
+Then import the generated zip-file in the imbus TestBench:
+![Import Project Demo](res/projectmanagement_view.gif)
+___
+In the Test Elements view you can now see and use your imported RF library:
+![Test Element View](res/test_element_view.png)
+### Change log
+* 0.0.1
+    * Work in progress
+
+___
+### License
+Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
+___
+### Dependencies:
  - python >=3.7
  - [robotframework](https://github.com/robotframework/robotframework) > 3.2.2
