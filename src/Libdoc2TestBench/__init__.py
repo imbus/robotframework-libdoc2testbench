@@ -78,7 +78,8 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
         Libdoc2TestBenchWriter().write(libdoc, outfile)
     write_zip_file(outfile_path)
     os.remove('project-dump.xml')
-    print(f"Successfully written zip file to {outfile_path}")
+    absolute_outfile_path = Path(outfile_path).resolve()
+    print(f"Successfully written {outfile_path} to: \n{absolute_outfile_path}")
 
 
 def write_zip_file(outfile_path):
