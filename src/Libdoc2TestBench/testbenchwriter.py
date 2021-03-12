@@ -351,14 +351,17 @@ class Libdoc2TestBenchWriter:
 
     def _generate_UID(self, element_type: str, element_name: str) -> str:
         # UIDs format:
-        # RepositoryAttribute-AbreviationElementType-LibraryName.ElementName
-        # => SHA1 Hash, first 10 Chars
-        prefix_repo = self.xml_attributes.get('repository', 'itb')
-        prefix_lib = self.libdoc_name.lower()
+        # Prefix: RepositoryID-AbreviationElementType-
+        # Root: first 10 characters of sha1Hash of LibraryName.ElementName
+        repository_id = self.xml_attributes.get('repository', 'itb')
+        lib_name = self.libdoc_name.lower()
+
+        # robustify element name regarding smaller changes
         element_name = element_name.replace('_', '')
         element_name = element_name.replace(' ', '')
         element_name = element_name.lower()
 
-        string = f"{prefix_repo}-{element_type}-{prefix_lib}.{element_name}"
-        encoded = sha1(string.encode())
-        return encoded.hexdigest()[:10]
+        prefix = f"{repository_id}-{element_type}-"
+        root_hash = sha1(
+            f"{lib_name}.{element_name}".encode()).hexdigest()[:10]
+        return f"{prefix}{root_hash}"
