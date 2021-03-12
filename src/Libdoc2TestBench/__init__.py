@@ -41,7 +41,7 @@ def run():
                         help="RF library or resource")
     parser.add_argument('outfile_path', nargs='?', default='project-dump.zip',
                         help="optional path to write output, default = project-dump.zip")
-    parser.add_argument('-s', '--specdocformat', default= 'RAW', choices=['HTML', 'RAW'],
+    parser.add_argument('-s', '--specdocformat', default='HTML', choices=['HTML', 'RAW'],
                         help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.")
     parser.add_argument('-F', '--docformat', choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
                         help="Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in library source code and the initial default value is `ROBOT`.")
@@ -72,7 +72,8 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
             sys.exit()
 
     libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
-    libdoc.convert_docs_to_html() #TODO: -s param
+    if specdocformat == 'HTML':
+        libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
         Libdoc2TestBenchWriter().write(libdoc, outfile)
     write_zip_file(outfile_path)
