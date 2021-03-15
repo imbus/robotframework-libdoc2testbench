@@ -28,12 +28,13 @@ __version__ = "0.0.1"
 def run():
     """ Command line entry point for the Libdic2TestBench module."""
     parser = argparse.ArgumentParser(
-        description="Robot Framework Libdoc Extension that generates imbus \
-            TestBench Library import formats. \n The easiest way to run \
-            Libdoc2TestBench is just using the `Libdoc2TestBench` command  \
-            and giving it one resource or library to generate a zip-file at \
-            the current location. However, this module can also be executed \
-            via python -m Libdoc2TestBench <LIBRARY>.",
+        description="""Robot Framework Libdoc Extension that generates imbus
+                    TestBench Library import formats. The easiest way to run
+                    Libdoc2TestBench is just using the `Libdoc2TestBench` 
+                    command and giving it one resource or library to generate 
+                    a zip-file at the current location. However, this module 
+                    can also be executed via python -m Libdoc2TestBench <LIBRARY>.
+                    """,
         usage=f"Libdoc2TestBench <LIBRARY> <output.zip>",
         prog='Libdoc2TestBench',
         epilog='Example: python -m Libdoc2TestBench Browser My-Browser-Dump.zip')
@@ -71,7 +72,12 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
             print('stopped execution')
             sys.exit()
 
-    libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
+    # Check for availability of requested library or resource
+    try:
+        libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
+    except:
+       raise sys.exit(f"The requested module {lib_or_res} could not be found.")
+    
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
