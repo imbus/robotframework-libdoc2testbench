@@ -3,4 +3,9 @@ include LICENSE
 
 
 # added by check-manifest
-include *.bat
+exclude *.bat
+
+# added by check-manifest
+recursive-exclude res *.gif
+recursive-exclude res *.png
+recursive-exclude res *.stg

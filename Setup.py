@@ -23,7 +23,8 @@ setup(
     packages=find_packages("src"),
     entry_points={
         'console_scripts': [
-            'Libdoc2TestBench = Libdoc2TestBench:run'
+            'Libdoc2TestBench = Libdoc2TestBench:run',
+            'libdoc2testbench = Libdoc2TestBench:run'
         ]
     },
     classifiers=[
