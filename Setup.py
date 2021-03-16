@@ -28,12 +28,16 @@ setup(
         ]
     },
     classifiers=[
+        "Environment :: Console",
+        "Development Status :: 3 - Alpha",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Operating System :: OS Independent",
+        "License :: OSI Approved :: Apache Software License",
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development :: Testing :: Acceptance",
         "Framework :: Robot Framework",
     ],
-    install_requires=["robotframework > 3.2.2"],
+    install_requires=["robotframework >= 4.0b1"],
     python_requires=">=3.7",
 )
