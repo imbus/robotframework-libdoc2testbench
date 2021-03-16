@@ -9,6 +9,7 @@ ___
 ___
 ### Usage:
 ![LibDoc2TestBench command demo](res/example_usage.gif)
+
 The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framework Library as input and saves a zip-file named `project-dump.zip` in the current working directory containing the needed information for the import.
 
 	Libdoc2TestBench <LIBRARY or RESOURCE>
