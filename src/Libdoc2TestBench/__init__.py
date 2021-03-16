@@ -25,7 +25,7 @@ from robot.libdocpkg import LibraryDocumentation
 __version__ = "0.0.1"
 
 
-def run():
+def start_libdoc2testbench():
     """ Command line entry point for the Libdic2TestBench module."""
     parser = argparse.ArgumentParser(
         description="""Robot Framework Libdoc Extension that generates imbus

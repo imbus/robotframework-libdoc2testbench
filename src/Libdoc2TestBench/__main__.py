@@ -16,7 +16,10 @@
 """ Module executing the command line entry point for generating writing 
 imbus TestBench formats from Robot Framework libraries.
 """
-from Libdoc2TestBench import run
+from Libdoc2TestBench import start_libdoc2testbench
 
-if __name__ == "__main__":
-    run()
+def main():
+    start_libdoc2testbench()
+
+if __name__ == '__main__':
+    main()
