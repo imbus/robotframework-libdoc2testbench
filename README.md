@@ -1,12 +1,15 @@
-# robotframework-libdoc2testbench
+# Libdoc2TestBench
 Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.
 
 ___
 
 ### Installation:
-To install using `pip`:
+
+To install this package you can use  `pip`:
 
 	pip install robotframework-libdoc2testbench
+
+*Notice: This extension requires Robot Framework 4.0b1 or later and does not work with earlier versions.*
 ___
 ### Usage:
 ![LibDoc2TestBench command demo](res/example_usage.gif)
@@ -32,10 +35,13 @@ ___
 ### Import in imbus TestBench
 First create a zip-file from a Robot Framework library via the `Libdoc2TestBench` command.
 Afterwards the generated zip-file can be imported via the `Import Project...` command in the Project Management view of the imbus TestBench:
+
 ![Import Project Demo](res/projectmanagement_view.gif)
-___
-In the Test Elements view you can now see and use your imported RF library as interactions:
+
+In the Test Elements view you can now see your imported RF library as different interactions and datatypes:
+
 ![Test Element View](res/test_element_view.png)
+
 <!-- ### Change log
 * 0.0.1
     * working first version -->
