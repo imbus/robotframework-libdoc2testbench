@@ -38,7 +38,7 @@ class Project_States(enum.Enum):
 
 class PK_Generator():
     """A class used to generate unique primary keys for test elements.
-    Only one instance should be created and used to ensure continuous  
+    Only one instance should be created and used to ensure continuous 
     unique pks."""
 
     def __init__(self, pk_start: int = 230):
@@ -82,10 +82,10 @@ class Element():
 
 
 class Data_Type(Element):
-    """ A class used to gather information for imbus TestBench 
+    """ A class used to gather information for imbus TestBench
     data types from the associated Robot Framework data type.
     Each Robot Framework data type is converted into one
-    "members" equivalence class and each valid value is one 
+    "members" equivalence class and each valid value is one
     representative in the imbus TestBench."""
 
     def __init__(self, pk_generator: PK_Generator, data_type, parent_element=None):
@@ -329,7 +329,7 @@ class Libdoc2TestBenchWriter:
 
             writer.end('representatives')
             writer.element('default-representative-ref',
-                           '', {'pk': default_pk})
+                            '', {'pk': default_pk})
             writer.end('equivalence-class')
             writer.end('equivalence-classes')
             writer.end('element')  # close dataType tag

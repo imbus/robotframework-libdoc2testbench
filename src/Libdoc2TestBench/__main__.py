@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-""" Module executing the command line entry point for generating writing 
+""" Module executing the command line entry point for generating writing
 imbus TestBench formats from Robot Framework libraries.
 """
 from Libdoc2TestBench import start_libdoc2testbench

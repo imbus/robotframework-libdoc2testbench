@@ -30,9 +30,9 @@ def start_libdoc2testbench():
     parser = argparse.ArgumentParser(
         description="""Robot Framework Libdoc Extension that generates imbus
                     TestBench Library import formats. The easiest way to run
-                    Libdoc2TestBench is just using the `Libdoc2TestBench` 
-                    command and giving it one resource or library to generate 
-                    a zip-file at the current location. However, this module 
+                    Libdoc2TestBench is just using the `Libdoc2TestBench`
+                    command and giving it one resource or library to generate
+                    a zip-file at the current location. However, this module
                     can also be executed via python -m Libdoc2TestBench <LIBRARY>.
                     """,
         usage=f"Libdoc2TestBench <LIBRARY> <output.zip>",
@@ -76,8 +76,8 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
     try:
         libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
     except:
-       raise sys.exit(f"The requested module {lib_or_res} could not be found.")
-    
+        raise sys.exit(f"The requested module {lib_or_res} could not be found.")
+
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
