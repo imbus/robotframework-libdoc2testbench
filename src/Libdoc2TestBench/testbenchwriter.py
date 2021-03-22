@@ -1,5 +1,4 @@
-#  Copyright 2008-2015 Nokia Networks
-#  Copyright 2016-     Robot Framework Foundation
+#  Copyright 2021- imbus AG
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +11,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+#
+#  This code contains derived code from Robot Framework Core Project
+#  under Apache 2.0 License.
+#  https://github.com/robotframework/robotframework
 
 import enum
 from datetime import datetime

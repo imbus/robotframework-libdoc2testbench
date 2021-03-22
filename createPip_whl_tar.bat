@@ -8,5 +8,5 @@ python -m twine check dist/*
 pause
 echo "Next step - uploading to pypi!"
 pause
-python -m twine upload dist/* 
+python -m twine upload dist/*
 pause

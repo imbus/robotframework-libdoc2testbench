@@ -1,5 +1,5 @@
 # Libdoc2TestBench
-Robot Framework Libdoc Extension that generates imbus TestBench Library import formats.
+Robot Framework Libdoc Extension that generates imbus [TestBench Enterprise](https://www.imbus.de/testbench/testbench-enterprise) Library import formats.
 
 ___
 
@@ -9,7 +9,7 @@ To install this package you can use  `pip`:
 
 	pip install robotframework-libdoc2testbench
 
-*Notice: This extension requires Robot Framework 4.0b1 or later and does not work with earlier versions.*
+*Notice: This extension requires Robot Framework 4.0.0 or later and does not work with earlier versions.*
 ___
 ### Usage:
 ![LibDoc2TestBench command demo](res/example_usage.gif)
@@ -54,4 +54,4 @@ Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframewo
 ___
 ### Dependencies:
  - python >=3.7
- - [robotframework](https://github.com/robotframework/robotframework) >= 4.0b1
+ - [robotframework](https://github.com/robotframework/robotframework) >= 4.0.0

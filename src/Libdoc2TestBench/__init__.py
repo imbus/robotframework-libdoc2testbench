@@ -1,5 +1,4 @@
-#  Copyright 2008-2015 Nokia Networks
-#  Copyright 2016-     Robot Framework Foundation
+#  Copyright 2021- imbus AG
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,22 +21,21 @@ from zipfile import ZipFile
 from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
 
-__version__ = "0.0.1"
+__version__ = "1.0rc1"
 
 
 def start_libdoc2testbench():
-    """ Command line entry point for the Libdic2TestBench module."""
+    """ Command line entry point for the Libdoc2TestBench module."""
     parser = argparse.ArgumentParser(
         description="""Robot Framework Libdoc Extension that generates imbus
                     TestBench Library import formats. The easiest way to run
                     Libdoc2TestBench is just using the `Libdoc2TestBench`
                     command and giving it one resource or library to generate
-                    a zip-file at the current location. However, this module
-                    can also be executed via python -m Libdoc2TestBench <LIBRARY>.
+                    a zip-file at the current location.
                     """,
         usage=f"Libdoc2TestBench <LIBRARY> <output.zip>",
         prog='Libdoc2TestBench',
-        epilog='Example: python -m Libdoc2TestBench Browser My-Browser-Dump.zip')
+        epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip')
     parser.add_argument("library_or_resource",
                         help="RF library or resource")
     parser.add_argument('outfile_path', nargs='?', default='project-dump.zip',

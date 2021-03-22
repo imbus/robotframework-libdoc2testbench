@@ -24,7 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'Libdoc2TestBench = Libdoc2TestBench.__main__:main',
-            'libdoc2testbench = Libdoc2TestBench.__main__:main'
+            'libdoc2testbench = Libdoc2TestBench.__main__:main',
         ]
     },
     classifiers=[
@@ -38,6 +38,6 @@ setup(
         "Topic :: Software Development :: Testing :: Acceptance",
         "Framework :: Robot Framework",
     ],
-    install_requires=["robotframework >= 4.0b1"],
+    install_requires=["robotframework >= 4.0.0"],
     python_requires=">=3.7",
 )
