@@ -38,7 +38,7 @@ def start_libdoc2testbench():
         epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip')
     parser.add_argument("library_or_resource",
                         help="RF library or resource")
-    parser.add_argument('outfile_path', nargs='?', default='project-dump.zip',
+    parser.add_argument('outfile_path', nargs='?', default='',
                         help="optional path to write output, default = project-dump.zip")
     parser.add_argument('-s', '--specdocformat', default='HTML', choices=['HTML', 'RAW'],
                         help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.")
@@ -74,8 +74,9 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
     try:
         libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
     except:
-        raise sys.exit(f"The requested module {lib_or_res} could not be found.")
-
+        sys.exit(f"The requested module {lib_or_res} could not be found.")
+    outfile_path = outfile_path or libdoc.name
+    outfile_path = outfile_path if os.path.splitext(outfile_path)[1] == '.zip' else f"{outfile_path}.zip"
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
@@ -83,7 +84,7 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
     write_zip_file(outfile_path)
     os.remove('project-dump.xml')
     absolute_outfile_path = Path(outfile_path).resolve()
-    print(f"Successfully written {outfile_path} to: \n{absolute_outfile_path}")
+    print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
 
 
 def write_zip_file(outfile_path):
