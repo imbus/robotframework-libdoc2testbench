@@ -17,8 +17,10 @@ imbus TestBench formats from Robot Framework libraries.
 """
 from Libdoc2TestBench import start_libdoc2testbench
 
+
 def main():
     start_libdoc2testbench()
+
 
 if __name__ == '__main__':
     main()

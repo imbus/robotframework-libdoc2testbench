@@ -25,6 +25,7 @@ from robot.utils import XmlWriter
 
 class Element_Types(enum.Enum):
     """Enum for different test elements found in the imbus TestBench."""
+
     subdivision = 'subdivision'
     datatype = 'datatype'
     interaction = 'interaction'
@@ -33,15 +34,16 @@ class Element_Types(enum.Enum):
 
 class Project_States(enum.Enum):
     """Enum for different project states found in the imbus TestBench."""
+
     planned = 'planned'
     active = 'active'
     finished = 'finished'
     closed = 'closed'
 
 
-class PK_Generator():
+class PK_Generator:
     """A class used to generate unique primary keys for test elements.
-    Only one instance should be created and used to ensure continuous 
+    Only one instance should be created and used to ensure continuous
     unique pks."""
 
     def __init__(self, pk_start: int = 230):
@@ -52,7 +54,7 @@ class PK_Generator():
         return str(self.pk_counter)
 
 
-class Element():
+class Element:
     """A class to represent imbus TestBench related test elements."""
 
     # Remember all created element objects and their associated pk.
@@ -85,7 +87,7 @@ class Element():
 
 
 class Data_Type(Element):
-    """ A class used to gather information for imbus TestBench
+    """A class used to gather information for imbus TestBench
     data types from the associated Robot Framework data type.
     Each Robot Framework data type is converted into one
     "members" equivalence class and each valid value is one
@@ -128,11 +130,7 @@ class Libdoc2TestBenchWriter:
     libdoc_name = None  # set-up in write() method.
 
     # Attributes used in the header of the xml-file
-    xml_attributes = {
-        'version': "2.6.1",
-        'build-number': "201215/dcee",
-        'repository': "itba"
-    }
+    xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "itba"}
 
     # Values used to fill imbus TestBench project settings.
     project_settings = {
@@ -144,7 +142,7 @@ class Libdoc2TestBenchWriter:
         'designers-may-manage-baselines': 'false',
         'designers-may-import-baselines': 'false',
         'only-admins-manage-udfs': 'false',
-        'variants-management-enabled': 'false'
+        'variants-management-enabled': 'false',
     }
 
     # Values used to fill testobject version fields.
@@ -164,7 +162,7 @@ class Libdoc2TestBenchWriter:
         'variantsMarkers': '',
         'placeholderValues': '',
         'testcycles': '',
-        'testthemes': ''
+        'testthemes': '',
     }
 
     def __init__(self, project_name='RF Import', testobject_name='RF Import'):
@@ -196,8 +194,15 @@ class Libdoc2TestBenchWriter:
         writer.element('id', '')
         writer.element('testobjectname', self.testobject_name)
         writer.element('state', self.testobject_state)
-        for tag in ['customername', 'customeradress', 'contactperson',
-                    'testlab', 'checklocation', 'startdate', 'enddate']:
+        for tag in [
+            'customername',
+            'customeradress',
+            'contactperson',
+            'testlab',
+            'checklocation',
+            'startdate',
+            'enddate',
+        ]:
             writer.element(tag, '')
         writer.element('status', self.testobject_state)
         writer.element('description', self.testobject_desc)
@@ -208,8 +213,7 @@ class Libdoc2TestBenchWriter:
         for key, value in self.project_settings.items():
             writer.element(key, value)
         writer.end('settings')
-        for tag in ['requirement-repositories', 'requirement-projects',
-                    'requirement-udfs']:
+        for tag in ['requirement-repositories', 'requirement-projects', 'requirement-udfs']:
             writer.element(tag, '')
         writer.end('details')
 
@@ -241,11 +245,12 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
-        writer.element('uid', self._generate_UID(
-            'SD', libdoc.name))
+        writer.element('uid', self._generate_UID('SD', libdoc.name))
         writer.element('locker', '')
         writer.element(
-            'html-description', f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>")
+            'html-description',
+            f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>",
+        )
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
@@ -325,14 +330,12 @@ class Libdoc2TestBenchWriter:
                     # if non-generic => set default-representative
                     default_pk = pk
                 writer.element('pk', pk)
-                writer.element('name', representative.split(
-                    f"{data_type.get_name()}.", 1)[-1])
+                writer.element('name', representative.split(f"{data_type.get_name()}.", 1)[-1])
                 writer.element('ordering', str(1024 * idx))
                 writer.end('representative')
 
             writer.end('representatives')
-            writer.element('default-representative-ref',
-                            '', {'pk': default_pk})
+            writer.element('default-representative-ref', '', {'pk': default_pk})
             writer.end('equivalence-class')
             writer.end('equivalence-classes')
             writer.end('element')  # close dataType tag
@@ -365,6 +368,5 @@ class Libdoc2TestBenchWriter:
         element_name = element_name.lower()
 
         prefix = f"{repository_id}-{element_type}-"
-        root_hash = sha1(
-            f"{lib_name}.{element_name}".encode()).hexdigest()[:10]
+        root_hash = sha1(f"{lib_name}.{element_name}".encode()).hexdigest()[:10]
         return f"{prefix}{root_hash}"

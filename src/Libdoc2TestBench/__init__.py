@@ -35,19 +35,34 @@ def start_libdoc2testbench():
                     """,
         usage=f"Libdoc2TestBench <LIBRARY> <output.zip>",
         prog='Libdoc2TestBench',
-        epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip')
-    parser.add_argument("library_or_resource",
-                        help="RF library or resource")
-    parser.add_argument('outfile_path', nargs='?', default='',
-                        help="optional path to write output, default = project-dump.zip")
-    parser.add_argument('-s', '--specdocformat', default='HTML', choices=['HTML', 'RAW'],
-                        help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.")
-    parser.add_argument('-F', '--docformat', choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
-                        help="Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in library source code and the initial default value is `ROBOT`.")
+        epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip',
+    )
+    parser.add_argument("library_or_resource", help="RF library or resource")
     parser.add_argument(
-        '-n', '--name', help="Sets the name of the documented library or resource.")
+        'outfile_path',
+        nargs='?',
+        default='',
+        help="optional path to write output, default = project-dump.zip",
+    )
     parser.add_argument(
-        '-v', '--version', help="Sets the version of the documented library or resource written in the description.")
+        '-s',
+        '--specdocformat',
+        default='HTML',
+        choices=['HTML', 'RAW'],
+        help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.",
+    )
+    parser.add_argument(
+        '-F',
+        '--docformat',
+        choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
+        help="Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in library source code and the initial default value is `ROBOT`.",
+    )
+    parser.add_argument('-n', '--name', help="Sets the name of the documented library or resource.")
+    parser.add_argument(
+        '-v',
+        '--version',
+        help="Sets the version of the documented library or resource written in the description.",
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -57,15 +72,15 @@ def start_libdoc2testbench():
     lib_name = args.name
     lib_version = args.version
 
-    create_project_dump(lib, outfile_path, specdocformat,
-                        docformat, lib_name, lib_version)
+    create_project_dump(lib, outfile_path, specdocformat, docformat, lib_name, lib_version)
 
 
-def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version):
+def create_project_dump(
+    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version
+):
     # Check for already existing project-dump.xml
     if Path('project-dump.xml').is_file():
-        user_input = input(
-            'project-dump.xml already exists... overwrite? y/n? \n')
+        user_input = input('project-dump.xml already exists... overwrite? y/n? \n')
         if user_input.lower() not in ['y', 'yes']:
             print('stopped execution')
             sys.exit()
@@ -76,7 +91,9 @@ def create_project_dump(lib_or_res: str, outfile_path: str, specdocformat, docfo
     except:
         sys.exit(f"The requested module {lib_or_res} could not be found.")
     outfile_path = outfile_path or libdoc.name
-    outfile_path = outfile_path if os.path.splitext(outfile_path)[1] == '.zip' else f"{outfile_path}.zip"
+    outfile_path = (
+        outfile_path if os.path.splitext(outfile_path)[1] == '.zip' else f"{outfile_path}.zip"
+    )
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
