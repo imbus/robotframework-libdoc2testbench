@@ -20,6 +20,7 @@ from zipfile import ZipFile
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
+from robot.version import get_full_version as robot_version_print
 
 __version__ = "1.0rc1"
 
@@ -37,7 +38,9 @@ def start_libdoc2testbench():
         prog='Libdoc2TestBench',
         epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip',
     )
-    parser.add_argument("library_or_resource", help="RF library or resource")
+    parser.add_argument(
+        "library_or_resource", help="RF library or resource", nargs='?', default=None
+    )
     parser.add_argument(
         'outfile_path',
         nargs='?',
@@ -63,6 +66,11 @@ def start_libdoc2testbench():
         '--version',
         help="Sets the version of the documented library or resource written in the description.",
     )
+    parser.add_argument(
+        '--info',
+        action='store_true',
+        help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -71,8 +79,19 @@ def start_libdoc2testbench():
     docformat = args.docformat
     lib_name = args.name
     lib_version = args.version
+    info = args.info
 
-    create_project_dump(lib, outfile_path, specdocformat, docformat, lib_name, lib_version)
+    if info:
+        robot_version = robot_version_print()
+        print(f'Libdoc2TestBench {__version__} [Robot Framework {robot_version}]')
+        sys.exit()
+
+    if not lib:
+        sys.exit(
+            'Libdoc2TestBench: error: the following arguments are required: library_or_resource'
+        )
+    else:
+        create_project_dump(lib, outfile_path, specdocformat, docformat, lib_name, lib_version)
 
 
 def create_project_dump(
