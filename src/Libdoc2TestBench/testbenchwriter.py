@@ -169,7 +169,7 @@ class Libdoc2TestBenchWriter:
         self.project_name = project_name
         self.testobject_name = testobject_name
 
-    def write(self, libdoc, outfile):
+    def write(self, libdoc, outfile, repo_id):
         """Writes an imbus TestBench readable xml-file.
 
         Parameters
@@ -179,6 +179,11 @@ class Libdoc2TestBenchWriter:
         outfile: IO
             IO stream to write files to.
         """
+
+        # If --repository is set, overwrite xml_attribute for it.
+        if repo_id:
+            self.xml_attributes['repository'] = repo_id
+
         writer = XmlWriter(outfile, usage='Libdoc spec')
         self.libdoc_name = libdoc.name
         self._write_start(libdoc, writer)

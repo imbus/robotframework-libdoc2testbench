@@ -71,6 +71,9 @@ def start_libdoc2testbench():
         action='store_true',
         help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
     )
+    parser.add_argument(
+        '-r', '--repository', help='Sets the repository id of the TestBench import. default = itba'
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -80,6 +83,7 @@ def start_libdoc2testbench():
     lib_name = args.name
     lib_version = args.version
     info = args.info
+    repo_id = args.repository
 
     if info:
         robot_version = robot_version_print()
@@ -91,11 +95,13 @@ def start_libdoc2testbench():
             'Libdoc2TestBench: error: the following arguments are required: library_or_resource'
         )
     else:
-        create_project_dump(lib, outfile_path, specdocformat, docformat, lib_name, lib_version)
+        create_project_dump(
+            lib, outfile_path, specdocformat, docformat, lib_name, lib_version, repo_id
+        )
 
 
 def create_project_dump(
-    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version
+    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version, repo_id
 ):
     # Check for already existing project-dump.xml
     if Path('project-dump.xml').is_file():
@@ -116,7 +122,7 @@ def create_project_dump(
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
-        Libdoc2TestBenchWriter().write(libdoc, outfile)
+        Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id)
     write_zip_file(outfile_path)
     os.remove('project-dump.xml')
     absolute_outfile_path = Path(outfile_path).resolve()
