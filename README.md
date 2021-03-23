@@ -46,9 +46,9 @@ In the Test Elements view you can now see your imported RF library as different 
 
 ![Test Element View](res/test_element_view.png)
 
-<!-- ### Change log
-* 0.0.1
-    * working first version -->
+### Change log
+* 1.0rc1
+    * first release candidate
 
 ___
 ### License
