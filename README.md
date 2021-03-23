@@ -32,7 +32,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `-F`, `--docformat` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
 | `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
 | `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
-| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `itba`||
+| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `itba`.||
 | `--info` | Writes the Libdoc2TestBench, Robot Framework and Python version to console.||
 ___
 
@@ -55,5 +55,5 @@ ___
 Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
 ___
 ### Dependencies:
- - python >=3.7
+ - python >= 3.7
  - [robotframework](https://github.com/robotframework/robotframework) >= 4.0.0
