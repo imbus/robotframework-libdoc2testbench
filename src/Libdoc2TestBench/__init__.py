@@ -142,7 +142,7 @@ def create_project_dump(
             user_input = input(f'{outfile_path} already exists... overwrite? y/n? \n')
             if user_input.lower() not in ['y', 'yes']:
                 sys.exit('Stopped execution - file was not changed.')
-        os.remove(outfile_path)
+            os.remove(outfile_path)
 
         if xml_flag:
             os.rename('project-dump.xml', outfile_path)
