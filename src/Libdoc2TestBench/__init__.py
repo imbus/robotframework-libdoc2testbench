@@ -74,6 +74,9 @@ def start_libdoc2testbench():
     parser.add_argument(
         '-r', '--repository', help='Sets the repository id of the TestBench import. default = itba'
     )
+    parser.add_argument(
+        '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -82,10 +85,11 @@ def start_libdoc2testbench():
     docformat = args.docformat
     lib_name = args.name
     lib_version = args.version
-    info = args.info
+    info_flag = args.info
     repo_id = args.repository
+    xml_flag = args.xml
 
-    if info:
+    if info_flag:
         robot_version = robot_version_print()
         print(f'Libdoc2TestBench {__version__} [Robot Framework {robot_version}]')
         sys.exit()
@@ -96,35 +100,56 @@ def start_libdoc2testbench():
         )
     else:
         create_project_dump(
-            lib, outfile_path, specdocformat, docformat, lib_name, lib_version, repo_id
+            lib, outfile_path, specdocformat, docformat, lib_name, lib_version, repo_id, xml_flag
         )
 
 
 def create_project_dump(
-    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version, repo_id
+    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version, repo_id, xml_flag
 ):
     # Check for already existing project-dump.xml
     if Path('project-dump.xml').is_file():
         user_input = input('project-dump.xml already exists... overwrite? y/n? \n')
         if user_input.lower() not in ['y', 'yes']:
-            print('stopped execution')
-            sys.exit()
+            sys.exit('Stopped execution - file was not changed.')
 
     # Check for availability of requested library or resource
     try:
         libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
     except:
         sys.exit(f"The requested module {lib_or_res} could not be found.")
-    outfile_path = outfile_path or libdoc.name
-    outfile_path = (
-        outfile_path if os.path.splitext(outfile_path)[1] == '.zip' else f"{outfile_path}.zip"
-    )
+
+    # Convert libdoc descriptions to html
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
+
+    # Set up outfile path
+    outfile_path = outfile_path or libdoc.name
+    if xml_flag:
+        outfile_path = (
+            outfile_path if os.path.splitext(outfile_path)[1].lower() == '.xml' else f"{outfile_path}.xml"
+        )
+    else:
+        outfile_path = (
+            outfile_path if os.path.splitext(outfile_path)[1].lower() == '.zip' else f"{outfile_path}.zip"
+        )
+
     with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
         Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id)
-    write_zip_file(outfile_path)
-    os.remove('project-dump.xml')
+
+        # If at the output path a file exists - ask permission to overwrite.
+        if Path(outfile_path).is_file():
+            user_input = input(f'{outfile_path} already exists... overwrite? y/n? \n')
+            if user_input.lower() not in ['y', 'yes']:
+                sys.exit('Stopped execution - file was not changed.')
+        os.remove(outfile_path)
+
+        if xml_flag:
+            os.rename('project-dump.xml', outfile_path)
+        else:
+            # Build the zip file and clean up.
+            write_zip_file(outfile_path)
+            os.remove('project-dump.xml')
     absolute_outfile_path = Path(outfile_path).resolve()
     print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
 

@@ -7,7 +7,9 @@ ___
 
 To install this package you can use  `pip`:
 
-	pip install robotframework-libdoc2testbench
+```bash
+pip install robotframework-libdoc2testbench
+```
 
 *Notice: This extension requires Robot Framework 4.0.0 or later and does not work with earlier versions.*
 ___
@@ -21,7 +23,9 @@ Libdoc2TestBench <LIBRARY or RESOURCE>
 ```
 By using a second positional argument you can additionally specify the output filename:
 
-	Libdoc2TestBench <LIBRARY or RESOURCE> <output.zip>
+```bash
+Libdoc2TestBench <LIBRARY or RESOURCE> <output.zip>
+```
 ___
 
 There are several optional arguments, that follow the structure of the robot.libdoc module. When generating imports from a RF library, these values should already be set up correctly. You may overwrite the docformat and other meta data by setting the associated arguments written below.
@@ -30,6 +34,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 |-	|-	|-	|
 | `-s`, `--specdocformat` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
 | `-F`, `--docformat` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
 | `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
 | `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
 | `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `itba`.||
