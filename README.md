@@ -35,6 +35,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `-s`, `--specdocformat` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
 | `-F`, `--docformat` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
 | `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
+|`-t`, `--temp`| Path to write temporary files to.|
 | `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
 | `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
 | `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `itba`.||
@@ -62,3 +63,9 @@ ___
 ### Dependencies:
  - python >= 3.7
  - [robotframework](https://github.com/robotframework/robotframework) >= 4.0.0
+___
+### Contributing
+For consistent code formatting, please use [Black - The Uncompromising Code Formatter](https://github.com/psf/black) with the following arguments in the root directory:
+```bash
+black -l 100 -S .
+```

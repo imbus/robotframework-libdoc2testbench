@@ -77,6 +77,7 @@ def start_libdoc2testbench():
     parser.add_argument(
         '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
     )
+    parser.add_argument('-t', '--temp', help='Path to write the temporary files to.')
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -88,6 +89,7 @@ def start_libdoc2testbench():
     info_flag = args.info
     repo_id = args.repository
     xml_flag = args.xml
+    temp_path = args.temp
 
     if info_flag:
         robot_version = robot_version_print()
@@ -100,15 +102,40 @@ def start_libdoc2testbench():
         )
     else:
         create_project_dump(
-            lib, outfile_path, specdocformat, docformat, lib_name, lib_version, repo_id, xml_flag
+            lib,
+            outfile_path,
+            specdocformat,
+            docformat,
+            lib_name,
+            lib_version,
+            repo_id,
+            xml_flag,
+            temp_path,
         )
 
 
 def create_project_dump(
-    lib_or_res: str, outfile_path: str, specdocformat, docformat, lib_name, lib_version, repo_id, xml_flag
+    lib_or_res: str,
+    outfile_path: str,
+    specdocformat,
+    docformat,
+    lib_name,
+    lib_version,
+    repo_id,
+    xml_flag,
+    temp_path,
 ):
+    # Check for temp_path flag and already exisiting dirs
+    if temp_path:
+        temp_path = Path(temp_path)
+        temp_path.mkdir(parents=True, exist_ok=True)
+    else:
+        temp_path = Path.cwd()
+
+    project_dump_path = temp_path.joinpath('project-dump.xml')
+
     # Check for already existing project-dump.xml
-    if Path('project-dump.xml').is_file():
+    if project_dump_path.is_file():
         user_input = input('project-dump.xml already exists... overwrite? y/n? \n')
         if user_input.lower() not in ['y', 'yes']:
             sys.exit('Stopped execution - file was not changed.')
@@ -127,14 +154,18 @@ def create_project_dump(
     outfile_path = outfile_path or libdoc.name
     if xml_flag:
         outfile_path = (
-            outfile_path if os.path.splitext(outfile_path)[1].lower() == '.xml' else f"{outfile_path}.xml"
+            outfile_path
+            if os.path.splitext(outfile_path)[1].lower() == '.xml'
+            else f"{outfile_path}.xml"
         )
     else:
         outfile_path = (
-            outfile_path if os.path.splitext(outfile_path)[1].lower() == '.zip' else f"{outfile_path}.zip"
+            outfile_path
+            if os.path.splitext(outfile_path)[1].lower() == '.zip'
+            else f"{outfile_path}.zip"
         )
 
-    with open('project-dump.xml', "w", encoding='UTF-8') as outfile:
+    with open(project_dump_path, "w", encoding='UTF-8') as outfile:
         Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id)
 
         # If at the output path a file exists - ask permission to overwrite.
@@ -145,15 +176,15 @@ def create_project_dump(
             os.remove(outfile_path)
 
         if xml_flag:
-            os.rename('project-dump.xml', outfile_path)
+            os.rename(project_dump_path, outfile_path)
         else:
             # Build the zip file and clean up.
-            write_zip_file(outfile_path)
-            os.remove('project-dump.xml')
+            write_zip_file(outfile_path, project_dump_path)
+            os.remove(project_dump_path)
     absolute_outfile_path = Path(outfile_path).resolve()
     print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
 
 
-def write_zip_file(outfile_path):
+def write_zip_file(outfile_path, project_dump_path):
     with ZipFile(outfile_path, 'w') as zip_file:
-        zip_file.write('project-dump.xml', 'project-dump.xml')
+        zip_file.write(project_dump_path, 'project-dump.xml')
