@@ -128,6 +128,7 @@ class Libdoc2TestBenchWriter:
     testobject_desc = "Robot Framework Import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
     libdoc_name = None  # set-up in write() method.
+    attachment_reference_pk = None # Needed for resource files
 
     # Attributes used in the header of the xml-file
     xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "itba"}
@@ -189,8 +190,8 @@ class Libdoc2TestBenchWriter:
         self._write_start(libdoc, writer)
         self._write_testobjectversion(libdoc, writer)
         self._write_data_types(libdoc.data_types, writer)
-        self._write_interactions(libdoc.keywords, writer)
-        self._write_end(writer)
+        self._write_interactions(libdoc, libdoc.keywords, writer)
+        self._write_end(libdoc, writer)
 
     def _write_start(self, libdoc, writer):
         writer.start('project-dump', self.xml_attributes)
@@ -228,7 +229,19 @@ class Libdoc2TestBenchWriter:
         for tag in ['public', 'private']:
             writer.element(tag, '')
         writer.end('labels')
-        writer.element('references', '')
+
+        # Resource files do have a reference on its own
+        # TODO: The Attachment doesnt yet carry over to the iTB - maybe the path is wrong?
+        writer.start('references')
+        if libdoc.type == 'RESOURCE':
+            self.attachment_reference_pk = self.pk_generator.get_pk()
+            writer.element('pk', self.attachment_reference_pk)
+            writer.element('filename', libdoc.source + libdoc.name + '.resource')
+            writer.element('type', '2')
+            writer.element('version', '')
+            writer.element('attachment-filename', libdoc.source + libdoc.name + '.resource')
+            writer.element('old_versions', '')
+        writer.end('references')
         writer.start('testobjectversions')
 
     def _write_testobjectversion(self, libdoc, writer):
@@ -247,6 +260,18 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
+        # If the library is a resource - write it into an own subdivision
+        if libdoc.type == 'RESOURCE':
+            writer.start('element', {'type': Element_Types.subdivision.value})
+            writer.element('pk', self.pk_generator.get_pk())
+            writer.element('name', 'Resource')
+            writer.element('uid', self._generate_UID('SD', 'Resource'))
+            writer.element('locker', '')
+            writer.element('html-description', '')
+            writer.element('historyPK', '-1')
+            writer.element('identicalVersionPK', '-1')
+            writer.element('references', '')
+
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
@@ -260,7 +285,7 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
-    def _write_interactions(self, keywords, writer):
+    def _write_interactions(self, libdoc, keywords, writer):
         for keyword in keywords:
             writer.start('element', {'type': Element_Types.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
@@ -270,8 +295,12 @@ class Libdoc2TestBenchWriter:
             writer.element('html-description', f"<html>{keyword.doc}</html>")
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
-            writer.element('references', '')
+            writer.start('references')
 
+            if libdoc.type == 'RESOURCE':
+                writer.element('reference-ref', attrs={'pk': self.attachment_reference_pk})
+
+            writer.end('references')
             writer.start('parameters')
             for arg in keyword.args:
                 writer.start('parameter')
@@ -346,9 +375,14 @@ class Libdoc2TestBenchWriter:
             writer.end('element')  # close dataType tag
         writer.end('element')  # close datatype subdivision tag
 
-    def _write_end(self, writer):
+    def _write_end(self, libdoc, writer):
         writer.end('element')  # close Library Subdivision tag
-        writer.end('element')  # close RF Subdivision tag
+
+        # close resource subdivision tag
+        if libdoc.type == 'RESOURCE':
+            writer.end('element')
+
+        writer.end('element')  # close RF subdivision tag
         writer.end('test-elements')
         writer.end('testobjectversion')
         writer.end('testobjectversions')

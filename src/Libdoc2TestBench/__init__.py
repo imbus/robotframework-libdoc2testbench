@@ -15,6 +15,7 @@
 import os
 import sys
 import argparse
+import shutil
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -125,6 +126,23 @@ def create_project_dump(
     xml_flag,
     temp_path,
 ):
+    # Init attachments_path, for handling a resource
+    attachments_path = None
+
+    # Check for availability of requested library or resource
+    try:
+        libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
+    except:
+        sys.exit(f"The requested module {lib_or_res} could not be found.")
+
+    if libdoc.type == 'RESOURCE':
+        # TODO: check for exisiting folder?
+        attachments_path = Path(os.path.split(outfile_path)[0]).joinpath('attachments')
+        attachments_path.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(libdoc.source, attachments_path)
+        libdoc = LibraryDocumentation(attachments_path.joinpath(os.path.split(Path(libdoc.source))[1]),lib_name, lib_version, docformat)
+
+
     # Check for temp_path flag and already exisiting dirs
     if temp_path:
         temp_path = Path(temp_path)
@@ -139,12 +157,6 @@ def create_project_dump(
         user_input = input('project-dump.xml already exists... overwrite? y/n? \n')
         if user_input.lower() not in ['y', 'yes']:
             sys.exit('Stopped execution - file was not changed.')
-
-    # Check for availability of requested library or resource
-    try:
-        libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
-    except:
-        sys.exit(f"The requested module {lib_or_res} could not be found.")
 
     # Convert libdoc descriptions to html
     if specdocformat == 'HTML':
@@ -176,15 +188,25 @@ def create_project_dump(
             os.remove(outfile_path)
 
         if xml_flag:
+            # put xml in output_path and leave attachments behind
             os.rename(project_dump_path, outfile_path)
         else:
             # Build the zip file and clean up.
-            write_zip_file(outfile_path, project_dump_path)
+            write_zip_file(outfile_path, project_dump_path, attachments_path)
             os.remove(project_dump_path)
+            if attachments_path:
+                shutil.rmtree(attachments_path)
     absolute_outfile_path = Path(outfile_path).resolve()
     print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
 
 
-def write_zip_file(outfile_path, project_dump_path):
+def write_zip_file(outfile_path, project_dump_path, attachments=None):
     with ZipFile(outfile_path, 'w') as zip_file:
         zip_file.write(project_dump_path, 'project-dump.xml')
+
+        # if there are attachments, add them to the zip
+        if attachments:
+            zip_file.write(attachments)
+            files = list(os.walk(attachments))[0][2]
+            for file in files:
+                zip_file.write(file, "attachments/" + file)
