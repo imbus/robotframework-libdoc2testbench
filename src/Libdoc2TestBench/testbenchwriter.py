@@ -46,8 +46,8 @@ class PK_Generator:
     Only one instance should be created and used to ensure continuous
     unique pks."""
 
-    def __init__(self, pk_start: int = 230):
-        self.pk_counter = pk_start
+    def __init__(self, first_pk: int = 230):
+        self.pk_counter = first_pk
 
     def get_pk(self) -> str:
         self.pk_counter += 1
@@ -170,7 +170,7 @@ class Libdoc2TestBenchWriter:
         self.project_name = project_name
         self.testobject_name = testobject_name
 
-    def write(self, libdoc, outfile, repo_id):
+    def write(self, libdoc, outfile, repo_id, pk_start):
         """Writes an imbus TestBench readable xml-file.
 
         Parameters
@@ -185,6 +185,10 @@ class Libdoc2TestBenchWriter:
         if repo_id:
             self.xml_attributes['repository'] = repo_id
 
+        if pk_start:
+            self.pk_generator = PK_Generator(first_pk=pk_start)
+            self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
+
         writer = XmlWriter(outfile, usage='Libdoc spec')
         self.libdoc_name = libdoc.name
         self._write_start(libdoc, writer)
@@ -192,6 +196,8 @@ class Libdoc2TestBenchWriter:
         self._write_data_types(libdoc.data_types, writer)
         self._write_interactions(libdoc, libdoc.keywords, writer)
         self._write_end(libdoc, writer)
+        # Get last pk
+        return self.pk_generator.get_pk()
 
     def _write_start(self, libdoc, writer):
         writer.start('project-dump', self.xml_attributes)
@@ -234,13 +240,21 @@ class Libdoc2TestBenchWriter:
         # TODO: The Attachment doesnt yet carry over to the iTB - maybe the path is wrong?
         writer.start('references')
         if libdoc.type == 'RESOURCE':
+            # first reference
+            writer.element('pk', self.pk_generator.get_pk())
+            writer.element('filename', libdoc.source)
+            writer.element('type', '0')
+            writer.element('version', '')
+            writer.element('old-versions', '')
+
+            # second reference
             self.attachment_reference_pk = self.pk_generator.get_pk()
             writer.element('pk', self.attachment_reference_pk)
-            writer.element('filename', libdoc.source + libdoc.name + '.resource')
+            writer.element('filename', libdoc.source)
             writer.element('type', '2')
             writer.element('version', '')
-            writer.element('attachment-filename', libdoc.source + libdoc.name + '.resource')
-            writer.element('old_versions', '')
+            writer.element('attachment-filename', libdoc.name + '.resource')
+            writer.element('old-versions', '')
         writer.end('references')
         writer.start('testobjectversions')
 

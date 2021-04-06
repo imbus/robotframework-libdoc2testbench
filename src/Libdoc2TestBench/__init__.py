@@ -79,6 +79,7 @@ def start_libdoc2testbench():
         '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
     )
     parser.add_argument('-t', '--temp', help='Path to write the temporary files to.')
+    parser.add_argument('-k', '--pk', help='Defines from which number the pks are enumerated.', type=int)
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -91,6 +92,8 @@ def start_libdoc2testbench():
     repo_id = args.repository
     xml_flag = args.xml
     temp_path = args.temp
+    pk_start = args.pk
+
 
     if info_flag:
         robot_version = robot_version_print()
@@ -112,6 +115,7 @@ def start_libdoc2testbench():
             repo_id,
             xml_flag,
             temp_path,
+            pk_start,
         )
 
 
@@ -125,6 +129,7 @@ def create_project_dump(
     repo_id,
     xml_flag,
     temp_path,
+    pk_start
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
@@ -178,7 +183,7 @@ def create_project_dump(
         )
 
     with open(project_dump_path, "w", encoding='UTF-8') as outfile:
-        Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id)
+        last_pk = Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id, pk_start)
 
         # If at the output path a file exists - ask permission to overwrite.
         if Path(outfile_path).is_file():
@@ -197,7 +202,7 @@ def create_project_dump(
             if attachments_path:
                 shutil.rmtree(attachments_path)
     absolute_outfile_path = Path(outfile_path).resolve()
-    print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
+    print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}\nLast generated pk: {last_pk}")
 
 
 def write_zip_file(outfile_path, project_dump_path, attachments=None):
