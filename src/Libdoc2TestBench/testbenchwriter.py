@@ -121,14 +121,15 @@ class Libdoc2TestBenchWriter:
     write(libdoc, outfile)
         Writes the content of the libdoc in an imbus TestBench importable xml-format."""
 
-    pk_generator = PK_Generator()
+    # Created when first evoked by self.write
+    pk_generator = None
 
     # Values used to fill project view fields.
     testobject_state = Project_States.active.value
     testobject_desc = "Robot Framework Import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
     libdoc_name = None  # set-up in write() method.
-    attachment_reference_pk = None # Needed for resource files
+    attachment_reference_pk = None  # Needed for resource files - holds exactly one pk
 
     # Attributes used in the header of the xml-file
     xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "itba"}
@@ -148,7 +149,7 @@ class Libdoc2TestBenchWriter:
 
     # Values used to fill testobject version fields.
     testobjectversion_tags = {
-        'pk': pk_generator.get_pk(),
+        'pk': None,  # set-up in write() method
         'id': 'RF Import',
         'startdate': '',
         'enddate': '',
@@ -179,24 +180,33 @@ class Libdoc2TestBenchWriter:
             robot.libdocpkg.LibraryDocumentation file.
         outfile: IO
             IO stream to write files to.
+        repo_id: String
+            Overwrite XML-attribute in the header
+        pk_start: Int
+            Overwrite enumeration start number for issued primary keys
         """
 
         # If --repository is set, overwrite xml_attribute for it.
         if repo_id:
             self.xml_attributes['repository'] = repo_id
 
+        # If --pk is set, use custom pk_start
         if pk_start:
             self.pk_generator = PK_Generator(first_pk=pk_start)
-            self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
+        else:
+            self.pk_generator = PK_Generator()
+
+        self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
 
         writer = XmlWriter(outfile, usage='Libdoc spec')
         self.libdoc_name = libdoc.name
         self._write_start(libdoc, writer)
         self._write_testobjectversion(libdoc, writer)
         self._write_data_types(libdoc.data_types, writer)
-        self._write_interactions(libdoc, libdoc.keywords, writer)
+        self._write_interactions(libdoc, writer)
         self._write_end(libdoc, writer)
-        # Get last pk
+
+        # Return last issued primary key.
         return self.pk_generator.get_pk()
 
     def _write_start(self, libdoc, writer):
@@ -299,8 +309,8 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
-    def _write_interactions(self, libdoc, keywords, writer):
-        for keyword in keywords:
+    def _write_interactions(self, libdoc, writer):
+        for keyword in libdoc.keywords:
             writer.start('element', {'type': Element_Types.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', keyword.name)
