@@ -79,7 +79,9 @@ def start_libdoc2testbench():
         '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
     )
     parser.add_argument('-t', '--temp', help='Path to write the temporary files to.')
-    parser.add_argument('-k', '--pk', help='Defines from which number the pks are enumerated.', type=int)
+    parser.add_argument(
+        '-k', '--pk', help='Defines from which number the pks are enumerated.', type=int
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -93,7 +95,6 @@ def start_libdoc2testbench():
     xml_flag = args.xml
     temp_path = args.temp
     pk_start = args.pk
-
 
     if info_flag:
         robot_version = robot_version_print()
@@ -129,10 +130,14 @@ def create_project_dump(
     repo_id,
     xml_flag,
     temp_path,
-    pk_start
+    pk_start: int,
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
+
+    # Holds the last generated primary key by the testbenchwriter.
+    # This is used as part of the exit message on successful conversion.
+    last_issued_pk = None
 
     # Check for availability of requested library or resource
     try:
@@ -140,18 +145,28 @@ def create_project_dump(
     except:
         sys.exit(f"The requested module {lib_or_res} could not be found.")
 
+    # For Resources: Copy it into a new created attachments directory
+    #                And use the copy for writing the files instead.
     if libdoc.type == 'RESOURCE':
         # TODO: check for exisiting folder?
+        # Create attachments directory
         attachments_path = Path(os.path.split(outfile_path)[0]).joinpath('attachments')
         attachments_path.mkdir(parents=True, exist_ok=True)
+
+        # Copy resource and open it as libdoc
         shutil.copy2(libdoc.source, attachments_path)
-        libdoc = LibraryDocumentation(attachments_path.joinpath(os.path.split(Path(libdoc.source))[1]),lib_name, lib_version, docformat)
+        libdoc = LibraryDocumentation(
+            attachments_path.joinpath(os.path.split(Path(libdoc.source))[1]),
+            lib_name,
+            lib_version,
+            docformat,
+        )
 
-
-    # Check for temp_path flag and already exisiting dirs
+    # If set, create necessary subdirectories
     if temp_path:
         temp_path = Path(temp_path)
         temp_path.mkdir(parents=True, exist_ok=True)
+    # else just use the current directory
     else:
         temp_path = Path.cwd()
 
@@ -163,7 +178,7 @@ def create_project_dump(
         if user_input.lower() not in ['y', 'yes']:
             sys.exit('Stopped execution - file was not changed.')
 
-    # Convert libdoc descriptions to html
+    # Convert libdoc descriptions to html, otherwise assume RAW format
     if specdocformat == 'HTML':
         libdoc.convert_docs_to_html()
 
@@ -183,9 +198,11 @@ def create_project_dump(
         )
 
     with open(project_dump_path, "w", encoding='UTF-8') as outfile:
-        last_pk = Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id, pk_start)
 
-        # If at the output path a file exists - ask permission to overwrite.
+        # The write method returns the last issued primary key.
+        last_issued_pk = Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id, pk_start)
+
+        # If a file exists at the output path - get permission to overwrite.
         if Path(outfile_path).is_file():
             user_input = input(f'{outfile_path} already exists... overwrite? y/n? \n')
             if user_input.lower() not in ['y', 'yes']:
@@ -193,7 +210,7 @@ def create_project_dump(
             os.remove(outfile_path)
 
         if xml_flag:
-            # put xml in output_path and leave attachments behind
+            # Put XML-file in output_path and leave attachments behind
             os.rename(project_dump_path, outfile_path)
         else:
             # Build the zip file and clean up.
@@ -201,15 +218,18 @@ def create_project_dump(
             os.remove(project_dump_path)
             if attachments_path:
                 shutil.rmtree(attachments_path)
+
     absolute_outfile_path = Path(outfile_path).resolve()
-    print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}\nLast generated pk: {last_pk}")
+    print(
+        f"Successfully written TestBench project dump to: \n{absolute_outfile_path}\nLast generated pk: {last_issued_pk}"
+    )
 
 
 def write_zip_file(outfile_path, project_dump_path, attachments=None):
     with ZipFile(outfile_path, 'w') as zip_file:
         zip_file.write(project_dump_path, 'project-dump.xml')
 
-        # if there are attachments, add them to the zip
+        # If there are attachments, add them to the zip-file.
         if attachments:
             zip_file.write(attachments)
             files = list(os.walk(attachments))[0][2]
