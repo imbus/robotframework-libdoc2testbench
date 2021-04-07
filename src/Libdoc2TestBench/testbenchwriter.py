@@ -273,28 +273,26 @@ class Libdoc2TestBenchWriter:
         for key, value in self.testobjectversion_tags.items():
             writer.element(key, value)
         writer.start('test-elements')
+
+        # Start RF/Resource subdivison
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
-        writer.element('name', 'RF')
-        writer.element('uid', self._generate_UID('SD', 'RF'))
-        writer.element('locker', '')
-        writer.element('description', 'Robot Framework Import')
+
+        if libdoc.type == 'RESOURCE':
+            writer.element('name', 'Resource')
+            writer.element('uid', self._generate_UID('SD', 'Resource'))
+            writer.element('locker', '')
+            writer.element('description', 'Robot Framework Import Resources')
+        else:
+            writer.element('name', 'RF')
+            writer.element('uid', self._generate_UID('SD', 'RF'))
+            writer.element('locker', '')
+            writer.element('description', 'Robot Framework Import')
+
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
-
-        # If the library is a resource - write it into an own subdivision
-        if libdoc.type == 'RESOURCE':
-            writer.start('element', {'type': Element_Types.subdivision.value})
-            writer.element('pk', self.pk_generator.get_pk())
-            writer.element('name', 'Resource')
-            writer.element('uid', self._generate_UID('SD', 'Resource'))
-            writer.element('locker', '')
-            writer.element('html-description', '')
-            writer.element('historyPK', '-1')
-            writer.element('identicalVersionPK', '-1')
-            writer.element('references', '')
 
         writer.start('element', {'type': Element_Types.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
@@ -401,12 +399,7 @@ class Libdoc2TestBenchWriter:
 
     def _write_end(self, libdoc, writer):
         writer.end('element')  # close Library Subdivision tag
-
-        # close resource subdivision tag
-        if libdoc.type == 'RESOURCE':
-            writer.end('element')
-
-        writer.end('element')  # close RF subdivision tag
+        writer.end('element')  # close RF or Resource subdivision tag
         writer.end('test-elements')
         writer.end('testobjectversion')
         writer.end('testobjectversions')
