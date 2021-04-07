@@ -202,7 +202,8 @@ class Libdoc2TestBenchWriter:
         self.libdoc_name = libdoc.name
         self._write_start(libdoc, writer)
         self._write_testobjectversion(libdoc, writer)
-        self._write_data_types(libdoc.data_types, writer)
+        if libdoc.data_types:
+            self._write_data_types(libdoc.data_types, writer)
         self._write_interactions(libdoc, writer)
         self._write_end(libdoc, writer)
 
