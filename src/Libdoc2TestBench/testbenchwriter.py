@@ -16,10 +16,10 @@
 #  under Apache 2.0 License.
 #  https://github.com/robotframework/robotframework
 
-import enum
+import enum, os
 from datetime import datetime
 from hashlib import sha1
-
+from pathlib import Path
 from robot.utils import XmlWriter
 
 
@@ -251,20 +251,16 @@ class Libdoc2TestBenchWriter:
         # TODO: The Attachment doesnt yet carry over to the iTB - maybe the path is wrong?
         writer.start('references')
         if libdoc.type == 'RESOURCE':
-            # first reference
-            writer.element('pk', self.pk_generator.get_pk())
-            writer.element('filename', libdoc.source)
-            writer.element('type', '0')
-            writer.element('version', '')
-            writer.element('old-versions', '')
-
-            # second reference
+            # set-up needed reference
             self.attachment_reference_pk = self.pk_generator.get_pk()
             writer.element('pk', self.attachment_reference_pk)
-            writer.element('filename', libdoc.source)
+            writer.element('attachment-path', os.path.split(str(Path(libdoc.source).resolve()))[0])
+            writer.element('filename', os.path.split(str(Path(libdoc.source).resolve()))[1])
             writer.element('type', '2')
             writer.element('version', '')
+            writer.element('attachment-pk', self.pk_generator.get_pk())
             writer.element('attachment-filename', libdoc.name + '.resource')
+            writer.element('attachment-file-pk', self.pk_generator.get_pk())
             writer.element('old-versions', '')
         writer.end('references')
         writer.start('testobjectversions')
@@ -321,6 +317,7 @@ class Libdoc2TestBenchWriter:
             writer.element('identicalVersionPK', '-1')
             writer.start('references')
 
+            # TODO: ATTACHMENT
             if libdoc.type == 'RESOURCE':
                 writer.element('reference-ref', attrs={'pk': self.attachment_reference_pk})
 
