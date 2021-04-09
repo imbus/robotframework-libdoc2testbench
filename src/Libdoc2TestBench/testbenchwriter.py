@@ -315,6 +315,7 @@ class Libdoc2TestBenchWriter:
             writer.element('name', keyword.name)
             writer.element('uid', self._generate_UID('IA', keyword.name))
             writer.element('locker', '')
+            writer.element('status', '3')
             writer.element('html-description', f"<html>{keyword.doc}</html>")
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
