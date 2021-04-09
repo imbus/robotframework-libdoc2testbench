@@ -1,5 +1,5 @@
 # Libdoc2TestBench
-Robot Framework Libdoc Extension that generates imbus [TestBench Enterprise](https://www.imbus.de/testbench/testbench-enterprise) Library import formats.
+Robot Framework Libdoc Extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) Library import formats.
 
 ___
 
@@ -54,6 +54,18 @@ In the Test Elements view you can now see your imported RF library as different 
 ![Test Element View](res/test_element_view.png)
 
 ### Change log
+* 1.0rc2
+    * ADDED optional arguments for:
+        * xml-file output (instead of zip-file)
+        * custom temporary directory
+        * changing the repository id in the xml-header
+        * custom primary key enumeration start
+        * info command for printing Libdoc2TestBench/Robot Framework/Python version to console
+        * support for resource-files (attachment support coming soon)
+    * FIX:
+        * only create `_Datatype` subdivison in libraries when data types are present
+        * `Resource` subdivison is now in the correct parent subdivision
+        * Updated README.md / package help-messages to reflect changes
 * 1.0rc1
     * first release candidate
 
@@ -61,11 +73,12 @@ ___
 ### License
 Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
 ___
-### Dependencies:
+### Dependencies
  - python >= 3.7
  - [robotframework](https://github.com/robotframework/robotframework) >= 4.0.0
 ___
 ### Contributing
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 For consistent code formatting, please use [Black - The Uncompromising Code Formatter](https://github.com/psf/black) with the following arguments in the root directory:
 ```bash
 black -l 100 -S .
