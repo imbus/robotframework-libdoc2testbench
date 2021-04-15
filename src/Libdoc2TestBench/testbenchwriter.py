@@ -247,8 +247,8 @@ class Libdoc2TestBenchWriter:
             writer.element(tag, '')
         writer.end('labels')
 
-        # Resource files do have a reference on its own
-        # TODO: The Attachment doesnt yet carry over to the iTB - maybe the path is wrong?
+        # Ressources hold a reference to their source file
+        # TODO: The Attachment doesnt yet carry over to the iTB
         writer.start('references')
         if libdoc.type == 'RESOURCE':
             # set-up needed reference
@@ -355,6 +355,7 @@ class Libdoc2TestBenchWriter:
         writer.element('name', '_Datatypes')
         writer.element('uid', self._generate_UID('SD', '_Datatypes'))
         writer.element('locker', '')
+        writer.element('status', '3')
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
