@@ -20,10 +20,12 @@ import enum, os
 from datetime import datetime
 from hashlib import sha1
 from pathlib import Path
+from typing import List
+
 from robot.utils import XmlWriter
 
 
-class Element_Types(enum.Enum):
+class ElementTypes(enum.Enum):
     """Enum for different test elements found in the imbus TestBench."""
 
     subdivision = 'subdivision'
@@ -32,7 +34,7 @@ class Element_Types(enum.Enum):
     condition = 'condition'
 
 
-class Project_States(enum.Enum):
+class ProjectStates(enum.Enum):
     """Enum for different project states found in the imbus TestBench."""
 
     planned = 'planned'
@@ -41,7 +43,7 @@ class Project_States(enum.Enum):
     closed = 'closed'
 
 
-class PK_Generator:
+class PKGenerator:
     """A class used to generate unique primary keys for test elements.
     Only one instance should be created and used to ensure continuous
     unique pks."""
@@ -60,7 +62,7 @@ class Element:
     # Remember all created element objects and their associated pk.
     all_elements = {}
 
-    def __init__(self, pk_generator: PK_Generator, element, parent_element=None):
+    def __init__(self, pk_generator: PKGenerator, element, parent_element=None):
         self.element = element
         self.pk = pk_generator.get_pk()
         self.parent = parent_element
@@ -86,14 +88,14 @@ class Element:
         return self.name.split('.', 1)[-1]
 
 
-class Data_Type(Element):
+class DataType(Element):
     """A class used to gather information for imbus TestBench
     data types from the associated Robot Framework data type.
     Each Robot Framework data type is converted into one
     "members" equivalence class and each valid value is one
     representative in the imbus TestBench."""
 
-    def __init__(self, pk_generator: PK_Generator, data_type, parent_element=None):
+    def __init__(self, pk_generator: PKGenerator, data_type, parent_element=None):
         super().__init__(pk_generator, data_type)
         self.type = data_type.type
 
@@ -125,14 +127,14 @@ class Libdoc2TestBenchWriter:
     pk_generator = None
 
     # Values used to fill project view fields.
-    testobject_state = Project_States.active.value
+    testobject_state = ProjectStates.active.value
     testobject_desc = "Robot Framework Import"
     created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
     libdoc_name = None  # set-up in write() method.
-    attachment_reference_pk = None  # Needed for resource files - holds exactly one pk
+    attachment_reference_pk = {}  # Needed for resource files - holds exactly one pk
 
     # Attributes used in the header of the xml-file
-    xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "itba"}
+    xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "iTB_RF"}
 
     # Values used to fill imbus TestBench project settings.
     project_settings = {
@@ -171,13 +173,25 @@ class Libdoc2TestBenchWriter:
         self.project_name = project_name
         self.testobject_name = testobject_name
 
-    def write(self, libdoc, outfile, repo_id, pk_start):
+    def write(
+        self,
+        libraries: List,
+        resources: List,
+        outfile,
+        repo_id: str,
+        pk_start: int,
+        library_root: str,
+        resource_root: str,
+        attachment: bool,
+    ):
         """Writes an imbus TestBench readable xml-file.
 
         Parameters
         ----------
-        libdoc : LibraryDocumentation file
-            robot.libdocpkg.LibraryDocumentation file.
+        libraries : LibraryDocumentation lists
+            List of robot.libdocpkg.LibraryDocumentation file.
+        resources : LibraryDocumentation lists
+            List of robot.libdocpkg.LibraryDocumentation file.
         outfile: IO
             IO stream to write files to.
         repo_id: String
@@ -192,25 +206,40 @@ class Libdoc2TestBenchWriter:
 
         # If --pk is set, use custom pk_start
         if pk_start:
-            self.pk_generator = PK_Generator(first_pk=pk_start)
+            self.pk_generator = PKGenerator(first_pk=pk_start)
         else:
-            self.pk_generator = PK_Generator()
+            self.pk_generator = PKGenerator()
 
         self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
 
         writer = XmlWriter(outfile, usage='Libdoc spec')
-        self.libdoc_name = libdoc.name
-        self._write_start(libdoc, writer)
-        self._write_testobjectversion(libdoc, writer)
-        if libdoc.data_types:
-            self._write_data_types(libdoc.data_types, writer)
-        self._write_interactions(libdoc, writer)
-        self._write_end(libdoc, writer)
+        self._write_start(writer)
+        if attachment:
+            self._write_attachments(resources, writer)
+        self._start_testobjectversion(writer)
+        if libraries:
+            self._start_root_subdivision(writer, library_root, 'Robot Framework Libraries')
+            for libdoc in libraries:
+                self._start_library_subdivision(libdoc, writer)
+                self._write_data_types(libdoc, writer)
+                self._write_interactions(libdoc, writer)
+                self._end_library_subdivision(writer)
+            self._end_root_subdivision(writer)
+        if resources:
+            self._start_root_subdivision(writer, resource_root, 'Robot Framework Resource Files')
+            for libdoc in resources:
+                self._start_library_subdivision(libdoc, writer)
+                self._write_data_types(libdoc, writer)
+                self._write_interactions(libdoc, writer, attachment)
+                self._end_library_subdivision(writer)
+            self._end_root_subdivision(writer)
+        self._end_testobjectversion(writer)
+        self._write_end(writer)
 
         # Return last issued primary key.
         return self.pk_generator.get_pk()
 
-    def _write_start(self, libdoc, writer):
+    def _write_start(self, writer):
         writer.start('project-dump', self.xml_attributes)
         writer.start('details')
         writer.element('name', self.project_name)
@@ -247,13 +276,13 @@ class Libdoc2TestBenchWriter:
             writer.element(tag, '')
         writer.end('labels')
 
-        # Ressources hold a reference to their source file
-        # TODO: The Attachment doesnt yet carry over to the iTB
+    def _write_attachments(self, resources, writer):
         writer.start('references')
-        if libdoc.type == 'RESOURCE':
+        for libdoc in resources:
+            writer.start('reference')
             # set-up needed reference
-            self.attachment_reference_pk = self.pk_generator.get_pk()
-            writer.element('pk', self.attachment_reference_pk)
+            self.attachment_reference_pk[libdoc.name] = self.pk_generator.get_pk()
+            writer.element('pk', self.attachment_reference_pk[libdoc.name])
             writer.element('attachment-path', os.path.split(str(Path(libdoc.source).resolve()))[0])
             writer.element('filename', os.path.split(str(Path(libdoc.source).resolve()))[1])
             writer.element('type', '2')
@@ -262,36 +291,31 @@ class Libdoc2TestBenchWriter:
             writer.element('attachment-filename', libdoc.name + '.resource')
             writer.element('attachment-file-pk', self.pk_generator.get_pk())
             writer.element('old-versions', '')
+            writer.end('reference')
         writer.end('references')
-        writer.start('testobjectversions')
 
-    def _write_testobjectversion(self, libdoc, writer):
+    def _start_testobjectversion(self, writer):
+        writer.start('testobjectversions')
         writer.start('testobjectversion')
         for key, value in self.testobjectversion_tags.items():
             writer.element(key, value)
         writer.start('test-elements')
 
+    def _start_root_subdivision(self, writer, name, description):
         # Start RF/Resource subdivison
-        writer.start('element', {'type': Element_Types.subdivision.value})
+        writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
-
-        if libdoc.type == 'RESOURCE':
-            writer.element('name', 'Resource')
-            writer.element('uid', self._generate_UID('SD', 'Resource'))
-            writer.element('locker', '')
-            writer.element('description', 'Robot Framework Import Resources')
-        else:
-            writer.element('name', 'RF')
-            writer.element('uid', self._generate_UID('SD', 'RF'))
-            writer.element('locker', '')
-            writer.element('description', 'Robot Framework Import')
-
+        writer.element('name', name)
+        writer.element('uid', self._generate_UID('SD', name))
+        writer.element('locker', '')
+        writer.element('description', description)
         writer.element('html-description', '')
         writer.element('historyPK', '-1')
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
-        writer.start('element', {'type': Element_Types.subdivision.value})
+    def _start_library_subdivision(self, libdoc, writer):
+        writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
         writer.element('uid', self._generate_UID('SD', libdoc.name))
@@ -304,12 +328,12 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
-    def _write_interactions(self, libdoc, writer):
+    def _write_interactions(self, libdoc, writer, attachment=False):
         for keyword in libdoc.keywords:
-            writer.start('element', {'type': Element_Types.interaction.value})
+            writer.start('element', {'type': ElementTypes.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', keyword.name)
-            writer.element('uid', self._generate_UID('IA', keyword.name))
+            writer.element('uid', self._generate_UID('IA', keyword.name, libdoc.name))
             writer.element('locker', '')
             writer.element('status', '3')
             writer.element('html-description', f"<html>{keyword.doc}</html>")
@@ -317,9 +341,10 @@ class Libdoc2TestBenchWriter:
             writer.element('identicalVersionPK', '-1')
             writer.start('references')
 
-            # TODO: ATTACHMENT
-            if libdoc.type == 'RESOURCE':
-                writer.element('reference-ref', attrs={'pk': self.attachment_reference_pk})
+            if attachment:
+                writer.element(
+                    'reference-ref', attrs={'pk': self.attachment_reference_pk[libdoc.name]}
+                )
 
             writer.end('references')
             writer.start('parameters')
@@ -344,65 +369,71 @@ class Libdoc2TestBenchWriter:
             writer.end('parameters')
             writer.end('element')  # close interaction tag
 
-    def _write_data_types(self, data_types, writer):
+    def _write_data_types(self, libdoc, writer):
         datatypes = []
-        if data_types.enums:
-            for data_type in data_types.enums:
-                datatypes.append(Data_Type(self.pk_generator, data_type))
+        if libdoc.data_types.enums:
+            for data_type in libdoc.data_types.enums:
+                datatypes.append(DataType(self.pk_generator, data_type))
 
-        writer.start('element', {'type': Element_Types.subdivision.value})
-        writer.element('pk', self.pk_generator.get_pk())
-        writer.element('name', '_Datatypes')
-        writer.element('uid', self._generate_UID('SD', '_Datatypes'))
-        writer.element('locker', '')
-        writer.element('status', '3')
-        writer.element('html-description', '')
-        writer.element('historyPK', '-1')
-        writer.element('identicalVersionPK', '-1')
-        writer.element('references', '')
-
-        for idx, data_type in enumerate(datatypes):
-            writer.start('element', {'type': Element_Types.datatype.value})
-            writer.element('pk', data_type.pk)
-            writer.element('name', data_type.get_name())
-            writer.element('uid', self._generate_UID('DT', data_type.name))
+            writer.start('element', {'type': ElementTypes.subdivision.value})
+            writer.element('pk', self.pk_generator.get_pk())
+            writer.element('name', '_Datatypes')
+            writer.element('uid', self._generate_UID('SD', '_Datatypes', libdoc.name))
             writer.element('locker', '')
-            writer.element('html-description', data_type.html_desc)
+            writer.element('status', '3')
+            writer.element('html-description', '')
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
-            writer.start('equivalence-classes')
-            writer.start('equivalence-class')
-            writer.element('pk', self.pk_generator.get_pk())
-            writer.element('name', 'members')
-            writer.element('description', 'Valid members')
-            writer.element('ordering', str(1024 * idx))
+            writer.element('references', '')
 
-            writer.start('representatives')
-            default_pk = '-1'
-            for idx, representative in enumerate(data_type.representatives.keys()):
-                writer.start('representative')
-                pk = Element.all_elements[representative]
-                if idx == 0:
-                    # if non-generic => set default-representative
-                    default_pk = pk
-                writer.element('pk', pk)
-                writer.element('name', representative.split(f"{data_type.get_name()}.", 1)[-1])
+            for idx, data_type in enumerate(datatypes):
+                writer.start('element', {'type': ElementTypes.datatype.value})
+                writer.element('pk', data_type.pk)
+                writer.element('name', data_type.get_name())
+                writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
+                writer.element('locker', '')
+                writer.element('html-description', data_type.html_desc)
+                writer.element('historyPK', '-1')
+                writer.element('identicalVersionPK', '-1')
+                writer.start('equivalence-classes')
+                writer.start('equivalence-class')
+                writer.element('pk', self.pk_generator.get_pk())
+                writer.element('name', 'members')
+                writer.element('description', 'Valid members')
                 writer.element('ordering', str(1024 * idx))
-                writer.end('representative')
 
-            writer.end('representatives')
-            writer.element('default-representative-ref', '', {'pk': default_pk})
-            writer.end('equivalence-class')
-            writer.end('equivalence-classes')
-            writer.end('element')  # close dataType tag
-        writer.end('element')  # close datatype subdivision tag
+                writer.start('representatives')
+                default_pk = '-1'
+                for idx, representative in enumerate(data_type.representatives.keys()):
+                    writer.start('representative')
+                    pk = Element.all_elements[representative]
+                    if idx == 0:
+                        # if non-generic => set default-representative
+                        default_pk = pk
+                    writer.element('pk', pk)
+                    writer.element('name', representative.split(f"{data_type.get_name()}.", 1)[-1])
+                    writer.element('ordering', str(1024 * (idx + 1)))
+                    writer.end('representative')
 
-    def _write_end(self, libdoc, writer):
+                writer.end('representatives')
+                writer.element('default-representative-ref', '', {'pk': default_pk})
+                writer.end('equivalence-class')
+                writer.end('equivalence-classes')
+                writer.end('element')  # close dataType tag
+            writer.end('element')  # close datatype subdivision tag
+
+    def _end_library_subdivision(self, writer):
         writer.end('element')  # close Library Subdivision tag
+
+    def _end_root_subdivision(self, writer):
         writer.end('element')  # close RF or Resource subdivision tag
+
+    def _end_testobjectversion(self, writer):
         writer.end('test-elements')
         writer.end('testobjectversion')
         writer.end('testobjectversions')
+
+    def _write_end(self, writer):
         writer.element('requirements', '')
         writer.start('referenced-user-names')
         writer.end('referenced-user-names')
@@ -411,12 +442,11 @@ class Libdoc2TestBenchWriter:
         writer.end('project-dump')
         writer.close()
 
-    def _generate_UID(self, element_type: str, element_name: str) -> str:
+    def _generate_UID(self, element_type: str, element_name: str, lib_name: str = "") -> str:
         # UIDs format:
         # Prefix: RepositoryID-AbreviationElementType-
         # Root: first 10 characters of sha1Hash of LibraryName.ElementName
         repository_id = self.xml_attributes.get('repository', 'itb')
-        lib_name = self.libdoc_name.lower()
 
         # robustify element name regarding smaller changes
         element_name = element_name.replace('_', '')

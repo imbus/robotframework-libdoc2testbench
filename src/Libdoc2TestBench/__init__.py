@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import re
 import sys
 import argparse
 import shutil
@@ -23,7 +24,7 @@ from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
 from robot.version import get_full_version as robot_version_print
 
-__version__ = "1.0rc1"
+__version__ = "1.0rc2"
 
 
 def start_libdoc2testbench():
@@ -82,6 +83,20 @@ def start_libdoc2testbench():
     parser.add_argument(
         '-k', '--pk', help='Defines from which number the pks are enumerated.', type=int
     )
+    parser.add_argument(
+        '--libraryroot', help='Defines which subdivision name contains libraries.', default='RF'
+    )
+    parser.add_argument(
+        '--resourceroot',
+        help='Defines which subdivision name contains resources.',
+        default='Resource',
+    )
+    parser.add_argument(
+        '-a',
+        '--attachment',
+        action='store_true',
+        help='Defines if a resource file will be attached to all interactions.',
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -95,6 +110,9 @@ def start_libdoc2testbench():
     xml_flag = args.xml
     temp_path = args.temp
     pk_start = args.pk
+    library_root = args.libraryroot
+    resource_root = args.resourceroot
+    attachment = args.attachment
 
     if info_flag:
         robot_version = robot_version_print()
@@ -117,6 +135,9 @@ def start_libdoc2testbench():
             xml_flag,
             temp_path,
             pk_start,
+            library_root,
+            resource_root,
+            attachment,
         )
 
 
@@ -131,6 +152,9 @@ def create_project_dump(
     xml_flag,
     temp_path,
     pk_start: int,
+    library_root,
+    resource_root,
+    attachment: bool,
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
@@ -139,28 +163,9 @@ def create_project_dump(
     # This is used as part of the exit message on successful conversion.
     last_issued_pk = None
 
-    # Check for availability of requested library or resource
-    try:
-        libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
-    except:
-        sys.exit(f"The requested module {lib_or_res} could not be found.")
-
-    # For Resources: Copy it into a new created attachments directory
-    #                And use the copy for writing the files instead.
-    if libdoc.type == 'RESOURCE':
-        # TODO: check for exisiting folder?
-        # Create attachments directory
-        attachments_path = Path(os.path.split(outfile_path)[0]).joinpath('attachments')
-        attachments_path.mkdir(parents=True, exist_ok=True)
-
-        # Copy resource and open it as libdoc
-        shutil.copy2(libdoc.source, attachments_path)
-        libdoc = LibraryDocumentation(
-            attachments_path.joinpath(os.path.split(Path(libdoc.source))[1]),
-            lib_name,
-            lib_version,
-            docformat,
-        )
+    libraries, resources = get_libdoc_lists(
+        docformat, lib_name, lib_or_res, lib_version, specdocformat
+    )
 
     # If set, create necessary subdirectories
     if temp_path:
@@ -178,12 +183,13 @@ def create_project_dump(
         if user_input.lower() not in ['y', 'yes']:
             sys.exit('Stopped execution - file was not changed.')
 
-    # Convert libdoc descriptions to html, otherwise assume RAW format
-    if specdocformat == 'HTML':
-        libdoc.convert_docs_to_html()
+    if not outfile_path:
+        lib_lists = libraries + resources
+        if len(lib_lists) == 1:
+            outfile_path = lib_lists[0].name
+        else:
+            outfile_path = 'project-dump'
 
-    # Set up outfile path
-    outfile_path = outfile_path or libdoc.name
     if xml_flag:
         outfile_path = (
             outfile_path
@@ -200,7 +206,16 @@ def create_project_dump(
     with open(project_dump_path, "w", encoding='UTF-8') as outfile:
 
         # The write method returns the last issued primary key.
-        last_issued_pk = Libdoc2TestBenchWriter().write(libdoc, outfile, repo_id, pk_start)
+        last_issued_pk = Libdoc2TestBenchWriter().write(
+            libraries,
+            resources,
+            outfile,
+            repo_id,
+            pk_start,
+            library_root,
+            resource_root,
+            attachment,
+        )
 
         # If a file exists at the output path - get permission to overwrite.
         if Path(outfile_path).is_file():
@@ -214,7 +229,7 @@ def create_project_dump(
             os.rename(project_dump_path, outfile_path)
         else:
             # Build the zip file and clean up.
-            write_zip_file(outfile_path, project_dump_path, attachments_path)
+            write_zip_file(outfile_path, project_dump_path, resources, attachment)
             os.remove(project_dump_path)
             if attachments_path:
                 shutil.rmtree(attachments_path)
@@ -225,13 +240,58 @@ def create_project_dump(
     )
 
 
-def write_zip_file(outfile_path, project_dump_path, attachments=None):
+def get_libdoc_lists(docformat, lib_name, lib_or_res, lib_version, specdocformat):
+    resources = []
+    libraries = []
+    if os.path.exists(lib_or_res):
+        with open(lib_or_res, "r", encoding='UTF-8') as library_list:
+            first_line = library_list.readline()
+            if re.fullmatch(r'\*+\s*import\s?list(\s?\**)\n?', first_line, re.IGNORECASE):
+                for line in library_list.read().splitlines():
+                    if not line.strip().startswith('#') and not len(line.strip()) == 0:
+                        libdoc = create_libdoc(
+                            line.strip(), lib_name, lib_version, docformat, specdocformat
+                        )
+                        if libdoc.type == 'RESOURCE':
+                            resources.append(libdoc)
+                        else:
+                            libraries.append(libdoc)
+                        print_stat(libdoc)
+            else:
+                libdoc = create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat)
+                print_stat(libdoc)
+                if libdoc.type == 'RESOURCE':
+                    resources.append(libdoc)
+                else:
+                    libraries.append(libdoc)
+    return libraries, resources
+
+
+def print_stat(libdoc):
+    print(f"{libdoc.type.lower()}: {libdoc.name}")
+    print(f"  {len(libdoc.keywords)} Interactions")
+    if libdoc.data_types and libdoc.data_types.enums:
+        print(f"  {len(libdoc.data_types.enums)} Data Types")
+
+
+def create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat):
+    try:
+        libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
+        if specdocformat == 'HTML':
+            libdoc.convert_docs_to_html()
+        return libdoc
+    except:
+        sys.exit(f"The requested module {lib_or_res} could not be found.")
+
+
+def write_zip_file(outfile_path, project_dump_path, resources, attachment):
     with ZipFile(outfile_path, 'w') as zip_file:
         zip_file.write(project_dump_path, 'project-dump.xml')
 
         # If there are attachments, add them to the zip-file.
-        if attachments:
-            zip_file.write(attachments)
-            files = list(os.walk(attachments))[0][2]
-            for file in files:
-                zip_file.write(file, "attachments/" + file)
+        if resources and attachment:
+            # zip_file.write('attachments)
+            for libdoc in resources:
+                if os.path.exists(libdoc.source):
+                    file = os.path.split(libdoc.source)[-1]
+                    zip_file.write(libdoc.source, "attachments/" + file)

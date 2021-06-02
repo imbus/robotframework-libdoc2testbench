@@ -38,7 +38,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 |`-t`, `--temp`| Path to write temporary files to.|
 | `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
 | `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
-| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `itba`.||
+| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
 | `-p`, `--pk`| Defines from which number the pks are enumerated. The default is `230`.||
 | `--info` | Writes the Libdoc2TestBench, Robot Framework and Python version to console.||
 ___
