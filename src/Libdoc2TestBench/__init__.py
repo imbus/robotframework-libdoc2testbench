@@ -24,7 +24,7 @@ from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
 from robot.version import get_full_version as robot_version_print
 
-__version__ = "1.0rc2"
+__version__ = "1.0"
 
 
 def start_libdoc2testbench():
@@ -50,11 +50,10 @@ def start_libdoc2testbench():
         help="optional path to write output, default = project-dump.zip",
     )
     parser.add_argument(
-        '-s',
-        '--specdocformat',
-        default='HTML',
-        choices=['HTML', 'RAW'],
-        help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.",
+        '-a',
+        '--attachment',
+        action='store_true',
+        help='Defines if a resource file will be attached to all interactions.',
     )
     parser.add_argument(
         '-F',
@@ -62,29 +61,16 @@ def start_libdoc2testbench():
         choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
         help="Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in library source code and the initial default value is `ROBOT`.",
     )
-    parser.add_argument('-n', '--name', help="Sets the name of the documented library or resource.")
-    parser.add_argument(
-        '-v',
-        '--version',
-        help="Sets the version of the documented library or resource written in the description.",
-    )
-    parser.add_argument(
-        '--info',
-        action='store_true',
-        help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
-    )
-    parser.add_argument(
-        '-r', '--repository', help='Sets the repository id of the TestBench import. default = itba'
-    )
-    parser.add_argument(
-        '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
-    )
-    parser.add_argument('-t', '--temp', help='Path to write the temporary files to.')
-    parser.add_argument(
-        '-k', '--pk', help='Defines from which number the pks are enumerated.', type=int
-    )
     parser.add_argument(
         '--libraryroot', help='Defines which subdivision name contains libraries.', default='RF'
+    )
+    parser.add_argument(
+        '--libversion',
+        help="Sets the version of the documented library or resource written in the description.",
+    )
+    parser.add_argument('-n', '--name', help="Sets the name of the documented library or resource.")
+    parser.add_argument(
+        '-r', '--repository', help='Sets the repository id of the TestBench import. default = itba'
     )
     parser.add_argument(
         '--resourceroot',
@@ -92,10 +78,21 @@ def start_libdoc2testbench():
         default='Resource',
     )
     parser.add_argument(
-        '-a',
-        '--attachment',
+        '-s',
+        '--specdocformat',
+        default='HTML',
+        choices=['HTML', 'RAW'],
+        help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.",
+    )
+    parser.add_argument('-t', '--temp', help='Path to write the temporary files to.')
+    parser.add_argument(
+        '-x', '--xml', action='store_true', help='Writes a single xml-file instead of the zipfile.'
+    )
+    parser.add_argument(
+        '--version',
+        '--info',
         action='store_true',
-        help='Defines if a resource file will be attached to all interactions.',
+        help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
     )
     args = parser.parse_args()
 
@@ -104,12 +101,11 @@ def start_libdoc2testbench():
     specdocformat = args.specdocformat
     docformat = args.docformat
     lib_name = args.name
-    lib_version = args.version
-    info_flag = args.info
+    lib_version = args.libversion
+    info_flag = args.version
     repo_id = args.repository
     xml_flag = args.xml
     temp_path = args.temp
-    pk_start = args.pk
     library_root = args.libraryroot
     resource_root = args.resourceroot
     attachment = args.attachment
@@ -134,7 +130,6 @@ def start_libdoc2testbench():
             repo_id,
             xml_flag,
             temp_path,
-            pk_start,
             library_root,
             resource_root,
             attachment,
@@ -151,7 +146,6 @@ def create_project_dump(
     repo_id,
     xml_flag,
     temp_path,
-    pk_start: int,
     library_root,
     resource_root,
     attachment: bool,
@@ -163,9 +157,8 @@ def create_project_dump(
     # This is used as part of the exit message on successful conversion.
     last_issued_pk = None
 
-    libraries, resources = get_libdoc_lists(
-        docformat, lib_name, lib_or_res, lib_version, specdocformat
-    )
+    libraries, resources = get_libdoc_lists(lib_or_res, lib_name, lib_version,
+                                            docformat, specdocformat)
 
     # If set, create necessary subdirectories
     if temp_path:
@@ -206,12 +199,11 @@ def create_project_dump(
     with open(project_dump_path, "w", encoding='UTF-8') as outfile:
 
         # The write method returns the last issued primary key.
-        last_issued_pk = Libdoc2TestBenchWriter().write(
+        Libdoc2TestBenchWriter().write(
             libraries,
             resources,
             outfile,
             repo_id,
-            pk_start,
             library_root,
             resource_root,
             attachment,
@@ -236,11 +228,11 @@ def create_project_dump(
 
     absolute_outfile_path = Path(outfile_path).resolve()
     print(
-        f"Successfully written TestBench project dump to: \n{absolute_outfile_path}\nLast generated pk: {last_issued_pk}"
+        f"Successfully written TestBench project dump to: \n{absolute_outfile_path}"
     )
 
 
-def get_libdoc_lists(docformat, lib_name, lib_or_res, lib_version, specdocformat):
+def get_libdoc_lists(lib_or_res, lib_name, lib_version, docformat, specdocformat):
     resources = []
     libraries = []
     if os.path.exists(lib_or_res):
@@ -257,13 +249,13 @@ def get_libdoc_lists(docformat, lib_name, lib_or_res, lib_version, specdocformat
                         else:
                             libraries.append(libdoc)
                         print_stat(libdoc)
-            else:
-                libdoc = create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat)
-                print_stat(libdoc)
-                if libdoc.type == 'RESOURCE':
-                    resources.append(libdoc)
-                else:
-                    libraries.append(libdoc)
+    if not (libraries or resources):
+        libdoc = create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat)
+        print_stat(libdoc)
+        if libdoc.type == 'RESOURCE':
+            resources.append(libdoc)
+        else:
+            libraries.append(libdoc)
     return libraries, resources
 
 

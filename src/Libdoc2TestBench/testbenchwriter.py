@@ -179,7 +179,6 @@ class Libdoc2TestBenchWriter:
         resources: List,
         outfile,
         repo_id: str,
-        pk_start: int,
         library_root: str,
         resource_root: str,
         attachment: bool,
@@ -196,19 +195,13 @@ class Libdoc2TestBenchWriter:
             IO stream to write files to.
         repo_id: String
             Overwrite XML-attribute in the header
-        pk_start: Int
-            Overwrite enumeration start number for issued primary keys
         """
 
         # If --repository is set, overwrite xml_attribute for it.
         if repo_id:
             self.xml_attributes['repository'] = repo_id
 
-        # If --pk is set, use custom pk_start
-        if pk_start:
-            self.pk_generator = PKGenerator(first_pk=pk_start)
-        else:
-            self.pk_generator = PKGenerator()
+        self.pk_generator = PKGenerator()
 
         self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
 
