@@ -30,8 +30,8 @@ The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framewor
 ```bash
 Libdoc2TestBench <LIBRARY>
 ```
-Library corresponds to the name that you would use to import the library into a robot framework file.
-Browser is an example for <LIBRARY>.
+`<LIBRARY>` corresponds to the name that you would use to import the library into a robot framework file.
+Browser is an example for `<LIBRARY>`.
 By using a second positional argument you can additionally specify the output filename:
 
 ```bash
