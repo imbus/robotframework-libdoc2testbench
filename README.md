@@ -1,6 +1,6 @@
 # Libdoc2TestBench
 Robot Framework Libdoc Extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) Library import formats.
-It can be used to generate Testbench interactions from Robotframework keywords
+It can be used to generate Testbench interactions from Robotframework keywords.
 ___
 
 ### Installation:
@@ -31,7 +31,7 @@ The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framewor
 Libdoc2TestBench <LIBRARY>
 ```
 Library corresponds to the name that you would use to import the library into a robot framework file.
-For example BrowserLibrary.
+Browser is an example for <LIBRARY>.
 By using a second positional argument you can additionally specify the output filename:
 
 ```bash
