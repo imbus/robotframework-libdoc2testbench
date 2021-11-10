@@ -109,15 +109,18 @@ There are several optional arguments, that follow the structure of the robot.lib
 
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
-| `-s`, `--specdocformat` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
-| `-F`, `--docformat` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `-h`, `--help` | show the help message and exit
+| `-a`, `--attachment` |  Defines if a resource file will be attached to all interactions.
+| `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `--libraryroot LIBRARYROOT`| Defines which subdivision name contains libraries.
+| `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
+| `-n NAME`, `--name NAME` 	| Sets the name of the documented library or resource. 	|  	|
+| `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `itba`.||
+| `--resourceroot RESOURCEROOT` | Defines which subdivision name contains resources.
+| `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
+|`-t TEMP`, `--temp TEMP`| Path to write temporary files to.|
 | `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
-|`-t`, `--temp`| Path to write temporary files to.|
-| `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
-| `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
-| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
-| `-p`, `--pk`| Defines from which number the pks are enumerated. The default is `230`.||
-| `--info` | Writes the Libdoc2TestBench, Robot Framework and Python version to console.||
+| `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 ___
 
 ### Change log
