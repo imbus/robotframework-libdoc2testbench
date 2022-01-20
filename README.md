@@ -1,6 +1,6 @@
 # Libdoc2TestBench
 Robot Framework Libdoc Extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) Library import formats.
-
+It can be used to generate Testbench interactions from Robotframework keywords.
 ___
 
 ### Installation:
@@ -14,37 +14,30 @@ pip install robotframework-libdoc2testbench
 *Notice: This extension requires Robot Framework 4.0.0 or later and does not work with earlier versions.*
 ___
 ### Usage:
+
+There are four main use cases:
+* Importing official robotframework librarys
+* Importing custom robotframework librarys
+* Importing resource files
+* Importing multiple librarys and resource files at once
+
+#### Importing official robotframework librarys
+
 ![LibDoc2TestBench command demo](res/example_usage.gif)
 
 The basic usage just needs the ``Libdoc2TestBench`` command and a Robot Framework Library as input and saves a zip-file named `project-dump.zip` in the current working directory containing the needed information for the import.
 
 ```bash
-Libdoc2TestBench <LIBRARY or RESOURCE>
+Libdoc2TestBench <LIBRARY>
 ```
+`<LIBRARY>` corresponds to the name that you would use to import the library into a robot framework file.
+Browser is an example for `<LIBRARY>`.
 By using a second positional argument you can additionally specify the output filename:
 
 ```bash
-Libdoc2TestBench <LIBRARY or RESOURCE> <output.zip>
+Libdoc2TestBench <LIBRARY> <output.zip>
 ```
-___
 
-There are several optional arguments, that follow the structure of the robot.libdoc module. When generating imports from a RF library, these values should already be set up correctly. You may overwrite the docformat and other meta data by setting the associated arguments written below.
-
-| Arguments 	| Description 	| Allowed Values 	|
-|-	|-	|-	|
-| `-s`, `--specdocformat` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
-| `-F`, `--docformat` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
-| `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
-|`-t`, `--temp`| Path to write temporary files to.|
-| `-n`, `--name` 	| Sets the name of the documented library or resource for the import. 	|  	|
-| `-v`, `--version` 	| Sets the version of the documented library or resource written for the import written in the description. 	|  	|
-| `-r`, `--repository`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
-| `-p`, `--pk`| Defines from which number the pks are enumerated. The default is `230`.||
-| `--info` | Writes the Libdoc2TestBench, Robot Framework and Python version to console.||
-___
-
-### Import in imbus TestBench
-First create a zip-file from a Robot Framework library via the `Libdoc2TestBench` command.
 Afterwards the generated zip-file can be imported via the `Import Project...` command in the Project Management view of the imbus TestBench:
 
 ![Import Project Demo](res/projectmanagement_view.gif)
@@ -52,6 +45,83 @@ Afterwards the generated zip-file can be imported via the `Import Project...` co
 In the Test Elements view you can now see your imported RF library as different interactions and datatypes:
 
 ![Test Element View](res/test_element_view.png)
+
+The imported Testelements can be copied into another testbench project. When copying, it is important that the test elements remain in the same subdivisions. The name of the root subdivision can be renamed with the --libraryroot option.
+
+#### Importing custom robotframework librarys
+
+Libdoc2Testbench can be used to import your own robotframework librarys.
+
+Example for a custom library:
+```python
+class mycustomlibrary(object):
+    def print_hello_world(self):
+        print("Hello World")
+```
+
+Example Libdoc2Testbench usage:
+
+```bash
+Libdoc2TestBench mycustomlibrary.py
+```
+
+#### Importing resource files
+
+Libdoc2Testbench can be used to import resource files.
+
+Example for a resource file:
+
+```robotframework
+*** Keywords ***
+print hello world
+	log	Hello World
+```
+
+Example Libdoc2Testbench usage:
+
+```bash
+Libdoc2TestBench -a myresource.resource
+```
+
+#### Importing multiple librarys and resource files at once
+
+Libdoc2Testbench can be used to import multiple librarys and resource files at once. A special robot framework section is used for this use case.
+
+Example for a import List:
+
+```robotframework
+*** Import List ***
+BrowserLibrary
+BuiltIn
+mycustomlibrary.py
+myresource.resource
+```
+
+Example Libdoc2Testbench usage:
+
+```bash
+Libdoc2TestBench -a importlist.robot
+```
+
+___
+### Command line arguments
+There are several optional arguments, that follow the structure of the robot.libdoc module. When generating imports from a RF library, these values should already be set up correctly. You may overwrite the docformat and other meta data by setting the associated arguments written below.
+
+| Arguments 	| Description 	| Allowed Values 	|
+|-	|-	|-	|
+| `-h`, `--help` | show the help message and exit
+| `-a`, `--attachment` |  Defines if a resource file will be attached to all interactions.
+| `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `--libraryroot LIBRARYROOT`| Defines which subdivision name contains libraries.
+| `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
+| `-n NAME`, `--name NAME` 	| Sets the name of the documented library or resource. 	|  	|
+| `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `itba`.||
+| `--resourceroot RESOURCEROOT` | Defines which subdivision name contains resources.
+| `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
+|`-t TEMP`, `--temp TEMP`| Path to write temporary files to.|
+| `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
+| `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
+___
 
 ### Change log
 * 1.0rc2
