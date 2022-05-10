@@ -67,7 +67,7 @@ class Element:
         self.element = element
         self.pk = pk_generator.get_pk()
         self.parent = parent_element
-        
+
         if element["doc"]:
             self.html_desc = f"<html>{element['doc']}</html>"
 

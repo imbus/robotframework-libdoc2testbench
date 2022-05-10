@@ -29,7 +29,7 @@ __version__ = "1.1.0"
 
 
 def start_libdoc2testbench():
-    """ Command line entry point for the Libdoc2TestBench module."""
+    """Command line entry point for the Libdoc2TestBench module."""
     parser = argparse.ArgumentParser(
         description="""Robot Framework Libdoc Extension that generates imbus
                     TestBench Library import formats. The easiest way to run
@@ -158,8 +158,9 @@ def create_project_dump(
     # This is used as part of the exit message on successful conversion.
     last_issued_pk = None
 
-    libraries, resources = get_libdoc_lists(lib_or_res, lib_name, lib_version,
-                                            docformat, specdocformat)
+    libraries, resources = get_libdoc_lists(
+        lib_or_res, lib_name, lib_version, docformat, specdocformat
+    )
 
     # If set, create necessary subdirectories
     if temp_path:
@@ -228,9 +229,7 @@ def create_project_dump(
                 shutil.rmtree(attachments_path)
 
     absolute_outfile_path = Path(outfile_path).resolve()
-    print(
-        f"Successfully written TestBench project dump to: \n{absolute_outfile_path}"
-    )
+    print(f"Successfully written TestBench project dump to: \n{absolute_outfile_path}")
 
 
 def get_libdoc_lists(lib_or_res, lib_name, lib_version, docformat, specdocformat):
