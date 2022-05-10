@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import List
 
 from robot.utils import XmlWriter
+from robot.libdocpkg.robotbuilder import LibraryDoc
 
 
 class ElementTypes(enum.Enum):
@@ -66,9 +67,9 @@ class Element:
         self.element = element
         self.pk = pk_generator.get_pk()
         self.parent = parent_element
-
-        if element.doc:
-            self.html_desc = f"<html>{element.doc}</html>"
+        
+        if element["doc"]:
+            self.html_desc = f"<html>{element['doc']}</html>"
 
         self._set_name_and_register_in_all_elements()
 
@@ -78,7 +79,7 @@ class Element:
         if self.parent:
             self.name = self.parent.name + '.' + self.element.name
         else:
-            self.name = self.element.name
+            self.name = self.element['name']
 
         # Register element for later access to element's unique pk
         Element.all_elements[self.name] = self.pk
@@ -97,14 +98,14 @@ class DataType(Element):
 
     def __init__(self, pk_generator: PKGenerator, data_type, parent_element=None):
         super().__init__(pk_generator, data_type)
-        self.type = data_type.type
+        self.type = data_type['type']
 
         # Holds all enum values, typed_dics are considered to be
         # generic for imbus TestBench purposes.
         self.representatives = {}
 
         if self.type == 'Enum':
-            self.members = data_type.members
+            self.members = data_type['members']
             for member in self.members:
                 key = f"{self.name}.{member['name']}"
                 value = f"{self.name}.{member['value']}"
@@ -362,10 +363,11 @@ class Libdoc2TestBenchWriter:
             writer.end('parameters')
             writer.end('element')  # close interaction tag
 
-    def _write_data_types(self, libdoc, writer):
+    def _write_data_types(self, libdoc: LibraryDoc, writer):
         datatypes = []
-        if libdoc.data_types.enums:
-            for data_type in libdoc.data_types.enums:
+        libdoc_dic = libdoc.to_dictionary()
+        if libdoc_dic["dataTypes"]["enums"]:
+            for data_type in libdoc_dic["dataTypes"]["enums"]:
                 datatypes.append(DataType(self.pk_generator, data_type))
 
             writer.start('element', {'type': ElementTypes.subdivision.value})

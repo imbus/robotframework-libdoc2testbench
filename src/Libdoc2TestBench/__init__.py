@@ -23,6 +23,7 @@ from zipfile import ZipFile
 from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
 from robot.version import get_full_version as robot_version_print
+from robot.libdocpkg.robotbuilder import LibraryDoc
 
 __version__ = "1.0"
 
@@ -259,14 +260,16 @@ def get_libdoc_lists(lib_or_res, lib_name, lib_version, docformat, specdocformat
     return libraries, resources
 
 
-def print_stat(libdoc):
+def print_stat(libdoc: LibraryDoc):
     print(f"{libdoc.type.lower()}: {libdoc.name}")
     print(f"  {len(libdoc.keywords)} Interactions")
-    if libdoc.data_types and libdoc.data_types.enums:
-        print(f"  {len(libdoc.data_types.enums)} Data Types")
+
+    data_types = libdoc.to_dictionary()["dataTypes"]
+    if data_types and data_types["enums"]:
+        print(f"  {len(data_types['enums'])} Data Types")
 
 
-def create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat):
+def create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat) -> LibraryDoc:
     try:
         libdoc = LibraryDocumentation(lib_or_res, lib_name, lib_version, docformat)
         if specdocformat == 'HTML':
