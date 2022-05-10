@@ -25,7 +25,7 @@ from robot.libdocpkg import LibraryDocumentation
 from robot.version import get_full_version as robot_version_print
 from robot.libdocpkg.robotbuilder import LibraryDoc
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 
 def start_libdoc2testbench():
