@@ -20,10 +20,11 @@ import enum, os
 from datetime import datetime
 from hashlib import sha1
 from pathlib import Path
-from typing import List
+from typing import List, Set, Dict, Optional
 
 from robot.utils import XmlWriter
 from robot.libdocpkg.robotbuilder import LibraryDoc
+from robot.running.arguments.argumentspec import ArgInfo
 
 
 class ElementTypes(enum.Enum):
@@ -63,25 +64,14 @@ class Element:
     # Remember all created element objects and their associated pk.
     all_elements = {}
 
-    def __init__(self, pk_generator: PKGenerator, element, parent_element=None):
-        self.element = element
-        self.pk = pk_generator.get_pk()
-        self.parent = parent_element
-
-        if element["doc"]:
-            self.html_desc = f"<html>{element['doc']}</html>"
-
-        self._set_name_and_register_in_all_elements()
-
-    def _set_name_and_register_in_all_elements(self):
-        # Each element's name is build via its hierarchy.
-        # If it has a parent, the parent's name will be the prefix.
-        if self.parent:
-            self.name = self.parent.name + '.' + self.element.name
+    def __init__(self, pk_generator: PKGenerator, name, documentation="", parent_element=None):
+        self.html_desc = f"<html>{documentation}</html>"
+        if parent_element:
+            self.name = parent_element.name + '.' + name
         else:
-            self.name = self.element['name']
-
+            self.name = name
         # Register element for later access to element's unique pk
+        self.pk = pk_generator.get_pk()
         Element.all_elements[self.name] = self.pk
 
     def get_name(self) -> str:
@@ -96,23 +86,25 @@ class DataType(Element):
     "members" equivalence class and each valid value is one
     representative in the imbus TestBench."""
 
-    def __init__(self, pk_generator: PKGenerator, data_type, parent_element=None):
-        super().__init__(pk_generator, data_type)
-        self.type = data_type['type']
+    def __init__(self, pk_generator: PKGenerator, name: str, documentation: str="", parent_element=None):
+        super().__init__(pk_generator, name, documentation, parent_element)
 
         # Holds all enum values, typed_dics are considered to be
         # generic for imbus TestBench purposes.
+        self.pk_generator = pk_generator
+        self.equivalence_classes: Dict[str, Set[str]] = {}
         self.representatives = {}
+        self.name = name
 
-        if self.type == 'Enum':
-            self.members = data_type['members']
-            for member in self.members:
-                key = f"{self.name}.{member['name']}"
-                value = f"{self.name}.{member['value']}"
-                self.representatives[key] = value
-
-                # Register in all_elements dic for later access of pks.
-                Element.all_elements[key] = pk_generator.get_pk()
+    def add_equivalence_class(self, equivalence_class_name: str, members: Optional[Set[str]]=None):
+        existing_eqivalence_class = self.equivalence_classes.get(equivalence_class_name)
+        if not existing_eqivalence_class:
+            self.equivalence_classes[equivalence_class_name] = set()
+        if members:
+            for member in members:
+                if (Element.all_elements.get(f"{self.name}.{member}")) is None:
+                    self.equivalence_classes[equivalence_class_name].add(member)
+                    Element.all_elements[f"{self.name}.{member}"] = self.pk_generator.get_pk()
 
 
 class Libdoc2TestBenchWriter:
@@ -135,7 +127,7 @@ class Libdoc2TestBenchWriter:
     attachment_reference_pk = {}  # Needed for resource files - holds exactly one pk
 
     # Attributes used in the header of the xml-file
-    xml_attributes = {'version': "2.6.1", 'build-number': "201215/dcee", 'repository': "iTB_RF"}
+    xml_attributes = {'version': "3.0", 'build-number': "230202/6a0c", 'repository': "iTB_RF"}
 
     # Values used to fill imbus TestBench project settings.
     project_settings = {
@@ -214,6 +206,7 @@ class Libdoc2TestBenchWriter:
         if libraries:
             self._start_root_subdivision(writer, library_root, 'Robot Framework Libraries')
             for libdoc in libraries:
+                Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer)
                 self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
@@ -222,6 +215,7 @@ class Libdoc2TestBenchWriter:
         if resources:
             self._start_root_subdivision(writer, resource_root, 'Robot Framework Resource Files')
             for libdoc in resources:
+                Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer)
                 self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
@@ -322,15 +316,25 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
+    def _get_argument_name_prefix(self, argument_kind: str) -> str:
+        if argument_kind == ArgInfo.VAR_POSITIONAL:
+            return "* "
+        elif argument_kind == ArgInfo.VAR_NAMED:
+            return "** "
+        elif argument_kind == ArgInfo.NAMED_ONLY:
+            return "- "
+        return ""
+
     def _write_interactions(self, libdoc, writer, attachment=False):
-        for keyword in libdoc.keywords:
+        libdoc_dic = libdoc.to_dictionary()
+        for keyword in libdoc_dic["keywords"]:
             writer.start('element', {'type': ElementTypes.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
-            writer.element('name', keyword.name)
-            writer.element('uid', self._generate_UID('IA', keyword.name, libdoc.name))
+            writer.element('name', keyword['name'])
+            writer.element('uid', self._generate_UID('IA', keyword['name'], libdoc.name))
             writer.element('locker', '')
             writer.element('status', '3')
-            writer.element('html-description', f"<html>{keyword.doc}</html>")
+            writer.element('html-description', f"<html>{keyword['doc']}</html>")
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.start('references')
@@ -339,83 +343,141 @@ class Libdoc2TestBenchWriter:
                 writer.element(
                     'reference-ref', attrs={'pk': self.attachment_reference_pk[libdoc.name]}
                 )
-
             writer.end('references')
             writer.start('parameters')
-            for arg in keyword.args:
+            for arg in keyword['args']:
+                argument_kind = arg.get('kind')
+                if not argument_kind or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER or argument_kind == ArgInfo.NOTSET:
+                    continue
                 writer.start('parameter')
                 writer.element('pk', self.pk_generator.get_pk())
-                writer.element('name', arg.name)
-                # For each parameter of the keyword, check whether
-                # it is already in the all_elements dic
-                # and thus already has a key.
-                # If not, its a generic data type => -1
-                typ_pk = '-1'
-                for typ in arg.types_reprs:
-                    typ_pk = Element.all_elements.get(typ, '-1')
-                    if typ_pk != '-1':
-                        break
-                # datatype-ref provides the mapping in the testbench
+                argument_name_prefix = self._get_argument_name_prefix(argument_kind)
+                writer.element('name', f"{argument_name_prefix}{arg['name']}")
+                type_name=self._get_datatype_name(arg)
+                typ_pk = Element.all_elements.get(type_name, '-1')
+
                 writer.element('datatype-ref', '', {'pk': typ_pk})
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
+                writer.element('datatype-name', type_name)
+                default_value = arg.get('defaultValue')
+                if default_value is None:
+                    default_value = self._get_arg_kind_default_value(argument_kind)
+                if default_value is not None:
+                    writer.start('default-value', {'type': 'representative'})
+                    writer.element('type', '1')
+                    representative_pk = Element.all_elements.get(f"{type_name}.{default_value}", '-1')
+                    writer.element('representative-ref', '', {'pk': representative_pk})
+                    writer.element('representative-name', default_value)
+                    writer.end('default-value')
                 writer.end('parameter')
             writer.end('parameters')
             writer.end('element')  # close interaction tag
 
-    def _write_data_types(self, libdoc: LibraryDoc, writer):
-        datatypes = []
-        libdoc_dic = libdoc.to_dictionary()
-        if libdoc_dic["dataTypes"]["enums"]:
-            for data_type in libdoc_dic["dataTypes"]["enums"]:
-                datatypes.append(DataType(self.pk_generator, data_type))
+    def _get_arg_kind_default_value(self, argument_kind: str) -> Optional[str]:
+        if argument_kind == ArgInfo.VAR_POSITIONAL:
+            return "@{EMPTY}"
+        elif argument_kind == ArgInfo.VAR_NAMED:
+            return "&{EMPTY}"
+        return None
 
-            writer.start('element', {'type': ElementTypes.subdivision.value})
-            writer.element('pk', self.pk_generator.get_pk())
-            writer.element('name', '_Datatypes')
-            writer.element('uid', self._generate_UID('SD', '_Datatypes', libdoc.name))
+    def _get_datatype_name(self, argument: Dict[str, str]) -> str:
+        for argument_type in argument.get('typedocs', {}).values():
+            if argument_type in self.enum_types or argument_type in self.typed_dicts:
+                return argument_type
+        return argument.get('name', "")
+
+    def _get_datatype_documentation(self, datatype_name, libdoc_dic: Dict[str, any]) -> str:
+        if datatype_name in self.enum_types:
+            return next(filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])).get('doc', '')
+        if datatype_name in self.typed_dicts:
+            return next(filter(lambda typedDict: typedDict['name'] == datatype_name, libdoc_dic['dataTypes']['typedDicts'])).get('doc', '')
+        return ""
+
+    def _get_enum_types(self, libdoc_dic: Dict[str, any]) -> Set[str]:
+        return {enum.get('name') for enum in libdoc_dic.get('dataTypes').get('enums')}
+
+    def _get_typed_dicts(self, libdoc_dic: Dict[str, any]) -> Set[str]:
+        return {enum.get('name') for enum in libdoc_dic.get('dataTypes').get('typedDicts')}
+
+
+    def _write_data_types(self, libdoc: LibraryDoc, writer):
+        libdoc_dic = libdoc.to_dictionary()
+        self.enum_types = set(self._get_enum_types(libdoc_dic))
+        self.typed_dicts = self._get_typed_dicts(libdoc_dic)
+
+        datatypes = {}
+        keyword_arguments = [argument for keyword in libdoc_dic['keywords'] for argument in keyword['args']]
+        for argument in keyword_arguments:
+            argument_kind = argument.get('kind')
+            if not argument_kind or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER or argument_kind == ArgInfo.NOTSET:
+                continue
+            datatype_name = self._get_datatype_name(argument)
+            datatype_documentation = self._get_datatype_documentation(datatype_name, libdoc_dic)
+            datatype = datatypes.get(datatype_name) or DataType(self.pk_generator, datatype_name, datatype_documentation)
+            default_value = argument.get('defaultValue')
+            if default_value is None:
+                default_value = self._get_arg_kind_default_value(argument_kind)
+            for idx, type_name in enumerate(argument.get('typedocs', {}).keys()):
+                members = set()
+                if type_name == "bool":
+                    members = {'True', 'False', '${True}', '${False}'}
+                    datatype.add_equivalence_class(type_name, members)
+                elif type_name in self.enum_types:
+                    members_list = next(filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])).get('members', [])
+                    members = {member.get('name') for member in members_list}
+                    datatype.add_equivalence_class(type_name, members)
+            if default_value == "None":
+                datatype.add_equivalence_class("None", {default_value})
+            else:
+                datatype.add_equivalence_class(datatype_name, {default_value})
+            datatype.add_equivalence_class(datatype_name)
+            datatypes[datatype_name] = datatype
+
+        writer.start('element', {'type': ElementTypes.subdivision.value})
+        writer.element('pk', self.pk_generator.get_pk())
+        writer.element('name', '_Datatypes')
+        writer.element('uid', self._generate_UID('SD', '_Datatypes', libdoc.name))
+        writer.element('locker', '')
+        writer.element('status', '3')
+        writer.element('html-description', '')
+        writer.element('historyPK', '-1')
+        writer.element('identicalVersionPK', '-1')
+        writer.element('references', '')
+
+        for datatype_idx, data_type in enumerate(datatypes.values()):
+            writer.start('element', {'type': ElementTypes.datatype.value})
+            writer.element('pk', data_type.pk)
+            writer.element('name', data_type.get_name())
+            writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
             writer.element('locker', '')
-            writer.element('status', '3')
-            writer.element('html-description', '')
+            writer.element('html-description', data_type.html_desc)
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
-            writer.element('references', '')
-
-            for idx, data_type in enumerate(datatypes):
-                writer.start('element', {'type': ElementTypes.datatype.value})
-                writer.element('pk', data_type.pk)
-                writer.element('name', data_type.get_name())
-                writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
-                writer.element('locker', '')
-                writer.element('html-description', data_type.html_desc)
-                writer.element('historyPK', '-1')
-                writer.element('identicalVersionPK', '-1')
-                writer.start('equivalence-classes')
+            writer.start('equivalence-classes')
+            for ec_name, ec_members in data_type.equivalence_classes.items():
                 writer.start('equivalence-class')
                 writer.element('pk', self.pk_generator.get_pk())
-                writer.element('name', 'members')
-                writer.element('description', 'Valid members')
-                writer.element('ordering', str(1024 * idx))
-
+                writer.element('name', ec_name)
+                writer.element('description', ec_name)
+                writer.element('ordering', str(1024 * datatype_idx))
                 writer.start('representatives')
                 default_pk = '-1'
-                for idx, representative in enumerate(data_type.representatives.keys()):
+                for idx, representative in enumerate(ec_members):
                     writer.start('representative')
-                    pk = Element.all_elements[representative]
+                    pk = Element.all_elements[f"{data_type.get_name()}.{representative}"]
                     if idx == 0:
-                        # if non-generic => set default-representative
                         default_pk = pk
                     writer.element('pk', pk)
-                    writer.element('name', representative.split(f"{data_type.get_name()}.", 1)[-1])
+                    writer.element('name', representative)
                     writer.element('ordering', str(1024 * (idx + 1)))
                     writer.end('representative')
-
                 writer.end('representatives')
                 writer.element('default-representative-ref', '', {'pk': default_pk})
                 writer.end('equivalence-class')
-                writer.end('equivalence-classes')
-                writer.end('element')  # close dataType tag
-            writer.end('element')  # close datatype subdivision tag
+            writer.end('equivalence-classes')
+            writer.end('element')  # close dataType tag
+        writer.end('element')  # close datatype subdivision tag
 
     def _end_library_subdivision(self, writer):
         writer.end('element')  # close Library Subdivision tag
