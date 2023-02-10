@@ -39,5 +39,13 @@ setup(
         "Framework :: Robot Framework",
     ],
     install_requires=["robotframework >= 4.0.0"],
+    extras_require={
+        'dev': [
+            'isort',
+            'mypy',
+            'pylint',
+            'black'
+        ]
+    },
     python_requires=">=3.7",
 )
