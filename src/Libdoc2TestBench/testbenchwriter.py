@@ -16,15 +16,16 @@
 #  under Apache 2.0 License.
 #  https://github.com/robotframework/robotframework
 
-import enum, os
+import enum
+import os
 from datetime import datetime
 from hashlib import sha1
 from pathlib import Path
-from typing import List, Set, Dict, Optional
+from typing import Dict, List, Optional, Set
 
-from robot.utils import XmlWriter
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
+from robot.utils import XmlWriter
 
 
 class ElementTypes(enum.Enum):
@@ -86,7 +87,9 @@ class DataType(Element):
     "members" equivalence class and each valid value is one
     representative in the imbus TestBench."""
 
-    def __init__(self, pk_generator: PKGenerator, name: str, documentation: str="", parent_element=None):
+    def __init__(
+        self, pk_generator: PKGenerator, name: str, documentation: str = "", parent_element=None
+    ):
         super().__init__(pk_generator, name, documentation, parent_element)
 
         # Holds all enum values, typed_dics are considered to be
@@ -96,7 +99,9 @@ class DataType(Element):
         self.representatives = {}
         self.name = name
 
-    def add_equivalence_class(self, equivalence_class_name: str, members: Optional[Set[str]]=None):
+    def add_equivalence_class(
+        self, equivalence_class_name: str, members: Optional[Set[str]] = None
+    ):
         existing_eqivalence_class = self.equivalence_classes.get(equivalence_class_name)
         if not existing_eqivalence_class:
             self.equivalence_classes[equivalence_class_name] = set()
@@ -347,13 +352,17 @@ class Libdoc2TestBenchWriter:
             writer.start('parameters')
             for arg in keyword['args']:
                 argument_kind = arg.get('kind')
-                if not argument_kind or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER or argument_kind == ArgInfo.NOTSET:
+                if (
+                    not argument_kind
+                    or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
+                    or argument_kind == ArgInfo.NOTSET
+                ):
                     continue
                 writer.start('parameter')
                 writer.element('pk', self.pk_generator.get_pk())
                 argument_name_prefix = self._get_argument_name_prefix(argument_kind)
                 writer.element('name', f"{argument_name_prefix}{arg['name']}")
-                type_name=self._get_datatype_name(arg)
+                type_name = self._get_datatype_name(arg)
                 typ_pk = Element.all_elements.get(type_name, '-1')
 
                 writer.element('datatype-ref', '', {'pk': typ_pk})
@@ -366,7 +375,9 @@ class Libdoc2TestBenchWriter:
                 if default_value is not None:
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
-                    representative_pk = Element.all_elements.get(f"{type_name}.{default_value}", '-1')
+                    representative_pk = Element.all_elements.get(
+                        f"{type_name}.{default_value}", '-1'
+                    )
                     writer.element('representative-ref', '', {'pk': representative_pk})
                     writer.element('representative-name', default_value)
                     writer.end('default-value')
@@ -389,9 +400,16 @@ class Libdoc2TestBenchWriter:
 
     def _get_datatype_documentation(self, datatype_name, libdoc_dic: Dict[str, any]) -> str:
         if datatype_name in self.enum_types:
-            return next(filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])).get('doc', '')
+            return next(
+                filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])
+            ).get('doc', '')
         if datatype_name in self.typed_dicts:
-            return next(filter(lambda typedDict: typedDict['name'] == datatype_name, libdoc_dic['dataTypes']['typedDicts'])).get('doc', '')
+            return next(
+                filter(
+                    lambda typedDict: typedDict['name'] == datatype_name,
+                    libdoc_dic['dataTypes']['typedDicts'],
+                )
+            ).get('doc', '')
         return ""
 
     def _get_enum_types(self, libdoc_dic: Dict[str, any]) -> Set[str]:
@@ -400,21 +418,28 @@ class Libdoc2TestBenchWriter:
     def _get_typed_dicts(self, libdoc_dic: Dict[str, any]) -> Set[str]:
         return {enum.get('name') for enum in libdoc_dic.get('dataTypes').get('typedDicts')}
 
-
     def _write_data_types(self, libdoc: LibraryDoc, writer):
         libdoc_dic = libdoc.to_dictionary()
         self.enum_types = set(self._get_enum_types(libdoc_dic))
         self.typed_dicts = self._get_typed_dicts(libdoc_dic)
 
         datatypes = {}
-        keyword_arguments = [argument for keyword in libdoc_dic['keywords'] for argument in keyword['args']]
+        keyword_arguments = [
+            argument for keyword in libdoc_dic['keywords'] for argument in keyword['args']
+        ]
         for argument in keyword_arguments:
             argument_kind = argument.get('kind')
-            if not argument_kind or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER or argument_kind == ArgInfo.NOTSET:
+            if (
+                not argument_kind
+                or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
+                or argument_kind == ArgInfo.NOTSET
+            ):
                 continue
             datatype_name = self._get_datatype_name(argument)
             datatype_documentation = self._get_datatype_documentation(datatype_name, libdoc_dic)
-            datatype = datatypes.get(datatype_name) or DataType(self.pk_generator, datatype_name, datatype_documentation)
+            datatype = datatypes.get(datatype_name) or DataType(
+                self.pk_generator, datatype_name, datatype_documentation
+            )
             default_value = argument.get('defaultValue')
             if default_value is None:
                 default_value = self._get_arg_kind_default_value(argument_kind)
@@ -424,7 +449,12 @@ class Libdoc2TestBenchWriter:
                     members = {'True', 'False', '${True}', '${False}'}
                     datatype.add_equivalence_class(type_name, members)
                 elif type_name in self.enum_types:
-                    members_list = next(filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])).get('members', [])
+                    members_list = next(
+                        filter(
+                            lambda enum: enum['name'] == datatype_name,
+                            libdoc_dic['dataTypes']['enums'],
+                        )
+                    ).get('members', [])
                     members = {member.get('name') for member in members_list}
                     datatype.add_equivalence_class(type_name, members)
             if default_value == "None":
