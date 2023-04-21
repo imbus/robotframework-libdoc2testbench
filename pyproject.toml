@@ -1,0 +1,67 @@
+[tool.black]
+line-length = 100
+skip-string-normalization=true
+target-version = ['py38']
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+src_paths = ["src"]
+skip_gitignore = true
+skip = ['external']
+
+[tool.mypy]
+# MyPy config
+# File reference here - http://mypy.readthedocs.io/en/latest/config_file.html#config-file
+python_version = 3.7
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unused_configs = true
+strict = true
+disallow_subclassing_any = false
+ignore_missing_imports = true
+
+[tool.pylint.FORMAT]
+max-line-length = 100
+max-module-lines = 1000
+
+[tool.pylint.BASIC]
+argument-naming-style = 'snake_case'
+attr-naming-style = 'snake_case'
+class-naming-style = 'PascalCase'
+const-naming-style = 'UPPER_CASE'
+function-naming-style = 'snake_case'
+method-naming-style = 'snake_case'
+module-naming-style = 'snake_case'
+variable-naming-style = 'snake_case'
+
+[tool.pylint.DESIGN]
+# Maximum number of arguments for function / method.
+max-args = 5
+# Maximum number of statements in function / method body.
+max-statements = 50
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = '''
+    logging-fstring-interpolation,
+    fixme,
+    import-error,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-many-instance-attributes,
+    too-few-public-methods,
+'''

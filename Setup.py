@@ -1,7 +1,7 @@
-from setuptools import setup
-from setuptools import find_packages
 import re
 from os.path import abspath, dirname, join
+
+from setuptools import find_packages, setup
 
 CURDIR = dirname(abspath(__file__))
 
@@ -39,5 +39,6 @@ setup(
         "Framework :: Robot Framework",
     ],
     install_requires=["robotframework >= 4.0.0"],
+    extras_require={'dev': ['isort', 'mypy', 'pylint', 'black']},
     python_requires=">=3.7",
 )

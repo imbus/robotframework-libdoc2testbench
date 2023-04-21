@@ -12,18 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import argparse
 import os
 import re
-import sys
-import argparse
 import shutil
+import sys
 from pathlib import Path
 from zipfile import ZipFile
 
-from .testbenchwriter import Libdoc2TestBenchWriter
 from robot.libdocpkg import LibraryDocumentation
-from robot.version import get_full_version as robot_version_print
 from robot.libdocpkg.robotbuilder import LibraryDoc
+from robot.version import get_full_version as robot_version_print
+
+from .testbenchwriter import Libdoc2TestBenchWriter
 
 __version__ = "1.1.0"
 
@@ -199,7 +200,6 @@ def create_project_dump(
         )
 
     with open(project_dump_path, "w", encoding='UTF-8') as outfile:
-
         # The write method returns the last issued primary key.
         Libdoc2TestBenchWriter().write(
             libraries,
