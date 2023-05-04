@@ -28,7 +28,7 @@ from robot.version import get_full_version as robot_version_print
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 
-__version__ = "1.2b4"
+__version__ = "1.2b5"
 
 
 
