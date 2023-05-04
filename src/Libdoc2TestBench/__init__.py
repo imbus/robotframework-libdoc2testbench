@@ -13,7 +13,6 @@
 #  limitations under the License.
 
 import argparse
-import os
 import re
 import shutil
 import sys
@@ -41,7 +40,7 @@ def default_repr(self):
         isinstance(self.default, (bool, int, float)) or self.default is None
     ):
         return f"${{{self.default}}}"
-    if self.default == "":
+    if self.default == "":  # noqa: PLC1901
         return "${Empty}"
     if isinstance(self.default, Enum):
         return self.default.name
@@ -207,17 +206,17 @@ def create_project_dump(
     if xml_flag:
         outfile_path = (
             outfile_path
-            if os.path.splitext(outfile_path)[1].lower() == '.xml'
+            if Path(outfile_path).suffix.lower() == ".xml"
             else f"{outfile_path}.xml"
         )
     else:
         outfile_path = (
             outfile_path
-            if os.path.splitext(outfile_path)[1].lower() == '.zip'
+            if Path(outfile_path).suffix.lower() == '.zip'
             else f"{outfile_path}.zip"
         )
 
-    with open(project_dump_path, "w", encoding='UTF-8') as outfile:
+    with Path(project_dump_path).open( "w", encoding='UTF-8') as outfile:
         # The write method returns the last issued primary key.
         Libdoc2TestBenchWriter().write(
             libraries,
@@ -234,15 +233,15 @@ def create_project_dump(
             user_input = input(f'{outfile_path} already exists... overwrite? y/n? \n')
             if user_input.lower() not in ['y', 'yes']:
                 sys.exit('Stopped execution - file was not changed.')
-            os.remove(outfile_path)
+            Path(outfile_path).unlink()
 
         if xml_flag:
             # Put XML-file in output_path and leave attachments behind
-            os.rename(project_dump_path, outfile_path)
+            Path(project_dump_path).rename(outfile_path)
         else:
             # Build the zip file and clean up.
             write_zip_file(outfile_path, project_dump_path, resources, attachment)
-            os.remove(project_dump_path)
+            Path(project_dump_path).unlink()
             if attachments_path:
                 shutil.rmtree(attachments_path)
 
@@ -253,8 +252,8 @@ def create_project_dump(
 def get_libdoc_lists(lib_or_res, lib_name, lib_version, docformat, specdocformat):
     resources = []
     libraries = []
-    if os.path.exists(lib_or_res):
-        with open(lib_or_res, encoding='UTF-8') as library_list:
+    if Path(lib_or_res).exists():
+        with Path(lib_or_res).open(encoding='UTF-8') as library_list:
             first_line = library_list.readline()
             if re.fullmatch(r'\*+\s*import\s?list(\s?\**)\n?', first_line, re.IGNORECASE):
                 for line in library_list.read().splitlines():
@@ -292,7 +291,7 @@ def create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat) -
         if specdocformat == 'HTML':
             libdoc.convert_docs_to_html()
         return libdoc
-    except:
+    except Exception:
         sys.exit(f"The requested module {lib_or_res} could not be found.")
 
 
@@ -302,8 +301,6 @@ def write_zip_file(outfile_path, project_dump_path, resources, attachment):
 
         # If there are attachments, add them to the zip-file.
         if resources and attachment:
-            # zip_file.write('attachments)
             for libdoc in resources:
-                if os.path.exists(libdoc.source):
-                    file = os.path.split(libdoc.source)[-1]
-                    zip_file.write(libdoc.source, "attachments/" + file)
+                if Path(libdoc.source).exists():
+                    zip_file.write(libdoc.source, "attachments/" + Path(libdoc.source).name)

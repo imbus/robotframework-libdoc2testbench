@@ -18,7 +18,7 @@
 
 import enum
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from hashlib import sha1
 from pathlib import Path
 from typing import Dict, List, Optional, Set
@@ -127,7 +127,7 @@ class Libdoc2TestBenchWriter:
     # Values used to fill project view fields.
     testobject_state = ProjectStates.active.value
     testobject_desc = "Robot Framework Import"
-    created_time = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} +0000"
+    created_time = datetime.now(tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S %z')
     libdoc_name = None  # set-up in write() method.
     attachment_reference_pk = {}  # Needed for resource files - holds exactly one pk
 
@@ -299,7 +299,7 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', name)
-        writer.element('uid', self._generate_UID('SD', name))
+        writer.element('uid', self._generate_uid('SD', name))
         writer.element('locker', '')
         writer.element('description', description)
         writer.element('html-description', '')
@@ -311,7 +311,7 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', libdoc.name)
-        writer.element('uid', self._generate_UID('SD', libdoc.name))
+        writer.element('uid', self._generate_uid('SD', libdoc.name))
         writer.element('locker', '')
         writer.element(
             'html-description',
@@ -324,9 +324,9 @@ class Libdoc2TestBenchWriter:
     def _get_argument_name_prefix(self, argument_kind: str) -> str:
         if argument_kind == ArgInfo.VAR_POSITIONAL:
             return "* "
-        elif argument_kind == ArgInfo.VAR_NAMED:
+        if argument_kind == ArgInfo.VAR_NAMED:
             return "** "
-        elif argument_kind == ArgInfo.NAMED_ONLY:
+        if argument_kind == ArgInfo.NAMED_ONLY:
             return "- "
         return ""
 
@@ -336,7 +336,7 @@ class Libdoc2TestBenchWriter:
             writer.start('element', {'type': ElementTypes.interaction.value})
             writer.element('pk', self.pk_generator.get_pk())
             writer.element('name', keyword['name'])
-            writer.element('uid', self._generate_UID('IA', keyword['name'], libdoc.name))
+            writer.element('uid', self._generate_uid('IA', keyword['name'], libdoc.name))
             writer.element('locker', '')
             writer.element('status', '3')
             writer.element(
@@ -391,7 +391,7 @@ class Libdoc2TestBenchWriter:
     def _get_arg_kind_default_value(self, argument_kind: str) -> Optional[str]:
         if argument_kind == ArgInfo.VAR_POSITIONAL:
             return "@{EMPTY}"
-        elif argument_kind == ArgInfo.VAR_NAMED:
+        if argument_kind == ArgInfo.VAR_NAMED:
             return "&{EMPTY}"
         return None
 
@@ -446,7 +446,7 @@ class Libdoc2TestBenchWriter:
             default_value = argument.get('defaultValue')
             if default_value is None:
                 default_value = self._get_arg_kind_default_value(argument_kind)
-            for type_name in argument.get('typedocs', {}).keys():
+            for type_name in argument.get('typedocs', {}):
                 members = set()
                 if type_name == "bool":
                     members = {'True', 'False', '${True}', '${False}'}
@@ -470,7 +470,7 @@ class Libdoc2TestBenchWriter:
         writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
         writer.element('name', '_Datatypes')
-        writer.element('uid', self._generate_UID('SD', '_Datatypes', libdoc.name))
+        writer.element('uid', self._generate_uid('SD', '_Datatypes', libdoc.name))
         writer.element('locker', '')
         writer.element('status', '3')
         writer.element('html-description', '')
@@ -482,7 +482,7 @@ class Libdoc2TestBenchWriter:
             writer.start('element', {'type': ElementTypes.datatype.value})
             writer.element('pk', data_type.pk)
             writer.element('name', data_type.get_name())
-            writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
+            writer.element('uid', self._generate_uid('DT', data_type.name, libdoc.name))
             writer.element('locker', '')
             writer.element(
                 'html-description',
@@ -535,7 +535,7 @@ class Libdoc2TestBenchWriter:
         writer.end('project-dump')
         writer.close()
 
-    def _generate_UID(self, element_type: str, element_name: str, lib_name: str = "") -> str:
+    def _generate_uid(self, element_type: str, element_name: str, lib_name: str = "") -> str:
         # UIDs format:
         # Prefix: RepositoryID-AbreviationElementType-
         # Root: first 10 characters of sha1Hash of LibraryName.ElementName

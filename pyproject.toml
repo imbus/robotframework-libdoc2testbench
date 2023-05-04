@@ -81,6 +81,7 @@ ignore = [
   "N812",  # lowercase imported as non lowercase
   "N999",  # Invalid module name: 'Browser'
   "PLR0913",  # too many arguments
+  "T201",  # Print statements
 ]
 target-version = "py37"
 select = [
