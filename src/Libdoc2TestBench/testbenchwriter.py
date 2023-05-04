@@ -481,7 +481,7 @@ class Libdoc2TestBenchWriter:
             writer.element('name', data_type.get_name())
             writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
             writer.element('locker', '')
-			writer.element('html-description', data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br>'))
+            writer.element('html-description', data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br>'))
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.start('equivalence-classes')
