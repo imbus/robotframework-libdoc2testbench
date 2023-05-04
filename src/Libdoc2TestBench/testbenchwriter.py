@@ -339,7 +339,10 @@ class Libdoc2TestBenchWriter:
             writer.element('uid', self._generate_UID('IA', keyword['name'], libdoc.name))
             writer.element('locker', '')
             writer.element('status', '3')
-            writer.element('html-description', f"<html>{keyword['doc'].replace('<br>', '<br/>').replace('<hr>', '<br>')}</html>")
+            writer.element(
+                'html-description',
+                f"<html>{keyword['doc'].replace('<br>', '<br/>').replace('<hr>', '<br>')}</html>",
+            )
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.start('references')
@@ -372,7 +375,7 @@ class Libdoc2TestBenchWriter:
                 default_value = arg.get('defaultValue')
                 if default_value is None:
                     default_value = self._get_arg_kind_default_value(argument_kind)
-                if default_value is not None:
+                else:
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
                     representative_pk = Element.all_elements.get(
@@ -443,7 +446,7 @@ class Libdoc2TestBenchWriter:
             default_value = argument.get('defaultValue')
             if default_value is None:
                 default_value = self._get_arg_kind_default_value(argument_kind)
-            for idx, type_name in enumerate(argument.get('typedocs', {}).keys()):
+            for type_name in argument.get('typedocs', {}).keys():
                 members = set()
                 if type_name == "bool":
                     members = {'True', 'False', '${True}', '${False}'}
@@ -481,7 +484,10 @@ class Libdoc2TestBenchWriter:
             writer.element('name', data_type.get_name())
             writer.element('uid', self._generate_UID('DT', data_type.name, libdoc.name))
             writer.element('locker', '')
-            writer.element('html-description', data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br>'))
+            writer.element(
+                'html-description',
+                data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br>'),
+            )
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
             writer.start('equivalence-classes')

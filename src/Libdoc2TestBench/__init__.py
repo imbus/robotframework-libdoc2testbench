@@ -17,16 +17,38 @@ import os
 import re
 import shutil
 import sys
+from enum import Enum
 from pathlib import Path
 from zipfile import ZipFile
 
 from robot.libdocpkg import LibraryDocumentation
 from robot.libdocpkg.robotbuilder import LibraryDoc
+from robot.running.arguments.argumentspec import ArgInfo
+from robot.utils import safe_str
 from robot.version import get_full_version as robot_version_print
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 
 __version__ = "1.2b4"
+
+
+
+
+def default_repr(self):
+    if self.default is self.NOTSET:
+        return None
+    if (
+        isinstance(self.default, (bool, int, float)) or self.default is None
+    ):
+        return f"${{{self.default}}}"
+    if self.default == "":
+        return "${Empty}"
+    if isinstance(self.default, Enum):
+        return self.default.name
+    return safe_str(self.default)
+
+
+ArgInfo.default_repr = property(default_repr)
 
 
 def start_libdoc2testbench():
@@ -38,7 +60,7 @@ def start_libdoc2testbench():
                     command and giving it one resource or library to generate
                     a zip-file at the current location.
                     """,
-        usage=f"Libdoc2TestBench <LIBRARY> <output.zip>",
+        usage="Libdoc2TestBench <LIBRARY> <output.zip>",
         prog='Libdoc2TestBench',
         epilog='Example: Libdoc2TestBench Browser My-Browser-Dump.zip',
     )
@@ -157,7 +179,6 @@ def create_project_dump(
 
     # Holds the last generated primary key by the testbenchwriter.
     # This is used as part of the exit message on successful conversion.
-    last_issued_pk = None
 
     libraries, resources = get_libdoc_lists(
         lib_or_res, lib_name, lib_version, docformat, specdocformat
@@ -181,10 +202,7 @@ def create_project_dump(
 
     if not outfile_path:
         lib_lists = libraries + resources
-        if len(lib_lists) == 1:
-            outfile_path = lib_lists[0].name
-        else:
-            outfile_path = 'project-dump'
+        outfile_path = lib_lists[0].name if len(lib_lists) == 1 else "project-dump"
 
     if xml_flag:
         outfile_path = (
@@ -236,11 +254,11 @@ def get_libdoc_lists(lib_or_res, lib_name, lib_version, docformat, specdocformat
     resources = []
     libraries = []
     if os.path.exists(lib_or_res):
-        with open(lib_or_res, "r", encoding='UTF-8') as library_list:
+        with open(lib_or_res, encoding='UTF-8') as library_list:
             first_line = library_list.readline()
             if re.fullmatch(r'\*+\s*import\s?list(\s?\**)\n?', first_line, re.IGNORECASE):
                 for line in library_list.read().splitlines():
-                    if not line.strip().startswith('#') and not len(line.strip()) == 0:
+                    if not line.strip().startswith('#') and len(line.strip()) != 0:
                         libdoc = create_libdoc(
                             line.strip(), lib_name, lib_version, docformat, specdocformat
                         )

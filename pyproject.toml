@@ -65,3 +65,48 @@ disable = '''
     too-many-instance-attributes,
     too-few-public-methods,
 '''
+
+[tool.ruff]
+unfixable = []
+exclude = [
+  "__pycache__",
+]
+ignore = [
+  "B008",  # do not perform function calls in argument defaults
+  # "B904",  # TODO only temporary. should be fixed.
+  "E501",  # line too long
+  "N815",  # mixedCase variable in class scope
+  "N803",  # argument name should be lowercase
+  "N806",  # variable in function should be lowercase
+  "N812",  # lowercase imported as non lowercase
+  "N999",  # Invalid module name: 'Browser'
+  "PLR0913",  # too many arguments
+]
+target-version = "py37"
+select = [
+  "E",
+  "F",
+  "W",
+  "C90",
+  "I",
+  "N",
+  "B",
+  "PYI",
+  "PL",
+  "PTH",
+  "UP",
+  "A",
+  "C4",
+  "DTZ",
+  "ISC",
+  "ICN",
+  "INP",
+  "PIE",
+  "T20",
+  "PYI",
+  "PT",
+  "RSE",
+  "RET",
+  "SIM",
+  "RUF"
+]
