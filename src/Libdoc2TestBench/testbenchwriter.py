@@ -358,6 +358,7 @@ class Libdoc2TestBenchWriter:
                 if (
                     not argument_kind
                     or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
+                    or argument_kind == ArgInfo.NAMED_ONLY_MARKER
                     or argument_kind == ArgInfo.NOTSET
                 ):
                     continue
@@ -435,6 +436,7 @@ class Libdoc2TestBenchWriter:
             if (
                 not argument_kind
                 or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
+                or argument_kind == ArgInfo.NAMED_ONLY_MARKER
                 or argument_kind == ArgInfo.NOTSET
             ):
                 continue
@@ -446,10 +448,15 @@ class Libdoc2TestBenchWriter:
             default_value = argument.get('defaultValue')
             if default_value is None:
                 default_value = self._get_arg_kind_default_value(argument_kind)
+                datatype.add_equivalence_class(datatype_name)
+            elif default_value == "${None}":
+                datatype.add_equivalence_class("None", {default_value})
+            else:
+                datatype.add_equivalence_class(datatype_name, {default_value})
             for type_name in argument.get('typedocs', {}):
                 members = set()
                 if type_name == "bool":
-                    members = {'True', 'False', '${True}', '${False}'}
+                    members = {'${True}', '${False}'}
                     datatype.add_equivalence_class(type_name, members)
                 elif type_name in self.enum_types:
                     members_list = next(
@@ -460,11 +467,6 @@ class Libdoc2TestBenchWriter:
                     ).get('members', [])
                     members = {member.get('name') for member in members_list}
                     datatype.add_equivalence_class(type_name, members)
-            if default_value == "None":
-                datatype.add_equivalence_class("None", {default_value})
-            else:
-                datatype.add_equivalence_class(datatype_name, {default_value})
-            datatype.add_equivalence_class(datatype_name)
             datatypes[datatype_name] = datatype
 
         writer.start('element', {'type': ElementTypes.subdivision.value})
