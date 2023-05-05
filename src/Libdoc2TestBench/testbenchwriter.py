@@ -341,7 +341,7 @@ class Libdoc2TestBenchWriter:
             writer.element('status', '3')
             writer.element(
                 'html-description',
-                f"<html>{keyword['doc'].replace('<br>', '<br/>').replace('<hr>', '<br>')}</html>",
+                f"<html>{keyword['doc'].replace('<br>', '<br/>').replace('<hr>', '<br/>')}</html>",
             )
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
@@ -373,10 +373,8 @@ class Libdoc2TestBenchWriter:
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
                 writer.element('datatype-name', type_name)
-                default_value = arg.get('defaultValue')
-                if default_value is None:
-                    default_value = self._get_arg_kind_default_value(argument_kind)
-                else:
+                default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(argument_kind)
+                if default_value is not None:
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
                     representative_pk = Element.all_elements.get(
@@ -445,14 +443,6 @@ class Libdoc2TestBenchWriter:
             datatype = datatypes.get(datatype_name) or DataType(
                 self.pk_generator, datatype_name, datatype_documentation
             )
-            default_value = argument.get('defaultValue')
-            if default_value is None:
-                default_value = self._get_arg_kind_default_value(argument_kind)
-                datatype.add_equivalence_class(datatype_name)
-            elif default_value == "${None}":
-                datatype.add_equivalence_class("None", {default_value})
-            else:
-                datatype.add_equivalence_class(datatype_name, {default_value})
             for type_name in argument.get('typedocs', {}):
                 members = set()
                 if type_name == "bool":
@@ -467,6 +457,13 @@ class Libdoc2TestBenchWriter:
                     ).get('members', [])
                     members = {member.get('name') for member in members_list}
                     datatype.add_equivalence_class(type_name, members)
+            default_value = argument.get('defaultValue') or self._get_arg_kind_default_value(argument_kind)
+            if default_value is None:
+                datatype.add_equivalence_class(datatype_name)
+            elif default_value == "${None}":
+                datatype.add_equivalence_class("None", {default_value})
+            else:
+                datatype.add_equivalence_class(datatype_name, {default_value})
             datatypes[datatype_name] = datatype
 
         writer.start('element', {'type': ElementTypes.subdivision.value})
@@ -488,7 +485,7 @@ class Libdoc2TestBenchWriter:
             writer.element('locker', '')
             writer.element(
                 'html-description',
-                data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br>'),
+                data_type.html_desc.replace('<br>', '<br/>').replace('<hr>', '<br/>'),
             )
             writer.element('historyPK', '-1')
             writer.element('identicalVersionPK', '-1')
