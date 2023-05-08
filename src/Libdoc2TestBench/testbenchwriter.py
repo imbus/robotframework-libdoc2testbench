@@ -506,6 +506,7 @@ class Libdoc2TestBenchWriter:
                     writer.element('pk', pk)
                     writer.element('name', representative)
                     writer.element('ordering', str(1024 * (idx + 1)))
+                    writer.element('values')
                     writer.end('representative')
                 writer.end('representatives')
                 writer.element('default-representative-ref', '', {'pk': default_pk})
