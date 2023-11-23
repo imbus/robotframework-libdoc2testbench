@@ -25,7 +25,7 @@ from typing import Dict, List, Optional, Set
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
-from robot.utils import XmlWriter
+from robot.utils import XmlWriter, NOT_SET
 
 
 class ElementTypes(enum.Enum):
@@ -359,7 +359,7 @@ class Libdoc2TestBenchWriter:
                     not argument_kind
                     or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
                     or argument_kind == ArgInfo.NAMED_ONLY_MARKER
-                    or argument_kind == ArgInfo.NOTSET
+                    or argument_kind == NOT_SET
                 ):
                     continue
                 writer.start('parameter')
@@ -373,7 +373,9 @@ class Libdoc2TestBenchWriter:
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
                 writer.element('datatype-name', type_name)
-                default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(argument_kind)
+                default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(
+                    argument_kind
+                )
                 if default_value is not None:
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
@@ -401,24 +403,25 @@ class Libdoc2TestBenchWriter:
         return argument.get('name', "")
 
     def _get_datatype_documentation(self, datatype_name, libdoc_dic: Dict[str, any]) -> str:
-        if datatype_name in self.enum_types:
+        if datatype_name in self.enum_types or datatype_name in self.typed_dicts:
             return next(
-                filter(lambda enum: enum['name'] == datatype_name, libdoc_dic['dataTypes']['enums'])
-            ).get('doc', '')
-        if datatype_name in self.typed_dicts:
-            return next(
-                filter(
-                    lambda typedDict: typedDict['name'] == datatype_name,
-                    libdoc_dic['dataTypes']['typedDicts'],
-                )
+                filter(lambda datatype: datatype['name'] == datatype_name, libdoc_dic['typedocs'])
             ).get('doc', '')
         return ""
 
     def _get_enum_types(self, libdoc_dic: Dict[str, any]) -> Set[str]:
-        return {enum.get('name') for enum in libdoc_dic.get('dataTypes').get('enums')}
+        return {
+            datatype.get('name')
+            for datatype in libdoc_dic.get('typedocs')
+            if datatype.get('type' == 'Enum')
+        }
 
     def _get_typed_dicts(self, libdoc_dic: Dict[str, any]) -> Set[str]:
-        return {enum.get('name') for enum in libdoc_dic.get('dataTypes').get('typedDicts')}
+        return {
+            datatype.get('name')
+            for datatype in libdoc_dic.get('typedocs')
+            if datatype.get('type' == 'TypedDict')
+        }
 
     def _write_data_types(self, libdoc: LibraryDoc, writer):
         libdoc_dic = libdoc.to_dictionary()
@@ -435,7 +438,7 @@ class Libdoc2TestBenchWriter:
                 not argument_kind
                 or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
                 or argument_kind == ArgInfo.NAMED_ONLY_MARKER
-                or argument_kind == ArgInfo.NOTSET
+                or argument_kind == NOT_SET
             ):
                 continue
             datatype_name = self._get_datatype_name(argument)
@@ -452,12 +455,14 @@ class Libdoc2TestBenchWriter:
                     members_list = next(
                         filter(
                             lambda enum: enum['name'] == datatype_name,
-                            libdoc_dic['dataTypes']['enums'],
+                            libdoc_dic['typedocs'],
                         )
                     ).get('members', [])
                     members = {member.get('name') for member in members_list}
                     datatype.add_equivalence_class(type_name, members)
-            default_value = argument.get('defaultValue') or self._get_arg_kind_default_value(argument_kind)
+            default_value = argument.get('defaultValue') or self._get_arg_kind_default_value(
+                argument_kind
+            )
             if default_value is None:
                 datatype.add_equivalence_class(datatype_name)
             elif default_value == "${None}":
