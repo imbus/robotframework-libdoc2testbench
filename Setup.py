@@ -38,7 +38,7 @@ setup(
         "Topic :: Software Development :: Testing :: Acceptance",
         "Framework :: Robot Framework",
     ],
-    install_requires=["robotframework >= 4.0.0"],
+    install_requires=["robotframework >= 7.0.0"],
     extras_require={'dev': ['isort', 'mypy', 'pylint', 'black']},
     python_requires=">=3.7",
 )

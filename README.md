@@ -145,7 +145,7 @@ Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframewo
 ___
 ### Dependencies
  - python >= 3.7
- - [robotframework](https://github.com/robotframework/robotframework) >= 4.0.0
+ - [robotframework](https://github.com/robotframework/robotframework) >= 7.0.0
 ___
 ### Contributing
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
