@@ -28,7 +28,7 @@ from robot.version import get_full_version as robot_version_print
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 
-__version__ = "1.2b6"
+__version__ = "1.2b7"
 
 
 def default_repr(self):
@@ -203,18 +203,14 @@ def create_project_dump(
 
     if xml_flag:
         outfile_path = (
-            outfile_path
-            if Path(outfile_path).suffix.lower() == ".xml"
-            else f"{outfile_path}.xml"
+            outfile_path if Path(outfile_path).suffix.lower() == ".xml" else f"{outfile_path}.xml"
         )
     else:
         outfile_path = (
-            outfile_path
-            if Path(outfile_path).suffix.lower() == '.zip'
-            else f"{outfile_path}.zip"
+            outfile_path if Path(outfile_path).suffix.lower() == '.zip' else f"{outfile_path}.zip"
         )
 
-    with Path(project_dump_path).open( "w", encoding='UTF-8') as outfile:
+    with Path(project_dump_path).open("w", encoding='UTF-8') as outfile:
         # The write method returns the last issued primary key.
         Libdoc2TestBenchWriter().write(
             libraries,
@@ -278,9 +274,9 @@ def print_stat(libdoc: LibraryDoc):
     print(f"{libdoc.type.lower()}: {libdoc.name}")
     print(f"  {len(libdoc.keywords)} Interactions")
 
-    data_types = libdoc.to_dictionary()["dataTypes"]
-    if data_types and data_types["enums"]:
-        print(f"  {len(data_types['enums'])} Data Types")
+    data_types = libdoc.to_dictionary()["typedocs"]
+    if data_types:
+        print(f"  {len(data_types)} Data Types")
 
 
 def create_libdoc(lib_or_res, lib_name, lib_version, docformat, specdocformat) -> LibraryDoc:

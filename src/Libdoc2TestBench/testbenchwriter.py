@@ -357,7 +357,7 @@ class Libdoc2TestBenchWriter:
                 writer.start('parameter')
                 writer.element('pk', self.pk_generator.get_pk())
                 writer.element('name', "return_value")
-                type_name =  keyword.get('returnType').get('name')
+                type_name = keyword.get('returnType').get('name')
                 writer.element('datatype-ref', '', {'pk': '-1'})
                 writer.element('definition-type', '0')
                 writer.element('use-type', '0')
@@ -458,7 +458,9 @@ class Libdoc2TestBenchWriter:
             )
             type_names = []
             if argument.get('type'):
-                type_names = [type.get('name') for type in argument.get('type').get('nested')] or [argument.get('type').get('name')]
+                type_names = [type.get('name') for type in argument.get('type').get('nested')] or [
+                    argument.get('type').get('name')
+                ]
             for type_name in type_names:
                 members = set()
                 if type_name == "bool":
