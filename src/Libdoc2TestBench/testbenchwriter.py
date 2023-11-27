@@ -353,6 +353,16 @@ class Libdoc2TestBenchWriter:
                 )
             writer.end('references')
             writer.start('parameters')
+            if keyword.get('returnType'):
+                writer.start('parameter')
+                writer.element('pk', self.pk_generator.get_pk())
+                writer.element('name', "return_value")
+                type_name =  keyword.get('returnType').get('name')
+                writer.element('datatype-ref', '', {'pk': '-1'})
+                writer.element('definition-type', '0')
+                writer.element('use-type', '0')
+                writer.element('datatype-name', type_name)
+                writer.end('parameter')
             for arg in keyword['args']:
                 argument_kind = arg.get('kind')
                 if (
@@ -446,7 +456,10 @@ class Libdoc2TestBenchWriter:
             datatype = datatypes.get(datatype_name) or DataType(
                 self.pk_generator, datatype_name, datatype_documentation
             )
-            for type_name in argument.get('typedocs', {}):
+            type_names = []
+            if argument.get('type'):
+                type_names = [type.get('name') for type in argument.get('type').get('nested')] or [argument.get('type').get('name')]
+            for type_name in type_names:
                 members = set()
                 if type_name == "bool":
                     members = {'${True}', '${False}'}
