@@ -25,7 +25,12 @@ from typing import Dict, List, Optional, Set
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
-from robot.utils import XmlWriter, NOT_SET
+from robot.utils import XmlWriter
+
+try:
+    from robot.utils import NOT_SET
+except ImportError:
+    NOT_SET = ArgInfo.NOTSET
 
 
 class ElementTypes(enum.Enum):

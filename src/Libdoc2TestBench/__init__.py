@@ -28,15 +28,18 @@ from robot.version import get_full_version as robot_version_print
 
 from .testbenchwriter import Libdoc2TestBenchWriter
 
+try:
+    from robot.utils import NOT_SET
+except ImportError:
+    NOT_SET = ArgInfo.NOTSET
+
 __version__ = "1.2b7"
 
 
 def default_repr(self):
-    if self.default is self.NOTSET:
+    if self.default is NOT_SET:
         return None
-    if (
-        isinstance(self.default, (bool, int, float)) or self.default is None
-    ):
+    if isinstance(self.default, (bool, int, float)) or self.default is None:
         return f"${{{self.default}}}"
     if self.default == "":  # noqa: PLC1901
         return "${Empty}"
