@@ -109,7 +109,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
-| `-h`, `--help` | show the help message and exit
+| `-h`, `--help` | Show the help message and exit
 | `-a`, `--attachment` |  Defines if a resource file will be attached to all interactions.
 | `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
 | `--libraryroot LIBRARYROOT`| Defines which subdivision name contains libraries.
@@ -121,6 +121,8 @@ There are several optional arguments, that follow the structure of the robot.lib
 |`-t TEMP`, `--temp TEMP`| Path to write temporary files to.|
 | `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
+| `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
+| `--resource_name_extension` | Adds an extension to the name of an Robot Framework resource subdivision in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
 ___
 
 ### Change log

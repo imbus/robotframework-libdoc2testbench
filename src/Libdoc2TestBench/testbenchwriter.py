@@ -21,6 +21,7 @@ import os
 from datetime import datetime, timezone
 from hashlib import sha1
 from pathlib import Path
+from re import sub
 from typing import Dict, List, Optional, Set
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
@@ -185,6 +186,8 @@ class Libdoc2TestBenchWriter:
         library_root: str,
         resource_root: str,
         attachment: bool,
+        library_name_extension: str,
+        resource_name_extension: str,
     ):
         """Writes an imbus TestBench readable xml-file.
 
@@ -217,7 +220,7 @@ class Libdoc2TestBenchWriter:
             self._start_root_subdivision(writer, library_root, 'Robot Framework Libraries')
             for libdoc in libraries:
                 Element.all_elements = {}
-                self._start_library_subdivision(libdoc, writer)
+                self._start_library_subdivision(libdoc, writer, library_name_extension)
                 self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
                 self._end_library_subdivision(writer)
@@ -226,7 +229,7 @@ class Libdoc2TestBenchWriter:
             self._start_root_subdivision(writer, resource_root, 'Robot Framework Resource Files')
             for libdoc in resources:
                 Element.all_elements = {}
-                self._start_library_subdivision(libdoc, writer)
+                self._start_library_subdivision(libdoc, writer, resource_name_extension)
                 self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
                 self._end_library_subdivision(writer)
@@ -312,10 +315,10 @@ class Libdoc2TestBenchWriter:
         writer.element('identicalVersionPK', '-1')
         writer.element('references', '')
 
-    def _start_library_subdivision(self, libdoc, writer):
+    def _start_library_subdivision(self, libdoc, writer, name_extension: str):
         writer.start('element', {'type': ElementTypes.subdivision.value})
         writer.element('pk', self.pk_generator.get_pk())
-        writer.element('name', libdoc.name)
+        writer.element('name', self.replace_invalid_characters(f"{libdoc.name}{name_extension}"))
         writer.element('uid', self._generate_uid('SD', libdoc.name))
         writer.element('locker', '')
         writer.element(
@@ -574,3 +577,6 @@ class Libdoc2TestBenchWriter:
         prefix = f"{repository_id}-{element_type}-"
         root_hash = sha1(f"{lib_name}.{element_name}".encode()).hexdigest()[:10]
         return f"{prefix}{root_hash}"
+
+    def replace_invalid_characters(self, name: str) -> str:
+        return sub(r'/."\'<>\\&,', "_", name)

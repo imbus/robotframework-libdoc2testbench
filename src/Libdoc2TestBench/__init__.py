@@ -118,6 +118,16 @@ def start_libdoc2testbench():
         action='store_true',
         help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
     )
+    parser.add_argument(
+        '--library_name_extension',
+        help='Adds an extension to the name of an Robot Framework Library Subdivision in TestBench.',
+        default=' [Robot-Library]',
+    )
+    parser.add_argument(
+        '--resource_name_extension',
+        help='Adds an extension to the name of an Robot Framework Resource Subdivision in TestBench.',
+        default=' [Robot-Resource]',
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -133,6 +143,8 @@ def start_libdoc2testbench():
     library_root = args.libraryroot
     resource_root = args.resourceroot
     attachment = args.attachment
+    library_name_extension = args.library_name_extension
+    resource_name_extension = args.resource_name_extension
 
     if info_flag:
         robot_version = robot_version_print()
@@ -157,6 +169,8 @@ def start_libdoc2testbench():
             library_root,
             resource_root,
             attachment,
+            library_name_extension,
+            resource_name_extension,
         )
 
 
@@ -173,6 +187,8 @@ def create_project_dump(
     library_root,
     resource_root,
     attachment: bool,
+    library_name_extension: str,
+    resource_name_extension: str,
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
@@ -223,6 +239,8 @@ def create_project_dump(
             library_root,
             resource_root,
             attachment,
+            library_name_extension,
+            resource_name_extension,
         )
 
         # If a file exists at the output path - get permission to overwrite.
