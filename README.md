@@ -144,8 +144,8 @@ ___
 Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
 ___
 ### Dependencies
- - python >= 3.7
- - [robotframework](https://github.com/robotframework/robotframework) >= 7.0.0
+ - python >= 3.8
+ - [robotframework](https://github.com/robotframework/robotframework) >= 5.0.0
 ___
 ### Contributing
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

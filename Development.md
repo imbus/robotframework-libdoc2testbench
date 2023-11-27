@@ -1,13 +1,13 @@
 # Contributing
 
 ## Development Environment Setup
-1. Install Python 3.7
+1. Install Python 3.8
 
 2. Open a terminal in this repository
 
 3. Create the virtual environment .venv
 
-    > /path/to/python37/python -m venv .venv
+    > /path/to/python38/python -m venv .venv
 
 4. Activate the virtual environment
 
@@ -47,7 +47,7 @@
         > pip-compile --extra dev
 
     - Runtime dependencies
-    
+
         > pip-compile
 
 4. Create a commit with `setup.py`, `requirements.txt`, `pyproject.toml` explaining why the dependency was added.

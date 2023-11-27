@@ -25,7 +25,7 @@ skip = ['external']
 [tool.mypy]
 # MyPy config
 # File reference here - http://mypy.readthedocs.io/en/latest/config_file.html#config-file
-python_version = 3.7
+python_version = 3.8
 warn_redundant_casts = true
 warn_unused_ignores = true
 warn_return_any = true
