@@ -188,6 +188,7 @@ class Libdoc2TestBenchWriter:
         attachment: bool,
         library_name_extension: str,
         resource_name_extension: str,
+        create_datatypes: bool
     ):
         """Writes an imbus TestBench readable xml-file.
 
@@ -221,7 +222,8 @@ class Libdoc2TestBenchWriter:
             for libdoc in libraries:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, library_name_extension)
-                self._write_data_types(libdoc, writer)
+                if create_datatypes:
+                    self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
                 self._end_library_subdivision(writer)
             self._end_root_subdivision(writer)
@@ -230,7 +232,8 @@ class Libdoc2TestBenchWriter:
             for libdoc in resources:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, resource_name_extension)
-                self._write_data_types(libdoc, writer)
+                if create_datatypes:
+                    self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
                 self._end_library_subdivision(writer)
             self._end_root_subdivision(writer)

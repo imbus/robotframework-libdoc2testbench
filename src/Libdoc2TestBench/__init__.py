@@ -128,6 +128,11 @@ def start_libdoc2testbench():
         help='Adds an extension to the name of an Robot Framework Resource Subdivision in TestBench.',
         default=' [Robot-Resource]',
     )
+    parser.add_argument(
+        '--create_datatypes',
+        action='store_true',
+        help='Creates datatypes for the used arguments of the Robot Framework keywords. Can be used instead of using generic parameters in TestBench.',
+    )
     args = parser.parse_args()
 
     lib = args.library_or_resource
@@ -145,6 +150,7 @@ def start_libdoc2testbench():
     attachment = args.attachment
     library_name_extension = args.library_name_extension
     resource_name_extension = args.resource_name_extension
+    create_datatypes = args.create_datatypes
 
     if info_flag:
         robot_version = robot_version_print()
@@ -171,6 +177,7 @@ def start_libdoc2testbench():
             attachment,
             library_name_extension,
             resource_name_extension,
+            create_datatypes
         )
 
 
@@ -189,6 +196,7 @@ def create_project_dump(
     attachment: bool,
     library_name_extension: str,
     resource_name_extension: str,
+    create_datatypes: bool
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
@@ -241,6 +249,7 @@ def create_project_dump(
             attachment,
             library_name_extension,
             resource_name_extension,
+            create_datatypes
         )
 
         # If a file exists at the output path - get permission to overwrite.

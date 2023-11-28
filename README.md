@@ -123,6 +123,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
 | `--resource_name_extension` | Adds an extension to the name of an Robot Framework resource subdivision in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
+| `--create_datatypes` | Creates TestBench datatypes for each Robot Framework Argument, instead of using the default generic datatype. ||
 ___
 
 ### Change log
