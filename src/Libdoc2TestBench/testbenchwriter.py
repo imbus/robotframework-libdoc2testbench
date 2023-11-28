@@ -188,7 +188,7 @@ class Libdoc2TestBenchWriter:
         attachment: bool,
         library_name_extension: str,
         resource_name_extension: str,
-        create_datatypes: bool
+        use_generic_types: bool,
     ):
         """Writes an imbus TestBench readable xml-file.
 
@@ -209,6 +209,7 @@ class Libdoc2TestBenchWriter:
             self.xml_attributes['repository'] = repo_id
 
         self.pk_generator = PKGenerator()
+        self.use_generic_types = use_generic_types
 
         self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
 
@@ -222,7 +223,7 @@ class Libdoc2TestBenchWriter:
             for libdoc in libraries:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, library_name_extension)
-                if create_datatypes:
+                if not self.use_generic_types:
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
                 self._end_library_subdivision(writer)
@@ -232,7 +233,7 @@ class Libdoc2TestBenchWriter:
             for libdoc in resources:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, resource_name_extension)
-                if create_datatypes:
+                if not self.use_generic_types:
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
                 self._end_library_subdivision(writer)
@@ -389,7 +390,6 @@ class Libdoc2TestBenchWriter:
                 writer.element('name', f"{argument_name_prefix}{arg['name']}")
                 type_name = self._get_datatype_name(arg)
                 typ_pk = Element.all_elements.get(type_name, '-1')
-
                 writer.element('datatype-ref', '', {'pk': typ_pk})
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
@@ -397,7 +397,7 @@ class Libdoc2TestBenchWriter:
                 default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(
                     argument_kind
                 )
-                if default_value is not None:
+                if default_value is not None and not self.use_generic_types:
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
                     representative_pk = Element.all_elements.get(

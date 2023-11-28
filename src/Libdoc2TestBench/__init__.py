@@ -129,9 +129,9 @@ def start_libdoc2testbench():
         default=' [Robot-Resource]',
     )
     parser.add_argument(
-        '--create_datatypes',
+        '--use_generic_types',
         action='store_true',
-        help='Creates datatypes for the used arguments of the Robot Framework keywords. Can be used instead of using generic parameters in TestBench.',
+        help='The created interactions are using generic parameters instead of one specific datatype for each keyword argument. Libdoc2testbench will not create any datatypes when this option is enabled.',
     )
     args = parser.parse_args()
 
@@ -150,7 +150,7 @@ def start_libdoc2testbench():
     attachment = args.attachment
     library_name_extension = args.library_name_extension
     resource_name_extension = args.resource_name_extension
-    create_datatypes = args.create_datatypes
+    use_generic_types = args.use_generic_types
 
     if info_flag:
         robot_version = robot_version_print()
@@ -177,7 +177,7 @@ def start_libdoc2testbench():
             attachment,
             library_name_extension,
             resource_name_extension,
-            create_datatypes
+            use_generic_types,
         )
 
 
@@ -196,7 +196,7 @@ def create_project_dump(
     attachment: bool,
     library_name_extension: str,
     resource_name_extension: str,
-    create_datatypes: bool
+    use_generic_types: bool,
 ):
     # Init attachments_path, for handling a resource
     attachments_path = None
@@ -249,7 +249,7 @@ def create_project_dump(
             attachment,
             library_name_extension,
             resource_name_extension,
-            create_datatypes
+            use_generic_types,
         )
 
         # If a file exists at the output path - get permission to overwrite.
