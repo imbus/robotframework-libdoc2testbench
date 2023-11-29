@@ -188,7 +188,7 @@ class Libdoc2TestBenchWriter:
         attachment: bool,
         library_name_extension: str,
         resource_name_extension: str,
-        use_generic_types: bool,
+        create_datatypes: str,
     ):
         """Writes an imbus TestBench readable xml-file.
 
@@ -209,7 +209,7 @@ class Libdoc2TestBenchWriter:
             self.xml_attributes['repository'] = repo_id
 
         self.pk_generator = PKGenerator()
-        self.use_generic_types = use_generic_types
+        self.create_datatypes = create_datatypes
 
         self.testobjectversion_tags["pk"] = self.pk_generator.get_pk()
 
@@ -223,7 +223,7 @@ class Libdoc2TestBenchWriter:
             for libdoc in libraries:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, library_name_extension)
-                if not self.use_generic_types:
+                if not self.create_datatypes == "NO_TYPES":
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
                 self._end_library_subdivision(writer)
@@ -233,7 +233,7 @@ class Libdoc2TestBenchWriter:
             for libdoc in resources:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, resource_name_extension)
-                if not self.use_generic_types:
+                if not self.create_datatypes == 'NO_TYPES':
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
                 self._end_library_subdivision(writer)
@@ -390,14 +390,17 @@ class Libdoc2TestBenchWriter:
                 writer.element('name', f"{argument_name_prefix}{arg['name']}")
                 type_name = self._get_datatype_name(arg)
                 typ_pk = Element.all_elements.get(type_name, '-1')
-                writer.element('datatype-ref', '', {'pk': typ_pk})
+                if self.create_datatypes == "ALL_TYPES":
+                    writer.element('datatype-ref', '', {'pk': typ_pk})
+                else:
+                    writer.element('datatype-ref', '', {'pk': '-1'})
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
                 writer.element('datatype-name', type_name)
                 default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(
                     argument_kind
                 )
-                if default_value is not None and not self.use_generic_types:
+                if default_value is not None and self.create_datatypes == "ALL_TYPES":
                     writer.start('default-value', {'type': 'representative'})
                     writer.element('type', '1')
                     representative_pk = Element.all_elements.get(
@@ -434,14 +437,14 @@ class Libdoc2TestBenchWriter:
         return {
             datatype.get('name')
             for datatype in libdoc_dic.get('typedocs')
-            if datatype.get('type' == 'Enum')
+            if datatype.get('type') == 'Enum'
         }
 
     def _get_typed_dicts(self, libdoc_dic: Dict[str, any]) -> Set[str]:
         return {
             datatype.get('name')
             for datatype in libdoc_dic.get('typedocs')
-            if datatype.get('type' == 'TypedDict')
+            if datatype.get('type') == 'TypedDict'
         }
 
     def _write_data_types(self, libdoc: LibraryDoc, writer):
@@ -462,19 +465,26 @@ class Libdoc2TestBenchWriter:
                 or argument_kind == NOT_SET
             ):
                 continue
-            datatype_name = self._get_datatype_name(argument)
-            datatype_documentation = self._get_datatype_documentation(datatype_name, libdoc_dic)
-            datatype = datatypes.get(datatype_name) or DataType(
-                self.pk_generator, datatype_name, datatype_documentation
-            )
             type_names = []
             if argument.get('type'):
                 type_names = [type.get('name') for type in argument.get('type').get('nested')] or [
                     argument.get('type').get('name')
                 ]
+            contains_enum = False
+            for type_name in type_names:
+                if type_name in self.enum_types:
+                    contains_enum = True
+            if not contains_enum and self.create_datatypes == "ONLY_ENUMS":
+                continue
+
+            datatype_name = self._get_datatype_name(argument)
+            datatype_documentation = self._get_datatype_documentation(datatype_name, libdoc_dic)
+            datatype = datatypes.get(datatype_name) or DataType(
+                self.pk_generator, datatype_name, datatype_documentation
+            )
             for type_name in type_names:
                 members = set()
-                if type_name == "bool":
+                if type_name == "bool" and not self.create_datatypes == "ONLY_ENUMS":
                     members = {'${True}', '${False}'}
                     datatype.add_equivalence_class(type_name, members)
                 elif type_name in self.enum_types:
@@ -489,12 +499,13 @@ class Libdoc2TestBenchWriter:
             default_value = argument.get('defaultValue') or self._get_arg_kind_default_value(
                 argument_kind
             )
-            if default_value is None:
-                datatype.add_equivalence_class(datatype_name)
-            elif default_value == "${None}":
-                datatype.add_equivalence_class("None", {default_value})
-            else:
-                datatype.add_equivalence_class(datatype_name, {default_value})
+            if self.create_datatypes == "ALL_TYPES":
+                if default_value is None:
+                    datatype.add_equivalence_class(datatype_name)
+                elif default_value == "${None}":
+                    datatype.add_equivalence_class("None", {default_value})
+                else:
+                    datatype.add_equivalence_class(datatype_name, {default_value})
             datatypes[datatype_name] = datatype
 
         writer.start('element', {'type': ElementTypes.subdivision.value})
