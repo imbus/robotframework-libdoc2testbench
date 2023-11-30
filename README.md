@@ -123,7 +123,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
 | `--resource_name_extension` | Adds an extension to the name of an Robot Framework resource subdivision in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
-| `--create_datatypes` | The created interactions are using generic parameters instead of one specific datatype for each keyword argument. Libdoc2testbench will not create any datatypes when this option is enabled. ||
+| `--create_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (`ALL_TYPES`), only the enum types (`ONLY_ENUM`) or if no datatype should be created and only generic parameters are used (`NO_TYPES`). The default is `ALL_TYPES`. ||
 ___
 
 ### Change log

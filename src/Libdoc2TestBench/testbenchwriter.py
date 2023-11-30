@@ -223,6 +223,8 @@ class Libdoc2TestBenchWriter:
             for libdoc in libraries:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, library_name_extension)
+                self.enum_types = set(self._get_enum_types(libdoc.to_dictionary()))
+                self.typed_dicts = self._get_typed_dicts(libdoc.to_dictionary())
                 if not self.create_datatypes == "NO_TYPES":
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer)
@@ -233,6 +235,8 @@ class Libdoc2TestBenchWriter:
             for libdoc in resources:
                 Element.all_elements = {}
                 self._start_library_subdivision(libdoc, writer, resource_name_extension)
+                self.enum_types = set(self._get_enum_types(libdoc.to_dictionary()))
+                self.typed_dicts = self._get_typed_dicts(libdoc.to_dictionary())
                 if not self.create_datatypes == 'NO_TYPES':
                     self._write_data_types(libdoc, writer)
                 self._write_interactions(libdoc, writer, attachment)
@@ -449,8 +453,6 @@ class Libdoc2TestBenchWriter:
 
     def _write_data_types(self, libdoc: LibraryDoc, writer):
         libdoc_dic = libdoc.to_dictionary()
-        self.enum_types = set(self._get_enum_types(libdoc_dic))
-        self.typed_dicts = self._get_typed_dicts(libdoc_dic)
 
         datatypes = {}
         keyword_arguments = [
