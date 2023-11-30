@@ -394,25 +394,24 @@ class Libdoc2TestBenchWriter:
                 writer.element('name', f"{argument_name_prefix}{arg['name']}")
                 type_name = self._get_datatype_name(arg)
                 typ_pk = Element.all_elements.get(type_name, '-1')
-                if self.create_datatypes == "ALL_TYPES":
-                    writer.element('datatype-ref', '', {'pk': typ_pk})
-                else:
-                    writer.element('datatype-ref', '', {'pk': '-1'})
+                writer.element('datatype-ref', '', {'pk': typ_pk})
+
                 writer.element('definition-type', '0')
                 writer.element('use-type', '1')
                 writer.element('datatype-name', type_name)
                 default_value = arg.get('defaultValue') or self._get_arg_kind_default_value(
                     argument_kind
                 )
-                if default_value is not None and self.create_datatypes == "ALL_TYPES":
-                    writer.start('default-value', {'type': 'representative'})
-                    writer.element('type', '1')
+                if default_value is not None:
                     representative_pk = Element.all_elements.get(
                         f"{type_name}.{default_value}", '-1'
                     )
-                    writer.element('representative-ref', '', {'pk': representative_pk})
-                    writer.element('representative-name', default_value)
-                    writer.end('default-value')
+                    if representative_pk != "-1":
+                        writer.start('default-value', {'type': 'representative'})
+                        writer.element('type', '1')
+                        writer.element('representative-ref', '', {'pk': representative_pk})
+                        writer.element('representative-name', default_value)
+                        writer.end('default-value')
                 writer.end('parameter')
             writer.end('parameters')
             writer.end('element')  # close interaction tag
@@ -425,7 +424,7 @@ class Libdoc2TestBenchWriter:
         return None
 
     def _get_datatype_name(self, argument: Dict[str, str]) -> str:
-        for argument_type in argument.get('typedocs', {}).values():
+        for argument_type in self.get_argument_datatype_names(argument):
             if argument_type in self.enum_types or argument_type in self.typed_dicts:
                 return argument_type
         return argument.get('name', "")
@@ -451,6 +450,14 @@ class Libdoc2TestBenchWriter:
             if datatype.get('type') == 'TypedDict'
         }
 
+    def get_argument_datatype_names(self, argument):
+        type_names = []
+        if argument.get('type'):
+            type_names = [type.get('name') for type in argument.get('type').get('nested')] or [
+                argument.get('type').get('name')
+            ]
+        return type_names
+
     def _write_data_types(self, libdoc: LibraryDoc, writer):
         libdoc_dic = libdoc.to_dictionary()
 
@@ -467,11 +474,7 @@ class Libdoc2TestBenchWriter:
                 or argument_kind == NOT_SET
             ):
                 continue
-            type_names = []
-            if argument.get('type'):
-                type_names = [type.get('name') for type in argument.get('type').get('nested')] or [
-                    argument.get('type').get('name')
-                ]
+            type_names = self.get_argument_datatype_names(argument)
             contains_enum = False
             for type_name in type_names:
                 if type_name in self.enum_types:
