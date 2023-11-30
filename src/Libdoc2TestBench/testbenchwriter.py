@@ -593,4 +593,4 @@ class Libdoc2TestBenchWriter:
         return f"{prefix}{root_hash}"
 
     def replace_invalid_characters(self, name: str) -> str:
-        return sub(r'/."\'<>\\&,', "_", name)
+        return sub(r'[/."\'<>\\&,]', "_", name)
