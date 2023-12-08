@@ -3,9 +3,10 @@ from typing import List, Optional
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
+
 try:
     from robot.running.arguments.typeinfo import TypeInfo
-except:
+except ImportError:
     from robot.running.arguments.argumentspec import TypeInfo
 
 from libdoc2testbench.pk_generator import PKGenerator
@@ -81,8 +82,7 @@ class DatatypeCreator:
             for type in argument_type.nested:
                 types.extend(self.get_argument_types(type))
             return types
-        else:
-            return [argument_type]
+        return [argument_type]
 
     def _get_equivalence_class(self, datatype: Datatype, name: str) -> EquivalenceClass:
         eqc = next(
