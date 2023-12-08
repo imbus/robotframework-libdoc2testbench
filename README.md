@@ -42,7 +42,7 @@ The generated zip-file can be imported via the `Import Project...` command in th
 
 ![Import Project Demo](res/projectmanagement_view.gif)
 
-Afterward you'll find your imported RF library, the different interactions and the datatypes in the Test Elements view:
+Afterwards you'll find your imported RF library, the different interactions and the datatypes in the Test Elements view:
 
 ![Test Element View](res/test_element_view.png)
 

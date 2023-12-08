@@ -2,45 +2,6 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.pylint.FORMAT]
-max-line-length = 100
-max-module-lines = 1000
-
-[tool.pylint.MASTER]
-ignore = "tests"
-
-[tool.pylint.BASIC]
-argument-naming-style = 'snake_case'
-attr-naming-style = 'snake_case'
-class-naming-style = 'PascalCase'
-const-naming-style = 'UPPER_CASE'
-function-naming-style = 'snake_case'
-method-naming-style = 'snake_case'
-module-naming-style = 'snake_case'
-variable-naming-style = 'snake_case'
-
-[tool.pylint.DESIGN]
-# Maximum number of arguments for function / method.
-max-args = 5
-# Maximum number of statements in function / method body.
-max-statements = 50
-
-[tool.pylint."MESSAGES CONTROL"]
-disable = '''
-    logging-fstring-interpolation,
-    fixme,
-    import-error,
-    missing-module-docstring,
-    missing-class-docstring,
-    missing-function-docstring,
-    too-many-instance-attributes,
-    too-few-public-methods,
-'''
-
-[tool.pylint.REFACTORING]
-# Maximum number of nested blocks for function / method body
-max-nested-blocks = 3
-
 [tool.mypy]
 python_version = "3.8"
 ignore_missing_imports = true
@@ -58,14 +19,6 @@ line-length = 100
 include_trailing_comma = false
 skip-string-normalization = true
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra --spec"
-testpaths = [
-    "tests",
-]
-spec_header_format = "{test_case}"
-
 [tool.ruff]
 unfixable = [
     "UP007"
@@ -77,18 +30,17 @@ exclude = [
   "tests"
 ]
 ignore = [
-  "B008",  # do not perform function calls in argument defaults
-  "E501",  # line too long
-  # "N815",  # mixedCase variable in class scope
-  # "N803",  # argument name should be lowercase
-  # "N806",  # variable in function should be lowercase
-  # "N812",  # lowercase imported as non lowercase
-  # "N999",  # Invalid module name: 'Browser'
-  "PLR0913",  # too many arguments
-  # "T201",  # Print statements
-  "UP007",
+  "B008",
+  "B904",
+  "E501",
+  "N815",
+  "N803",
+  "N806",
+  "N812",
+  "N999",
+  "PLR0913",
 ]
-target-version = "py37"
+target-version = "py38"
 select = [
   "E",
   "F",
