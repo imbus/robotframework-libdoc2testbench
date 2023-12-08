@@ -9,16 +9,16 @@ from libdoc2testbench.import_generator import create_project_dump
 
 def run():
     args = parser.parse_args()
-    library = args.library_or_resource
     version_info = args.version
     if version_info:
         print(
-            f'Libdoc2TestBench {__version__} [Robot Framework {robot.version.get_full_version()}]'
+            f"Libdoc2TestBench {__version__} [Robot Framework {robot.version.get_full_version()}]"
         )
         sys.exit()
+    library = args.library_or_resource
     if not library:
         sys.exit(
-            'Libdoc2TestBench: error: The following arguments are required: library_or_resource'
+            "Libdoc2TestBench error: Missing required argument 'library_or_resource'"
         )
     create_project_dump(args)
 

@@ -115,7 +115,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `--libraryroot LIBRARYROOT`| Defines which subdivision name contains libraries.
 | `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
 | `-n NAME`, `--name NAME` 	| Sets the name of the documented library or resource. 	|  	|
-| `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `itba`.||
+| `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
 | `--resourceroot RESOURCEROOT` | Defines which subdivision name contains resources.
 | `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|

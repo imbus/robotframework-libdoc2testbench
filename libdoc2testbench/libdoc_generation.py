@@ -45,7 +45,7 @@ def get_library_documentations(
     documentation_format: str,
     spec_format: str,
 ) -> List[LibraryDoc]:
-    if not Path(library_or_path).exists() or Path(library_or_path).suffix == ".resource":
+    if not Path(library_or_path).exists() or Path(library_or_path).suffix in [".resource", ".py"]:
         libdocs = [
             create_libdoc(
                 library_or_path, library_name, library_version, documentation_format, spec_format
