@@ -1,42 +1,13 @@
-[tool.black]
-line-length = 100
-skip-string-normalization=true
-target-version = ['py38']
-exclude = '''
-(
-  /(
-      \.eggs
-    | \.git
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | build
-    | dist
-  )/
-)
-'''
-
-[tool.isort]
-profile = "black"
-src_paths = ["src"]
-skip_gitignore = true
-skip = ['external']
-
-[tool.mypy]
-# MyPy config
-# File reference here - http://mypy.readthedocs.io/en/latest/config_file.html#config-file
-python_version = 3.8
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_return_any = true
-warn_unused_configs = true
-strict = true
-disallow_subclassing_any = false
-ignore_missing_imports = true
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
 [tool.pylint.FORMAT]
 max-line-length = 100
 max-module-lines = 1000
+
+[tool.pylint.MASTER]
+ignore = "tests"
 
 [tool.pylint.BASIC]
 argument-naming-style = 'snake_case'
@@ -66,22 +37,56 @@ disable = '''
     too-few-public-methods,
 '''
 
+[tool.pylint.REFACTORING]
+# Maximum number of nested blocks for function / method body
+max-nested-blocks = 3
+
+[tool.mypy]
+python_version = "3.8"
+ignore_missing_imports = true
+no_implicit_optional = true
+strict_optional = true
+warn_return_any = true
+warn_no_return = true
+warn_unreachable = true
+pretty = true
+exclude = ["test_libraries/"]
+
+[tool.black]
+target-version = ['py38']
+line-length = 100
+include_trailing_comma = false
+skip-string-normalization = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra --spec"
+testpaths = [
+    "tests",
+]
+spec_header_format = "{test_case}"
+
 [tool.ruff]
-unfixable = []
+unfixable = [
+    "UP007"
+]
 exclude = [
   "__pycache__",
+  "config.py",
+  "model.py",
+  "tests"
 ]
 ignore = [
   "B008",  # do not perform function calls in argument defaults
-  # "B904",  # TODO only temporary. should be fixed.
   "E501",  # line too long
-  "N815",  # mixedCase variable in class scope
-  "N803",  # argument name should be lowercase
-  "N806",  # variable in function should be lowercase
-  "N812",  # lowercase imported as non lowercase
-  "N999",  # Invalid module name: 'Browser'
+  # "N815",  # mixedCase variable in class scope
+  # "N803",  # argument name should be lowercase
+  # "N806",  # variable in function should be lowercase
+  # "N812",  # lowercase imported as non lowercase
+  # "N999",  # Invalid module name: 'Browser'
   "PLR0913",  # too many arguments
-  "T201",  # Print statements
+  # "T201",  # Print statements
+  "UP007",
 ]
 target-version = "py37"
 select = [

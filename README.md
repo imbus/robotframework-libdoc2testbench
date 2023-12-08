@@ -118,15 +118,18 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `itba`.||
 | `--resourceroot RESOURCEROOT` | Defines which subdivision name contains resources.
 | `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
-|`-t TEMP`, `--temp TEMP`| Path to write temporary files to.|
-| `-x`, `--xml`| Writes a single xml-file instead of the zipfile.|
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
 | `--resource_name_extension` | Adds an extension to the name of an Robot Framework resource subdivision in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
-| `--create_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (`ALL_TYPES`), only the enum types (`ONLY_ENUM`) or if no datatype should be created and only generic parameters are used (`NO_TYPES`). The default is `ALL_TYPES`. ||
+| `--created_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (`ALL`), only the enum types (`ENUM`) or if no datatype should be created and only generic parameters are used (`NONE`). The default is `ALL`. ||
 ___
 
 ### Change log
+* 1.2
+    * Added library keyword return types with RobotFramework version > 7
+    * Added datatype creation options with default values
+    * Removed `--xml` cli option
+    * Removed `--temp` cli option
 * 1.0rc2
     * ADDED optional arguments for:
         * xml-file output (instead of zip-file)
