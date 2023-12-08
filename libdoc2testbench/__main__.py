@@ -4,7 +4,7 @@ import robot
 
 from libdoc2testbench import __version__
 from libdoc2testbench.arg_parser import parser
-from libdoc2testbench.import_generator import create_project_dump
+from libdoc2testbench.testbench_import_generator import TestBenchImportGenerator
 
 
 def run():
@@ -17,10 +17,8 @@ def run():
         sys.exit()
     library = args.library_or_resource
     if not library:
-        sys.exit(
-            "Libdoc2TestBench error: Missing required argument 'library_or_resource'"
-        )
-    create_project_dump(args)
+        sys.exit("Libdoc2TestBench error: Missing required argument 'library_or_resource'")
+    TestBenchImportGenerator(args).create_project_dump()
 
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ parser.add_argument(
     '--libversion',
     help="Sets the version of the documented library or resource written in the description.",
 )
-parser.add_argument('-n', '--name', help="Sets the name of the documented library or resource.")
+parser.add_argument('--libname', help="Sets the name of the documented library or resource.")
 parser.add_argument(
     '-r',
     '--repository',

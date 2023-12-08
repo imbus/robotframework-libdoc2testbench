@@ -1,18 +1,9 @@
-import sys
 from pathlib import Path
 from re import sub
 from typing import List
 from zipfile import ZipFile
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
-
-
-def check_for_existing_file(file: Path) -> None:
-    if file.is_file():
-        user_input = input(f"'{file}' already exists... overwrite? y/n? \n")
-        if user_input.lower() not in ['y', 'yes']:
-            sys.exit('Stopped execution - file was not changed.')
-        Path(file).unlink()
 
 
 def write_zip_file(
