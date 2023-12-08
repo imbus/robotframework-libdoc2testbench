@@ -1,11 +1,11 @@
 import sys
 from argparse import Namespace
 from pathlib import Path
+from zipfile import ZipFile
 
 from libdoc2testbench.datatype_creator import CreatedDatatypes
 from libdoc2testbench.libdoc_generation import get_library_documentations
 from libdoc2testbench.project_dump_builder import ProjectDumpBuilder
-from libdoc2testbench.utils import write_zip_file
 
 
 class TestBenchImportGenerator:
@@ -71,11 +71,15 @@ class TestBenchImportGenerator:
         if dump_path.suffix.lower() == ".xml":
             Path(self.temp_path).rename(str(dump_path))
         else:
-            write_zip_file(
-                dump_path,
-                self.temp_path,
-                list(filter(lambda libdoc: libdoc.type == "RESOURCE", self.libdocs)),
-                self.attachment,
-            )
+            self.write_zip_dump(dump_path)
             self.temp_path.unlink()
         print(f"Successfully written TestBench project dump to: \n{Path(dump_path).resolve()}")
+
+    def write_zip_dump(self, project_dump_zip: Path):
+        resources = list(filter(lambda libdoc: libdoc.type == "RESOURCE", self.libdocs))
+        with ZipFile(project_dump_zip, 'w') as zip_file:
+            zip_file.write(self.temp_path, 'project-dump.xml')
+            if resources and self.attachment:
+                for libdoc in resources:
+                    if Path(libdoc.source).exists():
+                        zip_file.write(libdoc.source, "attachments/" + Path(libdoc.source).name)

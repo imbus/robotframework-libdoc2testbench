@@ -67,18 +67,16 @@ class ProjectDumpBuilder:
     ):
         # libdoc = InteractionCreator(library_doc, self.pk_generator, self.uid_generator)
         self.reference_pk = None
-        is_resource = bool(libdoc.type == 'RESOURCE')
         library_name = replace_invalid_characters(libdoc.name)
-        subdivision_name = (
-            f"{library_name}{resource_name_extension}"
-            if is_resource
-            else f"{library_name}{library_name_extension}"
-        )
-        if is_resource:
-            resource_subdivision = self.create_resource_subdivision(libdoc, subdivision_name)
+        if libdoc.type == 'RESOURCE':
+            resource_subdivision = self.create_resource_subdivision(
+                libdoc, f"{library_name}{resource_name_extension}"
+            )
             self.resource_root_subdivision.element.append(resource_subdivision)
         else:
-            library_subdivision = self.create_library_subdivision(libdoc, subdivision_name)
+            library_subdivision = self.create_library_subdivision(
+                libdoc, f"{library_name}{library_name_extension}"
+            )
             self.library_root_subdivision.element.append(library_subdivision)
 
     def create_library_subdivision(self, libdoc: LibraryDoc, subdivision_name: str) -> Subdivision:
