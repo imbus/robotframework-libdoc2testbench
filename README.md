@@ -110,13 +110,13 @@ There are several optional arguments, that follow the structure of the robot.lib
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
 | `-h`, `--help` | Show the help message and exit
-| `-a`, `--attachment` |  Defines if a resource file will be attached to all interactions.
+| `-a`, `--attachment` |  Defines if the resource file, which has been used to generate the interactions, will be attached to those interactions.
 | `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
-| `--libraryroot LIBRARYROOT`| Defines which subdivision name contains libraries.
+| `--libraryroot LIBRARYROOT`| Defines the subdivision name which contains the imported Robot Framework libraries. Default is ``RF``,
+| `--resourceroot RESOURCEROOT` |Defines the subdivision name which contains the imported Robot Framework resources. Default is ``Resource``.
 | `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
-| `-n NAME`, `--name NAME` 	| Sets the name of the documented library or resource. 	|  	|
+| `--libname` 	| Sets the name of the documented library or resource. 	|  	|
 | `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
-| `--resourceroot RESOURCEROOT` | Defines which subdivision name contains resources.
 | `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
