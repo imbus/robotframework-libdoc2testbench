@@ -138,11 +138,9 @@ class ProjectDumpBuilder:
         interaction_creator = InteractionCreator(
             libdoc, datatype_creator.datatypes, self.pk_generator, self.uid_generator
         )
+        interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         library_subdivision.element.extend(
-            [
-                interaction_creator.get_interaction_from_keyword(keyword, self.reference_pk)
-                for keyword in libdoc.keywords
-            ]
+            interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         )
         return library_subdivision
 

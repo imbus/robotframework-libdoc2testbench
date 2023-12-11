@@ -1,17 +1,12 @@
 from typing import List, Optional
 
-try:
-    from robot.running.arguments.typeinfo import TypeInfo
-except ImportError:
-    try:
-        from robot.running.arguments.argumentspec import TypeInfo
-    except ImportError:
-        from robot.running.arguments.argumentspec import ArgInfo as TypeInfo
+
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
 
 from libdoc2testbench.datatype_storage import DatatypeStorage
+from libdoc2testbench.argument_api import get_argument_type_names, TypeInfo
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
     Interaction,
@@ -63,6 +58,10 @@ class InteractionCreator:
         self._ordering += 1024
         return self._ordering
 
+    def get_interactions(self, keywords: List[KeywordDoc], reference_pk: Optional[str]) -> List[Interaction]:
+        interactions = {keyword.name: self.get_interaction_from_keyword(keyword, reference_pk) for keyword in keywords}
+        return dict(sorted(interactions.items())).values()
+
     def get_interaction_from_keyword(
         self, keyword: KeywordDoc, reference_pk: Optional[str]
     ) -> Interaction:
@@ -103,17 +102,6 @@ class InteractionCreator:
             datatype_ref=Ref(pk=self.datatypes.get_datatype("assigned_variable").pk),
         )
 
-    def get_argument_types(self, argument_type: TypeInfo) -> List[TypeInfo]:
-        try:
-            types = []
-            if argument_type.is_union:
-                for type in argument_type.nested:
-                    types.extend(self.get_argument_types(type))
-                return types
-        except AttributeError:  # above block does not work for rf5
-            return [argument_type]
-        return [argument_type]
-
     def get_interaction_parameters(self, keyword: KeywordDoc) -> Parameters:
         parameters = Parameters(parameter=[])
         return_parameter = self.get_return_type_parameter(keyword)
@@ -128,11 +116,9 @@ class InteractionCreator:
             ):
                 continue
             try:
-                arg_type_names = [
-                    arg_type.name for arg_type in self.get_argument_types(argument.type)
-                ]
+                arg_type_names = get_argument_type_names(argument.type)
             except AttributeError:
-                arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument)]
+                arg_type_names = get_argument_type_names(argument)
             for arg_type in arg_type_names:
                 datatype = self.datatypes.get_datatype(arg_type)
                 break
