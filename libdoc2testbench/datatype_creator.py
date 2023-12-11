@@ -2,12 +2,12 @@ from enum import Enum
 from typing import Dict, List, Optional
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
-from robot.running.arguments.argumentspec import ArgInfo
 
 from libdoc2testbench.argument_api import (
     TypeInfo,
     get_arg_kind_default_value,
     get_argument_type_names,
+    requires_datatype_creation,
 )
 from libdoc2testbench.datatype_storage import DatatypeStorage
 from libdoc2testbench.pk_generator import PKGenerator
@@ -28,11 +28,6 @@ from libdoc2testbench.project_dump_model.model_api import (
     create_subdivision,
 )
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
-
-try:
-    from robot.utils import NOT_SET
-except ImportError:
-    NOT_SET = ArgInfo.NOTSET
 
 
 class CreatedDatatypes(Enum):
@@ -66,17 +61,6 @@ class DatatypeCreator:
     def ordering(self):
         self._ordering += 1024
         return self._ordering
-
-    def _requires_datatype_creation(self, argument) -> bool:
-        argument_kind = argument.kind
-        if (
-            not argument_kind
-            or argument_kind == ArgInfo.POSITIONAL_ONLY_MARKER
-            or argument_kind == ArgInfo.NAMED_ONLY_MARKER
-            or argument_kind == NOT_SET
-        ):
-            return False
-        return True
 
     def create_datatype_subdivision(self, library_name: str) -> Subdivision:
         datatype_subdivision = create_subdivision(
@@ -125,7 +109,7 @@ class DatatypeCreator:
     def get_remaining_datatypes(self) -> None:
         for keyword in self.libdoc.keywords:
             for arg in keyword.args:
-                if not self._requires_datatype_creation(arg):
+                if not requires_datatype_creation(arg):
                     continue
                 datatype = self.get_datatype_from_argument(arg)
                 try:
