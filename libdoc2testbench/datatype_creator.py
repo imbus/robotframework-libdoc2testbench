@@ -48,7 +48,6 @@ class DatatypeCreator:
         self.created_datatypes = created_datatypes
         self.pk_generator = pk_generator
         self.uid_generator = uid_generator
-        self._ordering = -1024
         self.datatypes = DatatypeStorage(pk_generator, uid_generator)
 
     @property
@@ -137,8 +136,8 @@ class DatatypeCreator:
 
     def get_enum_datatypes(self) -> List[Datatype]:
         enums = filter(lambda type_doc: type_doc.type == 'Enum', self.libdoc.type_docs)
+        self._ordering = 0
         for enum in enums:
-            eqc_ordering = self.ordering
             representatives = Representatives(
                 representative=[
                     create_representative(
@@ -151,7 +150,7 @@ class DatatypeCreator:
             )
             enum_equivalence_class = EquivalenceClass(
                 pk=self.pk_generator.get_pk(),
-                ordering=eqc_ordering,
+                ordering="1024",
                 name=enum.name,
                 description=enum.name,
                 representatives=representatives,
@@ -196,7 +195,7 @@ class DatatypeCreator:
                         pk=self.pk_generator.get_pk(),
                         name="assigned_variable",
                         description=r"regex:(?<robotVariableSyntax>\$\{.*})",
-                        ordering="0",
+                        ordering="1024",
                         default_representative_ref=Ref(pk="-1"),
                         representatives=Representatives(
                             representative=[
@@ -219,7 +218,7 @@ class DatatypeCreator:
                                 create_representative(
                                     pk=self.pk_generator.get_pk(),
                                     name="",
-                                    ordering="3072",
+                                    ordering="1024",
                                 )
                             ]
                         ),
@@ -242,7 +241,7 @@ class DatatypeCreator:
                         pk=self.pk_generator.get_pk(),
                         name="default_value",
                         description="",
-                        ordering="0",
+                        ordering="1024",
                         representatives=Representatives(representative=[]),
                         default_representative_ref=Ref(pk="-1"),
                     )

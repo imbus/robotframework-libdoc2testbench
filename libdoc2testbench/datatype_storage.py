@@ -46,7 +46,7 @@ class DatatypeStorage:
             try:
                 ordering = int(datatype.equivalence_classes.equivalence_class[-1].ordering) + 1024
             except:
-                ordering = 0
+                ordering = 1024
             eqc = create_equivalence_class(
                 pk=self.pk_generator.get_pk(),
                 name=name,
@@ -75,7 +75,7 @@ class DatatypeStorage:
             try:
                 ordering = int(equivalence_class.representatives.representative[-1]) + 1024
             except:
-                ordering = 0
+                ordering = 1024
             equivalence_class.representatives.representative.append(
                 create_representative(
                     pk=self.pk_generator.get_pk(), name=str(member), ordering=str(ordering)
