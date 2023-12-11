@@ -16,7 +16,7 @@ parser.add_argument(
     'outfile_path',
     nargs='?',
     default='',
-    help="Optional arguemnt to specify the path of the created project-dump. Can be a .zip or .xml file. Default = project-dump.zip",
+    help="Optional argument to specify the path of the created project-dump. Can be a .zip or .xml file. Default = project-dump.zip",
 )
 parser.add_argument(
     '-a',
@@ -58,7 +58,6 @@ parser.add_argument(
     choices=['HTML', 'RAW'],
     help="Specifies the documentation format used with XML and JSON spec files. `raw` means preserving the original documentation format and `html` means converting documentation to HTML. The default is `html`.",
 )
-
 parser.add_argument(
     '--version',
     '--info',
