@@ -127,7 +127,7 @@ class ProjectDumpBuilder:
             pk=self.pk_generator.get_pk(),
             name=subdivision_name,
             uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, libdoc.name),
-            # html_description=f"<html><p> Import of {library_name} {libdoc.get_library_version()}</p>{libdoc.get_library_documentation()}</html>",
+            html_description=f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>",
         )
         datatype_creator = DatatypeCreator(
             libdoc, self.pk_generator, self.uid_generator, self.created_datatypes

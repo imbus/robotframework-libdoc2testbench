@@ -15,7 +15,7 @@ class TestBenchImportGenerator:
         self.attachment: bool = cli_args.attachment
         self.library_root: str = cli_args.libraryroot
         self.resource_root: str = cli_args.resourceroot
-        self.doc_format: str = cli_args.specdocformat
+        self.doc_format: str = cli_args.docformat
         self.spec_format: str = cli_args.specdocformat
         self.lib_name: str = cli_args.libname
         self.lib_version: str = cli_args.libversion

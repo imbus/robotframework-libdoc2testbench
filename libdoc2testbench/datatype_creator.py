@@ -162,7 +162,7 @@ class DatatypeCreator:
                 uid=self.uid_generator.get_uid(
                     TestElementType.DATATYPE, enum.name, self.libdoc.name
                 ),
-                # html_description=enum.doc,
+                html_description=f"<html>{enum.doc}</html>",
                 equivalence_classes=EquivalenceClasses(equivalence_class=[enum_equivalence_class]),
             )
             self.datatypes.add_datatype(enum.name, datatype)
@@ -177,7 +177,7 @@ class DatatypeCreator:
                 uid=self.uid_generator.get_uid(
                     TestElementType.DATATYPE, typed_dict.name, self.libdoc.name
                 ),
-                # html_description=enum.doc,
+                html_description=f"<html>{typed_dict.doc}</html>",
                 equivalence_classes=EquivalenceClasses(equivalence_class=[]),
             )
             self.datatypes.add_datatype(typed_dict.name, datatype)

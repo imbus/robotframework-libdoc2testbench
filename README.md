@@ -25,7 +25,7 @@ There are three main use cases:
 ![LibDoc2TestBench command demo](res/example_usage.gif)
 
 For the most basic usage you just have to pass a Robot Framework library as an argument to the ``Libdoc2TestBench`` command.
-`Libdoc2TestBench`` will create a zip-file with the name of the library in the current working directory. This zip-file can be imported to TestBench in order to use Robot Framework keywords from within TestBench.
+``Libdoc2TestBench`` will create a zip-file with the name of the library in the current working directory. This zip-file can be imported to TestBench in order to use Robot Framework keywords from within TestBench.
 
 ```bash
 Libdoc2TestBench <LIBRARY>
