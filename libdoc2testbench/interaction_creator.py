@@ -7,6 +7,7 @@ from robot.running.arguments.argumentspec import ArgInfo
 from libdoc2testbench.argument_api import (
     get_arg_kind_default_value,
     get_argument_type_names,
+    requires_datatype_creation,
 )
 from libdoc2testbench.datatype_storage import DatatypeStorage
 from libdoc2testbench.pk_generator import PKGenerator
@@ -49,12 +50,6 @@ class InteractionCreator:
             ArgInfo.VAR_NAMED: "** ",
             ArgInfo.NAMED_ONLY: "- ",
         }
-        self._ordering = -1024
-
-    @property
-    def ordering(self):
-        self._ordering += 1024
-        return self._ordering
 
     def get_interactions(
         self, keywords: List[KeywordDoc], reference_pk: Optional[str]
@@ -111,12 +106,7 @@ class InteractionCreator:
         if return_parameter:
             parameters.parameter.append(return_parameter)
         for argument in keyword.args:
-            if (
-                not argument.kind
-                or argument.kind == ArgInfo.POSITIONAL_ONLY_MARKER
-                or argument.kind == ArgInfo.NAMED_ONLY_MARKER
-                or argument.kind == NOT_SET
-            ):
+            if not requires_datatype_creation(argument):
                 continue
             try:
                 arg_type_names = get_argument_type_names(argument.type)

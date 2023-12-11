@@ -36,7 +36,7 @@ def get_arg_kind_default_value(argument_kind: str) -> Optional[str]:
     return None
 
 
-def requires_datatype_creation(self, argument) -> bool:
+def requires_datatype_creation(argument) -> bool:
     argument_kind = argument.kind
     if (
         not argument_kind
