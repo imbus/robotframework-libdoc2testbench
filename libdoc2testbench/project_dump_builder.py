@@ -65,7 +65,6 @@ class ProjectDumpBuilder:
     def add_library_subdivision(
         self, libdoc: LibraryDoc, library_name_extension: str, resource_name_extension: str
     ):
-        # libdoc = InteractionCreator(library_doc, self.pk_generator, self.uid_generator)
         self.reference_pk = None
         library_name = replace_invalid_characters(libdoc.name)
         if libdoc.type == 'RESOURCE':

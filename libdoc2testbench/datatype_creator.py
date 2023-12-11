@@ -4,10 +4,12 @@ from typing import Dict, List, Optional
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
 
+from libdoc2testbench.argument_api import (
+    TypeInfo,
+    get_arg_kind_default_value,
+    get_argument_type_names,
+)
 from libdoc2testbench.datatype_storage import DatatypeStorage
-
-
-from libdoc2testbench.argument_api import get_argument_type_names, TypeInfo
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
     Datatype,
@@ -120,13 +122,6 @@ class DatatypeCreator:
             datatype = self.default_datatype
         return datatype
 
-    def get_arg_kind_default_value(self, argument_kind: str) -> Optional[str]:
-        if argument_kind == ArgInfo.VAR_POSITIONAL:
-            return "@{EMPTY}"
-        if argument_kind == ArgInfo.VAR_NAMED:
-            return "&{EMPTY}"
-        return None
-
     def get_remaining_datatypes(self) -> None:
         for keyword in self.libdoc.keywords:
             for arg in keyword.args:
@@ -137,7 +132,7 @@ class DatatypeCreator:
                     arg_type_names = get_argument_type_names(arg.type)
                 except AttributeError:
                     arg_type_names = get_argument_type_names(arg)
-                arg_kind_default = self.get_arg_kind_default_value(arg.kind)
+                arg_kind_default = get_arg_kind_default_value(arg.kind)
                 equivalence_class = self.datatypes.get_equivalence_class(
                     datatype.name, datatype.name
                 )

@@ -1,12 +1,14 @@
 from typing import List, Optional
 
-
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
 
+from libdoc2testbench.argument_api import (
+    get_arg_kind_default_value,
+    get_argument_type_names,
+)
 from libdoc2testbench.datatype_storage import DatatypeStorage
-from libdoc2testbench.argument_api import get_argument_type_names, TypeInfo
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
     Interaction,
@@ -48,18 +50,19 @@ class InteractionCreator:
             ArgInfo.NAMED_ONLY: "- ",
         }
         self._ordering = -1024
-        self.argument_kind_default = {
-            ArgInfo.VAR_POSITIONAL: "@{EMPTY}",
-            ArgInfo.VAR_NAMED: "&{EMPTY}",
-        }
 
     @property
     def ordering(self):
         self._ordering += 1024
         return self._ordering
 
-    def get_interactions(self, keywords: List[KeywordDoc], reference_pk: Optional[str]) -> List[Interaction]:
-        interactions = {keyword.name: self.get_interaction_from_keyword(keyword, reference_pk) for keyword in keywords}
+    def get_interactions(
+        self, keywords: List[KeywordDoc], reference_pk: Optional[str]
+    ) -> List[Interaction]:
+        interactions = {
+            keyword.name: self.get_interaction_from_keyword(keyword, reference_pk)
+            for keyword in keywords
+        }
         return dict(sorted(interactions.items())).values()
 
     def get_interaction_from_keyword(
@@ -125,7 +128,7 @@ class InteractionCreator:
             if not datatype:
                 datatype = self.datatypes.get_datatype(argument.name)
             if not datatype:
-                if argument.default_repr or self.argument_kind_default.get(argument.kind):
+                if argument.default_repr or get_arg_kind_default_value(argument.kind):
                     datatype = self.datatypes.get_datatype("default_value")
             datatype_pk = datatype.pk if datatype else "-1"
 
@@ -136,7 +139,7 @@ class InteractionCreator:
                 definition_type=DefinitionType.DETAILED,
                 use_type=UseType.CALL_BY_VALUE,
             )
-            default_value = argument.default_repr or self.argument_kind_default.get(argument.kind)
+            default_value = argument.default_repr or get_arg_kind_default_value(argument.kind)
 
             repr = (
                 self.datatypes.get_representative(datatype.name, default_value)
