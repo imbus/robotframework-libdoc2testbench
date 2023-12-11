@@ -3,7 +3,10 @@ from typing import List, Optional
 try:
     from robot.running.arguments.typeinfo import TypeInfo
 except ImportError:
-    from robot.running.arguments.argumentspec import TypeInfo
+    try:
+        from robot.running.arguments.argumentspec import TypeInfo
+    except ImportError:
+        from robot.running.arguments.argumentspec import ArgInfo as TypeInfo
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
@@ -101,11 +104,14 @@ class InteractionCreator:
         )
 
     def get_argument_types(self, argument_type: TypeInfo) -> List[TypeInfo]:
-        types = []
-        if argument_type.is_union:
-            for type in argument_type.nested:
-                types.extend(self.get_argument_types(type))
-            return types
+        try:
+            types = []
+            if argument_type.is_union:
+                for type in argument_type.nested:
+                    types.extend(self.get_argument_types(type))
+                return types
+        except AttributeError:  # above block does not work for rf5
+            return [argument_type]
         return [argument_type]
 
     def get_interaction_parameters(self, keyword: KeywordDoc) -> Parameters:
@@ -121,8 +127,12 @@ class InteractionCreator:
                 or argument.kind == NOT_SET
             ):
                 continue
-
-            arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument.type)]
+            try:
+                arg_type_names = [
+                    arg_type.name for arg_type in self.get_argument_types(argument.type)
+                ]
+            except AttributeError:
+                arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument)]
             for arg_type in arg_type_names:
                 datatype = self.datatypes.get_datatype(arg_type)
                 break

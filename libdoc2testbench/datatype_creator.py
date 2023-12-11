@@ -9,7 +9,10 @@ from libdoc2testbench.datatype_storage import DatatypeStorage
 try:
     from robot.running.arguments.typeinfo import TypeInfo
 except ImportError:
-    from robot.running.arguments.argumentspec import TypeInfo
+    try:
+        from robot.running.arguments.argumentspec import TypeInfo
+    except ImportError:
+        from robot.running.arguments.argumentspec import ArgInfo as TypeInfo
 
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
@@ -98,15 +101,21 @@ class DatatypeCreator:
         return datatype_subdivision
 
     def get_argument_types(self, argument_type: TypeInfo) -> List[TypeInfo]:
-        types = []
-        if argument_type.is_union:
-            for type in argument_type.nested:
-                types.extend(self.get_argument_types(type))
-            return types
+        try:
+            types = []
+            if argument_type.is_union:
+                for type in argument_type.nested:
+                    types.extend(self.get_argument_types(type))
+                return types
+        except AttributeError:  # above block does not work for rf5
+            return [argument_type]
         return [argument_type]
 
     def get_datatype_from_argument(self, argument: TypeInfo) -> Optional[str]:
-        arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument.type)]
+        try:
+            arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument.type)]
+        except AttributeError:
+            arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument)]
         for arg_type in arg_type_names:
             datatype = self.datatypes.get_datatype(arg_type)
             if datatype:
@@ -141,7 +150,12 @@ class DatatypeCreator:
                 if not self._requires_datatype_creation(arg):
                     continue
                 datatype = self.get_datatype_from_argument(arg)
-                arg_type_names = [arg_type.name for arg_type in self.get_argument_types(arg.type)]
+                try:
+                    arg_type_names = [
+                        arg_type.name for arg_type in self.get_argument_types(arg.type)
+                    ]
+                except AttributeError:
+                    arg_type_names = [arg_type.name for arg_type in self.get_argument_types(arg)]
                 arg_kind_default = self.get_arg_kind_default_value(arg.kind)
                 equivalence_class = self.datatypes.get_equivalence_class(
                     datatype.name, datatype.name
