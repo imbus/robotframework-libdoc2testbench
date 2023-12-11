@@ -1,10 +1,14 @@
-from typing import Optional
+from typing import List, Optional
 
+try:
+    from robot.running.arguments.typeinfo import TypeInfo
+except ImportError:
+    from robot.running.arguments.argumentspec import TypeInfo
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
 
-from libdoc2testbench.datatype_creator import DatatypeCreator
+from libdoc2testbench.datatype_storage import DatatypeStorage
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
     Interaction,
@@ -30,9 +34,14 @@ except ImportError:
 
 class InteractionCreator:
     def __init__(
-        self, libdoc: LibraryDoc, pk_generator: PKGenerator, uid_generator: UidGenerator
+        self,
+        libdoc: LibraryDoc,
+        datatypes: DatatypeStorage,
+        pk_generator: PKGenerator,
+        uid_generator: UidGenerator,
     ) -> None:
         self.libdoc = libdoc
+        self.datatypes = datatypes
         self.pk_generator = pk_generator
         self.uid_generator = uid_generator
         self.parameter_name_prefix = {
@@ -41,6 +50,10 @@ class InteractionCreator:
             ArgInfo.NAMED_ONLY: "- ",
         }
         self._ordering = -1024
+        self.argument_kind_default = {
+            ArgInfo.VAR_POSITIONAL: "@{EMPTY}",
+            ArgInfo.VAR_NAMED: "&{EMPTY}",
+        }
 
     @property
     def ordering(self):
@@ -48,9 +61,8 @@ class InteractionCreator:
         return self._ordering
 
     def get_interaction_from_keyword(
-        self, keyword: KeywordDoc, datatype_creator: DatatypeCreator, reference_pk: Optional[str]
+        self, keyword: KeywordDoc, reference_pk: Optional[str]
     ) -> Interaction:
-        self.datatype_creator = datatype_creator
         references = (
             References(reference_ref=[Ref(pk=reference_pk)]) if reference_pk else References()
         )
@@ -77,10 +89,24 @@ class InteractionCreator:
             default_value=DefaultValue(
                 type_value="1",
                 type_attribute=DefaultValueType.REPRESENTATIVE,
-                representative_ref=Ref(pk=self.datatype_creator.return_value_default_repr),
+                representative_ref=Ref(
+                    pk=self.datatypes.get_equivalence_class(
+                        "assigned_variable", "no_assignment", False
+                    )
+                    .representatives.representative[0]
+                    .pk
+                ),
             ),
-            datatype_ref=Ref(pk=self.datatype_creator.return_value_datatype_pk),
+            datatype_ref=Ref(pk=self.datatypes.get_datatype("assigned_variable").pk),
         )
+
+    def get_argument_types(self, argument_type: TypeInfo) -> List[TypeInfo]:
+        types = []
+        if argument_type.is_union:
+            for type in argument_type.nested:
+                types.extend(self.get_argument_types(type))
+            return types
+        return [argument_type]
 
     def get_interaction_parameters(self, keyword: KeywordDoc) -> Parameters:
         parameters = Parameters(parameter=[])
@@ -95,34 +121,18 @@ class InteractionCreator:
                 or argument.kind == NOT_SET
             ):
                 continue
-            datatype_pk = "-1"
-            if not self.datatype_creator.argument_corresponds_to_enum(
-                argument
-            ) and not self.datatype_creator.argument_corresponds_to_typed_dict(argument):
-                datatype = next(
-                    filter(
-                        lambda datatype: datatype.name == argument.name,
-                        self.datatype_creator.standard_types,
-                    ),
-                    None,
-                )
-                if not datatype and argument.default_repr:
-                    datatype = self.datatype_creator.default_datatype
-                datatype_pk = datatype.pk if datatype else "-1"
-            else:
-                for arg_type in self.datatype_creator.get_argument_types(argument.type):
-                    datatype = next(
-                        filter(
-                            lambda dt: dt.name == arg_type.name,
-                            [*self.datatype_creator.enums, *self.datatype_creator.typed_dicts],
-                        ),
-                        None,
-                    )
-                    if not datatype and argument.default_repr:
-                        datatype = self.datatype_creator.default_datatype
-                    if datatype:
-                        datatype_pk = datatype.pk
-                        break
+
+            arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument.type)]
+            for arg_type in arg_type_names:
+                datatype = self.datatypes.get_datatype(arg_type)
+                break
+            if not datatype:
+                datatype = self.datatypes.get_datatype(argument.name)
+            if not datatype:
+                if argument.default_repr or self.argument_kind_default.get(argument.kind):
+                    datatype = self.datatypes.get_datatype("default_value")
+            datatype_pk = datatype.pk if datatype else "-1"
+
             parameter = Parameter(
                 pk=self.pk_generator.get_pk(),
                 name=f"{self.parameter_name_prefix.get(argument.kind, '')}{argument.name}",
@@ -130,22 +140,10 @@ class InteractionCreator:
                 definition_type=DefinitionType.DETAILED,
                 use_type=UseType.CALL_BY_VALUE,
             )
-            default_value = (
-                argument.default_repr
-                or self.datatype_creator.get_arg_kind_default_value(argument.kind)
-            )
+            default_value = argument.default_repr or self.argument_kind_default.get(argument.kind)
+
             repr = (
-                next(
-                    filter(
-                        lambda representative: representative.name == default_value,
-                        [
-                            repr
-                            for eq in datatype.equivalence_classes.equivalence_class
-                            for repr in eq.representatives.representative
-                        ],
-                    ),
-                    None,
-                )
+                self.datatypes.get_representative(datatype.name, default_value)
                 if datatype
                 else None
             )

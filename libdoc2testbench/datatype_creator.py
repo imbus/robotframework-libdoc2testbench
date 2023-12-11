@@ -1,8 +1,10 @@
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
 from robot.running.arguments.argumentspec import ArgInfo
+
+from libdoc2testbench.datatype_storage import DatatypeStorage
 
 try:
     from robot.running.arguments.typeinfo import TypeInfo
@@ -17,7 +19,6 @@ from libdoc2testbench.project_dump_model import (
 from libdoc2testbench.project_dump_model.itb_project_export import (
     EquivalenceClass,
     Ref,
-    Representative,
     Representatives,
     Subdivision,
 )
@@ -54,11 +55,13 @@ class DatatypeCreator:
         self.pk_generator = pk_generator
         self.uid_generator = uid_generator
         self._ordering = -1024
-        self.typed_dict_names: List = []
-        self.enum_names: List = []
-        self.standard_types: List = []
-        self.typed_dicts: List = []
-        self.default_datatype = None
+        self.datatypes = DatatypeStorage(pk_generator, uid_generator)
+
+    @property
+    def default_datatype(self):
+        if not self.datatypes.get_datatype("default_value"):
+            self.create_default_datatype()
+        return self.datatypes.get_datatype("default_value")
 
     @property
     def ordering(self):
@@ -76,6 +79,24 @@ class DatatypeCreator:
             return False
         return True
 
+    def create_datatype_subdivision(self, library_name: str) -> Subdivision:
+        datatype_subdivision = create_subdivision(
+            pk=self.pk_generator.get_pk(),
+            name="_Datatypes",
+            uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, "_Datatypes", library_name),
+        )
+        self.get_return_value_datatype()
+        if self.created_datatypes.value in [
+            CreatedDatatypes.ALL.value,
+            CreatedDatatypes.ENUMS.value,
+        ]:
+            self.get_enum_datatypes()
+        if self.created_datatypes.value == CreatedDatatypes.ALL.value:
+            self.get_typed_dict_datatypes()
+        self.get_remaining_datatypes()
+        datatype_subdivision.element.extend(self.datatypes.get_datatypes())
+        return datatype_subdivision
+
     def get_argument_types(self, argument_type: TypeInfo) -> List[TypeInfo]:
         types = []
         if argument_type.is_union:
@@ -84,180 +105,28 @@ class DatatypeCreator:
             return types
         return [argument_type]
 
-    def _get_equivalence_class(self, datatype: Datatype, name: str) -> EquivalenceClass:
-        eqc = next(
-            filter(lambda eq: eq.name == name, datatype.equivalence_classes.equivalence_class),
-            None,
-        )
-        if not eqc:
-            eqc = create_equivalence_class(
+    def get_datatype_from_argument(self, argument: TypeInfo) -> Optional[str]:
+        arg_type_names = [arg_type.name for arg_type in self.get_argument_types(argument.type)]
+        for arg_type in arg_type_names:
+            datatype = self.datatypes.get_datatype(arg_type)
+            if datatype:
+                return datatype
+        datatype = self.datatypes.get_datatype(argument.name)
+        if datatype:
+            return datatype
+        if self.created_datatypes.value == CreatedDatatypes.ALL.value:
+            datatype = create_datatype(
                 pk=self.pk_generator.get_pk(),
-                name=name,
-                ordering=self.ordering,
-                default_representative_ref=Ref(pk="-1"),
-                representatives=Representatives(representative=[]),
+                name=argument.name,
+                uid=self.uid_generator.get_uid(
+                    TestElementType.DATATYPE, argument.name, self.libdoc.name
+                ),
+                equivalence_classes=EquivalenceClasses(equivalence_class=[]),
             )
-            datatype.equivalence_classes.equivalence_class.append(eqc)
-        return eqc
-
-    def argument_corresponds_to_enum(self, argument: ArgInfo) -> bool:
-        arg_type_names = [arg.name for arg in self.get_argument_types(argument.type)]
-        intersections = list(set(arg_type_names).intersection(self.enum_names))
-        if intersections:
-            return True
-        return False
-
-    def argument_corresponds_to_typed_dict(self, argument: TypeInfo) -> bool:
-        arg_type_names = [arg.name for arg in self.get_argument_types(argument.type)]
-        intersections = list(set(arg_type_names).intersection(self.typed_dict_names))
-        if intersections:
-            return True
-        return False
-
-    def get_enum_type_name(self, argument_types: List[TypeInfo]) -> Optional[str]:
-        enum = next(filter(lambda type: type.name in self.enum_names, argument_types), None)
-        if enum:
-            return str(enum.name)
-        return None
-
-    def get_typed_dict_name(self, argument_types: List[TypeInfo]) -> Optional[str]:
-        typed_dict = next(
-            filter(lambda type: type.name in self.typed_dict_names, argument_types), None
-        )
-        if typed_dict:
-            return str(typed_dict.name)
-        return None
-
-    def add_enum_default_values(self) -> None:
-        for keyword in self.libdoc.keywords:
-            for argument in keyword.args:
-                if not self._requires_datatype_creation(argument):
-                    continue
-                if not self.argument_corresponds_to_enum(argument):
-                    continue
-                arg_types = self.get_argument_types(argument.type)
-                enum_type = self.get_enum_type_name(arg_types)
-                arg_type_names = [arg_type.name for arg_type in arg_types]
-                datatype = next(filter(lambda datatype: datatype.name == enum_type, self.enums))
-                equivalence_class = self._get_equivalence_class(datatype, enum_type)
-                if argument.default_repr and argument.default_repr not in [
-                    "${None}",
-                    '${True}',
-                    '${False}',
-                ]:
-                    self.add_equivalence_class_members(equivalence_class, [argument.default_repr])
-                arg_kind_default = self.get_arg_kind_default_value(argument.kind)
-                if arg_kind_default:
-                    equivalence_class = self._get_equivalence_class(datatype, enum_type)
-                    self.add_equivalence_class_members(equivalence_class, [arg_kind_default])
-                if argument.default_repr in ['${True}', '${False}'] or "bool" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "bool")
-                    self.add_equivalence_class_members(equivalence_class, ['${True}', '${False}'])
-                if argument.default_repr == "${None}" or "None" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "None")
-                    self.add_equivalence_class_members(equivalence_class, ["${None}"])
-
-    def add_typed_dict_default_values(self) -> None:
-        for keyword in self.libdoc.keywords:
-            for argument in keyword.args:
-                if not self._requires_datatype_creation(argument):
-                    continue
-                if not self.argument_corresponds_to_typed_dict(argument):
-                    continue
-                arg_types = self.get_argument_types(argument.type)
-                typed_dict_name = self.get_typed_dict_name(arg_types)
-                arg_type_names = [arg_type.name for arg_type in arg_types]
-                datatype = next(
-                    filter(lambda datatype: datatype.name == typed_dict_name, self.typed_dicts)
-                )
-                equivalence_class = self._get_equivalence_class(datatype, typed_dict_name)
-                if argument.default_repr and argument.default_repr not in [
-                    "${None}",
-                    '${True}',
-                    '${False}',
-                ]:
-                    self.add_equivalence_class_members(equivalence_class, [argument.default_repr])
-                arg_kind_default = self.get_arg_kind_default_value(argument.kind)
-                if arg_kind_default:
-                    equivalence_class = self._get_equivalence_class(datatype, typed_dict_name)
-                    self.add_equivalence_class_members(equivalence_class, [arg_kind_default])
-                if argument.default_repr in ['${True}', '${False}'] or "bool" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "bool")
-                    self.add_equivalence_class_members(equivalence_class, ['${True}', '${False}'])
-                if argument.default_repr == "${None}" or "None" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "None")
-                    self.add_equivalence_class_members(equivalence_class, ["${None}"])
-
-    def add_equivalence_class_members(
-        self, equivalence_class: EquivalenceClass, members: List[str]
-    ) -> None:
-        existing_representatives = [
-            repr.name for repr in self._get_ec_representatives(equivalence_class)
-        ]
-        for member in members:
-            if member in existing_representatives:
-                continue
-            equivalence_class.representatives.representative.append(
-                create_representative(
-                    pk=self.pk_generator.get_pk(), name=str(member), ordering=self.ordering
-                )
-            )
-
-    def get_standard_datatypes(self) -> List[Datatype]:
-        datatypes: List[Datatype] = []
-        for keyword in self.libdoc.keywords:
-            for argument in keyword.args:
-                if not self._requires_datatype_creation(argument):
-                    continue
-                if self.argument_corresponds_to_enum(
-                    argument
-                ) or self.argument_corresponds_to_typed_dict(argument):
-                    continue
-                arg_types = self.get_argument_types(argument.type)
-                arg_type_names = [arg_type.name for arg_type in arg_types]
-                datatype = next(filter(lambda dt: dt.name == argument.name, datatypes), None)
-                if (
-                    self.created_datatypes == CreatedDatatypes.ENUMS
-                    or self.created_datatypes == CreatedDatatypes.NONE
-                ):
-                    datatype = self.default_datatype
-                if not datatype:
-                    datatype = create_datatype(
-                        pk=self.pk_generator.get_pk(),
-                        name=argument.name,
-                        uid=self.uid_generator.get_uid(
-                            TestElementType.DATATYPE, argument.name, self.libdoc.name
-                        ),
-                        equivalence_classes=EquivalenceClasses(equivalence_class=[]),
-                    )
-                    datatypes.append(datatype)
-                equivalence_class = (
-                    self._get_equivalence_class(datatype, "default_value")
-                    if datatype.name == "default_value"
-                    else self._get_equivalence_class(datatype, argument.name)
-                )
-                if argument.default_repr and argument.default_repr not in [
-                    "${None}",
-                    '${True}',
-                    '${False}',
-                ]:
-                    self.add_equivalence_class_members(equivalence_class, [argument.default_repr])
-                arg_kind_default = self.get_arg_kind_default_value(argument.kind)
-                if arg_kind_default:
-                    equivalence_class = (
-                        self._get_equivalence_class(datatype, "default_value")
-                        if datatype.name == "default_value"
-                        else self._get_equivalence_class(datatype, argument.name)
-                    )
-                    self.add_equivalence_class_members(equivalence_class, [arg_kind_default])
-                if argument.default_repr in ['${True}', '${False}'] or "bool" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "bool")
-                    self.add_equivalence_class_members(equivalence_class, ['${True}', '${False}'])
-                if argument.default_repr == "${None}" or "None" in arg_type_names:
-                    equivalence_class = self._get_equivalence_class(datatype, "None")
-                    self.add_equivalence_class_members(equivalence_class, ["${None}"])
-        self.standard_types = datatypes
-        return datatypes
+            self.datatypes.add_datatype(argument.name, datatype)
+        else:
+            datatype = self.default_datatype
+        return datatype
 
     def get_arg_kind_default_value(self, argument_kind: str) -> Optional[str]:
         if argument_kind == ArgInfo.VAR_POSITIONAL:
@@ -266,32 +135,34 @@ class DatatypeCreator:
             return "&{EMPTY}"
         return None
 
-    def _get_ec_representatives(self, ec: EquivalenceClass) -> List[Representative]:
-        if not ec.representatives or not ec.representatives.representative:
-            return []
-        return ec.representatives.representative
-
-    def get_typed_dict_datatypes(self) -> List[Datatype]:
-        typed_dicts = filter(lambda type_doc: type_doc.type == 'TypedDict', self.libdoc.type_docs)
-        datatypes = []
-        for typed_dict in typed_dicts:
-            datatype = create_datatype(
-                pk=self.pk_generator.get_pk(),
-                name=typed_dict.name,
-                uid=self.uid_generator.get_uid(
-                    TestElementType.DATATYPE, typed_dict.name, self.libdoc.name
-                ),
-                # html_description=enum.doc,
-                equivalence_classes=EquivalenceClasses(equivalence_class=[]),
-            )
-            datatypes.append(datatype)
-            self.typed_dict_names.append(datatype.name)
-        self.typed_dicts = datatypes
-        return datatypes
+    def get_remaining_datatypes(self) -> None:
+        for keyword in self.libdoc.keywords:
+            for arg in keyword.args:
+                if not self._requires_datatype_creation(arg):
+                    continue
+                datatype = self.get_datatype_from_argument(arg)
+                arg_type_names = [arg_type.name for arg_type in self.get_argument_types(arg.type)]
+                arg_kind_default = self.get_arg_kind_default_value(arg.kind)
+                equivalence_class = self.datatypes.get_equivalence_class(
+                    datatype.name, datatype.name
+                )
+                if arg.default_repr and arg.default_repr not in ["${None}", '${True}', '${False}']:
+                    self.datatypes.add_equivalence_class_members(
+                        datatype.name, equivalence_class.name, [arg.default_repr]
+                    )
+                if arg_kind_default:
+                    self.datatypes.add_equivalence_class_members(
+                        datatype.name, datatype.name, [arg_kind_default]
+                    )
+                if arg.default_repr in ['${True}', '${False}'] or "bool" in arg_type_names:
+                    self.datatypes.add_equivalence_class_members(
+                        datatype.name, "bool", ['${True}', '${False}']
+                    )
+                if arg.default_repr == "${None}" or "None" in arg_type_names:
+                    self.datatypes.add_equivalence_class_members(datatype.name, "None", ["${None}"])
 
     def get_enum_datatypes(self) -> List[Datatype]:
         enums = filter(lambda type_doc: type_doc.type == 'Enum', self.libdoc.type_docs)
-        datatypes = []
         for enum in enums:
             eqc_ordering = self.ordering
             representatives = Representatives(
@@ -321,16 +192,26 @@ class DatatypeCreator:
                 # html_description=enum.doc,
                 equivalence_classes=EquivalenceClasses(equivalence_class=[enum_equivalence_class]),
             )
-            datatypes.append(datatype)
-            self.enum_names.append(datatype.name)
-        self.enums = datatypes
-        return datatypes
+            self.datatypes.add_datatype(enum.name, datatype)
+
+    def get_typed_dict_datatypes(self) -> List[Datatype]:
+        typed_dicts = filter(lambda type_doc: type_doc.type == 'TypedDict', self.libdoc.type_docs)
+        self.typed_dict_dicts: Dict[str, Datatype] = {}
+        for typed_dict in typed_dicts:
+            datatype = create_datatype(
+                pk=self.pk_generator.get_pk(),
+                name=typed_dict.name,
+                uid=self.uid_generator.get_uid(
+                    TestElementType.DATATYPE, typed_dict.name, self.libdoc.name
+                ),
+                # html_description=enum.doc,
+                equivalence_classes=EquivalenceClasses(equivalence_class=[]),
+            )
+            self.datatypes.add_datatype(typed_dict.name, datatype)
 
     def get_return_value_datatype(self) -> Datatype:
-        self.return_value_datatype_pk = self.pk_generator.get_pk()
-        self.return_value_default_repr = self.pk_generator.get_pk()
-        return create_datatype(
-            pk=self.return_value_datatype_pk,
+        datatype = create_datatype(
+            pk=self.pk_generator.get_pk(),
             name="assigned_variable",
             uid=self.uid_generator.get_uid(
                 TestElementType.DATATYPE, "assigned_variable", self.libdoc.name
@@ -362,7 +243,7 @@ class DatatypeCreator:
                         representatives=Representatives(
                             representative=[
                                 create_representative(
-                                    pk=self.return_value_default_repr,
+                                    pk=self.pk_generator.get_pk(),
                                     name="",
                                     ordering="3072",
                                 )
@@ -372,11 +253,11 @@ class DatatypeCreator:
                 ]
             ),
         )
+        self.datatypes.add_datatype("assigned_variable", datatype)
 
-    def get_default_datatype(self) -> Datatype:
-        self.default_value_datatype_pk = self.pk_generator.get_pk()
-        self.default_datatype = create_datatype(
-            pk=self.default_value_datatype_pk,
+    def create_default_datatype(self) -> Datatype:
+        datatype = create_datatype(
+            pk=self.pk_generator.get_pk(),
             name="default_value",
             uid=self.uid_generator.get_uid(
                 TestElementType.DATATYPE, "default_value", self.libdoc.name
@@ -394,28 +275,4 @@ class DatatypeCreator:
                 ]
             ),
         )
-        return self.default_datatype
-
-    def create_datatype_subdivision(self, library_name: str) -> Subdivision:
-        datatype_subdivision = create_subdivision(
-            pk=self.pk_generator.get_pk(),
-            name="_Datatypes",
-            uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, "_Datatypes", library_name),
-        )
-        datatype_subdivision.element.append(self.get_return_value_datatype())
-        if (
-            self.created_datatypes == CreatedDatatypes.NONE
-            or self.created_datatypes == CreatedDatatypes.ENUMS
-        ):
-            datatype_subdivision.element.append(self.get_default_datatype())
-        if (
-            self.created_datatypes == CreatedDatatypes.ALL
-            or self.created_datatypes == CreatedDatatypes.ENUMS
-        ):
-            datatype_subdivision.element.extend(self.get_enum_datatypes())
-            self.add_enum_default_values()
-        if self.created_datatypes == CreatedDatatypes.ALL:
-            datatype_subdivision.element.extend(self.get_typed_dict_datatypes())
-            self.add_typed_dict_default_values()
-        datatype_subdivision.element.extend(self.get_standard_datatypes())
-        return datatype_subdivision
+        self.datatypes.add_datatype("default_value", datatype)

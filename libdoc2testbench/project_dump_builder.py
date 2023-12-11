@@ -135,12 +135,12 @@ class ProjectDumpBuilder:
         )
         datatype_subdivision = datatype_creator.create_datatype_subdivision(libdoc.name)
         library_subdivision.element.append(datatype_subdivision)
-        interaction_creator = InteractionCreator(libdoc, self.pk_generator, self.uid_generator)
+        interaction_creator = InteractionCreator(
+            libdoc, datatype_creator.datatypes, self.pk_generator, self.uid_generator
+        )
         library_subdivision.element.extend(
             [
-                interaction_creator.get_interaction_from_keyword(
-                    keyword, datatype_creator, self.reference_pk
-                )
+                interaction_creator.get_interaction_from_keyword(keyword, self.reference_pk)
                 for keyword in libdoc.keywords
             ]
         )
