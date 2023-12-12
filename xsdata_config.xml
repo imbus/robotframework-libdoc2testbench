@@ -2,6 +2,5 @@
 <Config xmlns="http://pypi.org/project/xsdata" version="23.6">
     <Output maxLineLength="79" subscriptableTypes="false" unionType="false">
         <Package>libdoc2testbench.ProjectDumpModel</Package>
-        <Format kwOnly="true">attrs</Format>
     </Output>
 </Config>
