@@ -102,9 +102,6 @@ class InteractionCreator:
 
     def get_interaction_parameters(self, keyword: KeywordDoc) -> Parameters:
         parameters = Parameters(parameter=[])
-        return_parameter = self.get_return_type_parameter(keyword)
-        if return_parameter:
-            parameters.parameter.append(return_parameter)
         for argument in keyword.args:
             if not requires_datatype_creation(argument):
                 continue
@@ -140,4 +137,7 @@ class InteractionCreator:
                     type_attribute=DefaultValueType.REPRESENTATIVE,
                 )
             parameters.parameter.append(parameter)
+        return_parameter = self.get_return_type_parameter(keyword)
+        if return_parameter:
+            parameters.parameter.append(return_parameter)
         return parameters
