@@ -27,7 +27,7 @@ from libdoc2testbench.project_dump_model.model_api import (
     create_testobjecversion,
 )
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
-from libdoc2testbench.utils import replace_invalid_characters
+from libdoc2testbench.utils import print_stat, replace_invalid_characters
 
 
 class ProjectDumpBuilder:
@@ -131,6 +131,11 @@ class ProjectDumpBuilder:
         library_subdivision.element.extend(
             interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         )
+        num_datatypes = len(
+            next(filter(lambda te: te.name == "_Datatypes", library_subdivision.element)).element
+        )
+        num_interactinos = len(library_subdivision.element) - 1
+        print_stat(libdoc, num_interactinos, num_datatypes)
         return library_subdivision
 
     def write_project_dump(self, path: Path):

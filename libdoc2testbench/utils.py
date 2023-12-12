@@ -7,9 +7,11 @@ def replace_invalid_characters(name: str) -> str:
     return sub(r'[/."\'<>\\&,]', "_", name)
 
 
-def print_stat(libdoc: LibraryDoc):  # Todo: Update to actual datatype count and enable again
+def print_stat(
+    libdoc: LibraryDoc, num_interactinos: int, num_datatypes: int
+) -> None:
     print(f"{libdoc.type.lower()}: {libdoc.name}")
-    print(f"  {len(libdoc.keywords)} Interactions")
+    print(f"  {num_interactinos} Interactions")
     data_types = libdoc.to_dictionary()["typedocs"]
     if data_types:
-        print(f"  {len(data_types)} Data Types")
+        print(f"  {num_datatypes} Data Types")
