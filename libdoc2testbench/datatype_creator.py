@@ -79,7 +79,7 @@ class DatatypeCreator:
         datatype_subdivision.element.extend(self.datatypes.get_datatypes())
         return datatype_subdivision
 
-    def get_datatype_from_argument(self, argument: TypeInfo) -> Optional[str]:
+    def map_argument_to_datatype(self, argument: TypeInfo) -> Optional[str]:
         try:
             arg_type_names = get_argument_type_names(argument.type)
         except AttributeError:
@@ -110,7 +110,7 @@ class DatatypeCreator:
             for arg in keyword.args:
                 if not requires_datatype_creation(arg):
                     continue
-                datatype = self.get_datatype_from_argument(arg)
+                datatype = self.map_argument_to_datatype(arg)
                 try:
                     arg_type_names = get_argument_type_names(arg.type)
                 except AttributeError:

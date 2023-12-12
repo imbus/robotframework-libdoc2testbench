@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from enum import Enum
 from pathlib import Path
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
@@ -29,15 +28,6 @@ from libdoc2testbench.project_dump_model.model_api import (
 )
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
 from libdoc2testbench.utils import replace_invalid_characters
-
-
-class ProjectStates(Enum):
-    """Enum for different project states found in the imbus TestBench."""
-
-    planned = 'planned'
-    active = 'active'
-    finished = 'finished'
-    closed = 'closed'
 
 
 class ProjectDumpBuilder:
