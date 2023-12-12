@@ -1,11 +1,11 @@
 # Libdoc2TestBench
-Robot Framework Libdoc extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) Library import formats.
+Robot Framework Libdoc extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) import formats.
 It can be used to generate Testbench interactions and datatypes from Robotframework libraries.
 ___
 
 ### Installation:
 
-To install this package you can use  `pip`:
+To install this package you can use the following `pip` command:
 
 ```bash
 pip install robotframework-libdoc2testbench
@@ -16,11 +16,11 @@ ___
 ### Usage:
 
 There are three main use cases:
-* Importing official Robot Framework librarys
-* Importing custom Robot Framework librarys
-* Importing Robot Framework resource files
+* Import official Robot Framework librarys
+* Import custom Robot Framework librarys
+* Import Robot Framework resource files
 
-#### Importing official Robot Framework librarys
+#### Import official Robot Framework librarys
 
 ![LibDoc2TestBench command demo](res/example_usage.gif)
 
@@ -48,7 +48,7 @@ Afterwards you'll find your imported RF library, the different interactions and 
 
 The imported Testelements can be copied into another testbench project. When copying, it is important that the test elements remain in the same subdivisions.
 
-#### Importing custom robotframework librarys
+#### Import custom robotframework librarys
 
 Libdoc2Testbench can also be used to import custom Robot Framework librarys.
 
@@ -65,7 +65,7 @@ Example Libdoc2Testbench usage:
 Libdoc2TestBench mycustomlibrary.py
 ```
 
-#### Importing resource files
+#### Import Robot Framework resource files
 
 Libdoc2Testbench can also be used to import Robot Framework resource files.
 
@@ -80,7 +80,7 @@ print hello world
 Example Libdoc2Testbench usage:
 
 ```bash
-Libdoc2TestBench myresource.resource
+Libdoc2TestBench path/to/keywords.resource
 ```
 
 #### Importing multiple librarys and resource files at once
@@ -112,7 +112,7 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `-h`, `--help` | Show the help message and exit
 | `-a`, `--attachment` |  Defines if the resource file, which has been used to generate the interactions, will be attached to those interactions.
 | `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
-| `--libraryroot LIBRARYROOT`| Defines the subdivision name which contains the imported Robot Framework libraries. Default is ``RF``,
+| `--libraryroot LIBRARYROOT`| Defines the subdivision name which contains the imported Robot Framework libraries. Default is ``RF``.
 | `--resourceroot RESOURCEROOT` |Defines the subdivision name which contains the imported Robot Framework resources. Default is ``Resource``.
 | `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
 | `--libname` 	| Sets the name of the documented library or resource. 	|  	|
@@ -126,10 +126,13 @@ ___
 
 ### Change log
 * 1.2
-    * Added library keyword return types with RobotFramework version > 7
+    * Added library keyword return types with RobotFramework version >= 7
     * Added datatype creation options with default values
     * Removed `--xml` cli option
     * Removed `--temp` cli option
+* 1.1
+    * Added TestBench datatypes
+    * Added default values
 * 1.0rc2
     * ADDED optional arguments for:
         * xml-file output (instead of zip-file)
