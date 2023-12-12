@@ -8,6 +8,15 @@ except ImportError:
     NOT_SET = ArgInfo.NOTSET
 
 
+def _get_arg_sub_types(arg_type):
+    type_names = []
+    if arg_type.is_union:
+        for arg_type in arg_type.nested:
+            type_names.extend(_get_arg_sub_types(type))
+        return type_names
+    return [arg_type.name]
+
+
 def get_argument_type_names(argument: ArgInfo) -> List[str]:
     try:
         argument_type = argument.type
@@ -17,7 +26,7 @@ def get_argument_type_names(argument: ArgInfo) -> List[str]:
         type_names = []
         if argument_type.is_union:
             for type in argument_type.nested:
-                type_names.extend(get_argument_type_names(type))
+                type_names.extend(_get_arg_sub_types(type))
             return type_names
     except AttributeError:  # above block does not work for rf5
         return [argument_type.name]
