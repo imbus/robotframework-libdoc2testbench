@@ -139,7 +139,7 @@ class ProjectDumpBuilder:
         return library_subdivision
 
     def write_project_dump(self, path: Path):
-        context = XmlContext(class_type="attrs")
+        context = XmlContext()
         config = SerializerConfig(
             encoding="UTF-8", pretty_print=True, ignore_default_attributes=False
         )

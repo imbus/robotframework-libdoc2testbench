@@ -12,7 +12,7 @@
 6. Install project into local venv (pip install -e .[extra])
 
 ## Generate Dataclasses from xsd
-```xsdata testbench_xsd\itb-project-export.xsd --output attrs --config .\xsdata_config.xml```
+```xsdata testbench_xsd\itb-project-export.xsd --config .\xsdata_config.xml```
 
 ## Fix unreadable Enums in newly generated model
 ```python .\fix_model.py .\libdoc2testbench\project_dump_model\itb_project_export.py```

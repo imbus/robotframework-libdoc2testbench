@@ -6,10 +6,6 @@
 #
 astroid==3.0.1
     # via pylint
-attrs==23.1.0
-    # via
-    #   libdoc2testbench (setup.cfg)
-    #   xsdata-attrs
 black==23.11.0
     # via libdoc2testbench (setup.cfg)
 build==1.0.3
@@ -184,8 +180,6 @@ wheel==0.42.0
     #   libdoc2testbench (setup.cfg)
     #   pip-tools
 xsdata[cli]==23.8
-    # via xsdata-attrs
-xsdata-attrs[cli]==23.8
     # via libdoc2testbench (setup.cfg)
 zipp==3.17.0
     # via

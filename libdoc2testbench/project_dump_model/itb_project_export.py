@@ -1,7 +1,6 @@
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional
-
-import attr
 
 
 class ActivityStatus(Enum):
@@ -24,30 +23,33 @@ class ActivityStatus(Enum):
     ACTSTATUS_SKIPPED = 23
 
 
-@attr.s(kw_only=True)
+@dataclass
 class AdvancedContent:
     class Meta:
         name = "advancedContent"
 
-    external_identifier: str = attr.ib(
+    external_identifier: Optional[str] = field(
+        default=None,
         metadata={
             "name": "externalIdentifier",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    content: str = attr.ib(
+    content: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    content_type: str = attr.ib(
+    content_type: Optional[str] = field(
+        default=None,
         metadata={
             "name": "contentType",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
@@ -67,43 +69,48 @@ class AutomationStatus(Enum):
     AUTSTATUS_RELEASED = 10
 
 
-@attr.s(kw_only=True)
+@dataclass
 class BaselineDetails:
     class Meta:
         name = "baseline-details"
 
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    project: str = attr.ib(
+    project: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    last_update: str = attr.ib(
+    last_update: Optional[str] = field(
+        default=None,
         metadata={
             "name": "lastUpdate",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: str = attr.ib(
+    type_value: Optional[str] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    repository_id: str = attr.ib(
+    repository_id: Optional[str] = field(
+        default=None,
         metadata={
             "name": "repository-id",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -123,33 +130,35 @@ class CallParameterType(Enum):
     REPRESENTATIVE = "representative"
 
 
-@attr.s(kw_only=True)
+@dataclass
 class CalledLibrary:
     class Meta:
         name = "calledLibrary"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    baseline_pk: str = attr.ib(
+    baseline_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "baselinePK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ClassMapping:
     class Meta:
         name = "class-mapping"
 
-    class_value: List[str] = attr.ib(
-        factory=list,
+    class_value: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "class",
             "type": "Element",
@@ -183,13 +192,13 @@ class DefinitionType(Enum):
     ATOMIC = 3
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ErrorIdReferences:
     class Meta:
         name = "error-id-references"
 
-    error_id_reference: List[str] = attr.ib(
-        factory=list,
+    error_id_reference: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "error-id-reference",
             "type": "Element",
@@ -197,39 +206,43 @@ class ErrorIdReferences:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ExecLogfile:
     class Meta:
         name = "exec-logfile"
 
-    filename: str = attr.ib(
+    filename: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: str = attr.ib(
+    type_value: Optional[str] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    file_pk: str = attr.ib(
+    file_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "file-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    result_file_pk: str = attr.ib(
+    result_file_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "result-file-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    charset: Optional[str] = attr.ib(
+    charset: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
@@ -247,90 +260,100 @@ class ExecutionStatus(Enum):
     EXEC_STATUS_BLOCKED = 22
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ForeignLibraryLabel:
     class Meta:
         name = "foreignLibraryLabel"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    library_pk: str = attr.ib(
+    library_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "library-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    project: str = attr.ib(
+    project: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    owner: str = attr.ib(
+    owner: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class IdenticalVersionDatatype:
     class Meta:
         name = "identical-version-datatype"
 
-    work_pk: str = attr.ib(
+    work_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "workPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    vers_pk: str = attr.ib(
+    vers_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "versPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    is_changed_def_type: bool = attr.ib(
+    is_changed_def_type: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "isChangedDefType",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class IdenticalVersionMetawordParam:
     class Meta:
         name = "identical-version-metaword-param"
 
-    work_param_pk: str = attr.ib(
+    work_param_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "workParamPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    vers_param_pk: str = attr.ib(
+    vers_param_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "versParamPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
@@ -350,22 +373,24 @@ class InteractionCallPhase(Enum):
     TEARDOWN = "Teardown"
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Keyword:
     class Meta:
         name = "keyword"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -376,7 +401,7 @@ class KindOfDataType(Enum):
     ACCEPTING_GLOBAL = "accepting-global"
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Label:
     """
     :ivar pk:
@@ -387,60 +412,64 @@ class Label:
     class Meta:
         name = "label"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    owner: str = attr.ib(
+    owner: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class LibraryInformation:
     class Meta:
         name = "libraryInformation"
 
-    library_pk: str = attr.ib(
+    library_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "libraryPK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    foreign_library_tov_pk: Optional[str] = attr.ib(
+    foreign_library_tov_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "foreignLibraryTovPK",
             "type": "Element",
         },
     )
-    foreign_library_pk: Optional[str] = attr.ib(
+    foreign_library_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "foreignLibraryPK",
             "type": "Element",
         },
     )
-    source_project: Optional[str] = attr.ib(
+    source_project: Optional[str] = field(
         default=None,
         metadata={
             "name": "sourceProject",
             "type": "Element",
         },
     )
-    source_test_object_version: Optional[str] = attr.ib(
+    source_test_object_version: Optional[str] = field(
         default=None,
         metadata={
             "name": "sourceTestObjectVersion",
@@ -449,61 +478,68 @@ class LibraryInformation:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class LibraryLabel:
     class Meta:
         name = "libraryLabel"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    library_pk: str = attr.ib(
+    library_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "library-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    owner: str = attr.ib(
+    owner: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Message:
     class Meta:
         name = "message"
 
-    object_value: str = attr.ib(
+    object_value: Optional[str] = field(
+        default=None,
         metadata={
             "name": "object",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    message: str = attr.ib(
+    message: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -517,51 +553,54 @@ class MustField(Enum):
     TRUE = 1
 
 
-@attr.s(kw_only=True)
+@dataclass
 class OldVersions:
     class Meta:
         name = "old-versions"
 
-    version: List["Version"] = attr.ib(
-        factory=list,
+    version: List["Version"] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Placeholder:
     class Meta:
         name = "placeholder"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class PriorityMapping:
     class Meta:
         name = "priority-mapping"
 
-    priority: List[str] = attr.ib(
-        factory=list,
+    priority: List[str] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
@@ -583,32 +622,33 @@ class ProjectStatus(Enum):
     CLOSED = "closed"
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Ref:
     class Meta:
         name = "ref"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
 class ReferenceKind(Enum):
     """
-    :cvar VALUE_1: REFERENCE
-    :cvar VALUE_2: LINK
-    :cvar VALUE_3: ATTACHMENT
+    :cvar VALUE_0: REFERENCE
+    :cvar VALUE_1: LINK
+    :cvar VALUE_2: ATTACHMENT
     """
 
-    REFERENCE = 1
-    LINK = 2
-    ATTACHMENT = 3
+    REFERENCE = 0
+    LINK = 1
+    ATTACHMENT = 2
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ReferencedUserNames:
     """
     :ivar user_name: user login
@@ -618,16 +658,16 @@ class ReferencedUserNames:
     class Meta:
         name = "referenced-user-names"
 
-    user_name: List[str] = attr.ib(
-        factory=list,
+    user_name: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "user-name",
             "type": "Element",
             "sequence": 1,
         },
     )
-    user_pk: List[str] = attr.ib(
-        factory=list,
+    user_pk: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "user-pk",
             "type": "Element",
@@ -654,132 +694,145 @@ class RequirementNodeType(Enum):
     REQUIREMENT_FOLDER = 1
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementRepository:
     class Meta:
         name = "requirement-repository"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    login: str = attr.ib(
+    login: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    password: str = attr.ib(
+    password: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Settings:
     class Meta:
         name = "settings"
 
-    overwrite_exec_responsible: bool = attr.ib(
+    overwrite_exec_responsible: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "overwrite-exec-responsible",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    optional_checkin: bool = attr.ib(
+    optional_checkin: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "optional-checkin",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    hide_exec_auto_checkin: Optional[bool] = attr.ib(
+    hide_exec_auto_checkin: Optional[bool] = field(
         default=None,
         metadata={
             "name": "hide-exec-auto-checkin",
             "type": "Element",
         },
     )
-    extended_interactions_content: Optional[bool] = attr.ib(
+    extended_interactions_content: Optional[bool] = field(
         default=None,
         metadata={
             "name": "extended-interactions-content",
             "type": "Element",
         },
     )
-    libraries_state: Optional[bool] = attr.ib(
+    libraries_state: Optional[bool] = field(
         default=None,
         metadata={
             "name": "libraries-state",
             "type": "Element",
         },
     )
-    global_datatypes_state: Optional[bool] = attr.ib(
+    global_datatypes_state: Optional[bool] = field(
         default=None,
         metadata={
             "name": "global-datatypes-state",
             "type": "Element",
         },
     )
-    filter_sync_interval: int = attr.ib(
+    filter_sync_interval: Optional[int] = field(
+        default=None,
         metadata={
             "name": "filter-sync-interval",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ignore_not_edited: bool = attr.ib(
+    ignore_not_edited: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "ignore-not-edited",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ignore_not_planned: bool = attr.ib(
+    ignore_not_planned: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "ignore-not-planned",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    designers_may_manage_baselines: bool = attr.ib(
+    designers_may_manage_baselines: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "designers-may-manage-baselines",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    designers_may_import_baselines: bool = attr.ib(
+    designers_may_import_baselines: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "designers-may-import-baselines",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    only_admins_manage_udfs: bool = attr.ib(
+    only_admins_manage_udfs: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "only-admins-manage-udfs",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    variants_management_enabled: bool = attr.ib(
+    variants_management_enabled: Optional[bool] = field(
+        default=None,
         metadata={
             "name": "variants-management-enabled",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -799,13 +852,13 @@ class SpecificationStatus(Enum):
     SPECSTATUS_RELEASED = 5
 
 
-@attr.s(kw_only=True)
+@dataclass
 class StatusMapping:
     class Meta:
         name = "status-mapping"
 
-    status: List[str] = attr.ib(
-        factory=list,
+    status: List[str] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
@@ -842,22 +895,24 @@ class UdfDefinitionType(Enum):
     ITEMS_LIST = 4
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UdfValue:
     class Meta:
         name = "udf-value"
 
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    value: str = attr.ib(
+    value: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -885,7 +940,7 @@ class UdfType(Enum):
     CHECK_BOX = 2
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Undefined:
     class Meta:
         name = "undefined"
@@ -901,60 +956,67 @@ class UseType(Enum):
     CALL_BY_VALUE = 1
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserMapping:
     class Meta:
         name = "user-mapping"
 
-    itblogin: str = attr.ib(
+    itblogin: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    dmlogin: str = attr.ib(
+    dmlogin: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class VariantsDefinition:
     class Meta:
         name = "variantsDefinition"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: str = attr.ib(
+    status: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
@@ -972,56 +1034,62 @@ class VerdictStatus(Enum):
     VERDICT_STATUS_PASS = 20
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DefectUserDefinedField:
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: int = attr.ib(
+    ordering: Optional[int] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    must_field: MustField = attr.ib(
+    must_field: Optional[MustField] = field(
+        default=None,
         metadata={
             "name": "mustField",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_sync_option: UdfSyncOption = attr.ib(
+    udf_sync_option: Optional[UdfSyncOption] = field(
+        default=None,
         metadata={
             "name": "udfSyncOption",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_type: UdfType = attr.ib(
+    udf_type: Optional[UdfType] = field(
+        default=None,
         metadata={
             "name": "udfType",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    value: List[str] = attr.ib(
-        factory=list,
+    value: List[str] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserDefinedFieldDefinition:
     """
     :ivar pk:
@@ -1036,79 +1104,88 @@ class UserDefinedFieldDefinition:
     :ivar value:
     """
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: int = attr.ib(
+    ordering: Optional[int] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    must_field: MustField = attr.ib(
+    must_field: Optional[MustField] = field(
+        default=None,
         metadata={
             "name": "mustField",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_scopes: str = attr.ib(
+    udf_scopes: Optional[str] = field(
+        default=None,
         metadata={
             "name": "udfScopes",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_type: UdfType = attr.ib(
+    udf_type: Optional[UdfType] = field(
+        default=None,
         metadata={
             "name": "udfType",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    value: List[str] = attr.ib(
-        factory=list,
+    value: List[str] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Automation:
     class Meta:
         name = "automation"
 
-    details: "AutomationDetails" = attr.ib(
+    details: Optional["AutomationDetails"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    script_editor: str = attr.ib(
+    script_editor: Optional[str] = field(
+        default=None,
         metadata={
             "name": "script-editor",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    script_template: str = attr.ib(
+    script_template: Optional[str] = field(
+        default=None,
         metadata={
             "name": "script-template",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    old_versions: Optional[OldVersions] = attr.ib(
+    old_versions: Optional[OldVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
@@ -1117,13 +1194,13 @@ class Automation:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class CalledLibraries:
     class Meta:
         name = "called-libraries"
 
-    called_library: List[CalledLibrary] = attr.ib(
-        factory=list,
+    called_library: List[CalledLibrary] = field(
+        default_factory=list,
         metadata={
             "name": "calledLibrary",
             "type": "Element",
@@ -1131,88 +1208,93 @@ class CalledLibraries:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ConditionRef:
     class Meta:
         name = "condition-ref"
 
-    condition_ref: Ref = attr.ib(
+    condition_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "condition-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DefaultCallType:
     class Meta:
         name = "default-call-type"
 
-    name: DefaultCallTypeName = attr.ib(
+    name: Optional[DefaultCallTypeName] = field(
+        default=None,
         metadata={
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    value: BinaryDigit = attr.ib(
+    value: Optional[BinaryDigit] = field(
+        default=None,
         metadata={
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DefaultValue:
     class Meta:
         name = "default-value"
 
-    type_value: str = attr.ib(
+    type_value: Optional[str] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    equivalence_class_ref: Optional[Ref] = attr.ib(
+    equivalence_class_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "equivalence-class-ref",
             "type": "Element",
         },
     )
-    representative_ref: Optional[Ref] = attr.ib(
+    representative_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "representative-ref",
             "type": "Element",
         },
     )
-    instances_array_ref: Optional[Ref] = attr.ib(
+    instances_array_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "instances-array-ref",
             "type": "Element",
         },
     )
-    type_attribute: DefaultValueType = attr.ib(
+    type_attribute: Optional[DefaultValueType] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ErrorIdRefs:
     class Meta:
         name = "error-id-refs"
 
-    error_id_ref: List[Ref] = attr.ib(
-        factory=list,
+    error_id_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "error-id-ref",
             "type": "Element",
@@ -1220,26 +1302,26 @@ class ErrorIdRefs:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Errors:
     class Meta:
         name = "errors"
 
-    error: List[Message] = attr.ib(
-        factory=list,
+    error: List[Message] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ExecLogfiles:
     class Meta:
         name = "exec-logfiles"
 
-    exec_logfile: List[ExecLogfile] = attr.ib(
-        factory=list,
+    exec_logfile: List[ExecLogfile] = field(
+        default_factory=list,
         metadata={
             "name": "exec-logfile",
             "type": "Element",
@@ -1247,7 +1329,7 @@ class ExecLogfiles:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Field:
     """
     :ivar sequence_pk:
@@ -1259,55 +1341,59 @@ class Field:
     class Meta:
         name = "field"
 
-    sequence_pk: str = attr.ib(
+    sequence_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "sequence-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    datatype_ref: Ref = attr.ib(
+    datatype_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "datatype-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    definition_type: DefinitionType = attr.ib(
+    definition_type: Optional[DefinitionType] = field(
+        default=None,
         metadata={
             "name": "definition-type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ForeignLibraryLabelGroup:
     class Meta:
         name = "foreignLibraryLabelGroup"
 
-    label: List[ForeignLibraryLabel] = attr.ib(
-        factory=list,
+    label: List[ForeignLibraryLabel] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class IdenticalVersionDatatypeMapping:
     class Meta:
         name = "identical-version-datatype-mapping"
 
-    identical_version_datatype: List[IdenticalVersionDatatype] = attr.ib(
-        factory=list,
+    identical_version_datatype: List[IdenticalVersionDatatype] = field(
+        default_factory=list,
         metadata={
             "name": "identical-version-datatype",
             "type": "Element",
@@ -1315,41 +1401,43 @@ class IdenticalVersionDatatypeMapping:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class IdenticalVersionMetaword:
     class Meta:
         name = "identical-version-metaword"
 
-    identical_version_metaword_param: List[IdenticalVersionMetawordParam] = attr.ib(
-        factory=list,
+    identical_version_metaword_param: List[IdenticalVersionMetawordParam] = field(
+        default_factory=list,
         metadata={
             "name": "identical-version-metaword-param",
             "type": "Element",
         },
     )
-    work_pk: str = attr.ib(
+    work_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "workPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    vers_pk: str = attr.ib(
+    vers_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "versPK",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Keywords:
     class Meta:
         name = "keywords"
 
-    content: List[object] = attr.ib(
-        factory=list,
+    content: List[object] = field(
+        default_factory=list,
         metadata={
             "type": "Wildcard",
             "namespace": "##any",
@@ -1372,26 +1460,26 @@ class Keywords:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class KeywordsDefinition:
     class Meta:
         name = "keywords-definition"
 
-    keyword: List[Keyword] = attr.ib(
-        factory=list,
+    keyword: List[Keyword] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class LabelsRef:
     class Meta:
         name = "labels-ref"
 
-    label_ref: List[Ref] = attr.ib(
-        factory=list,
+    label_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "label-ref",
             "type": "Element",
@@ -1399,33 +1487,33 @@ class LabelsRef:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class LibraryLabelGroup:
     class Meta:
         name = "libraryLabelGroup"
 
-    label: List[LibraryLabel] = attr.ib(
-        factory=list,
+    label: List[LibraryLabel] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Marker:
     class Meta:
         name = "marker"
 
-    marker_ref: List[Ref] = attr.ib(
-        factory=list,
+    marker_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "marker-ref",
             "type": "Element",
         },
     )
-    named_variants_marker: List[str] = attr.ib(
-        factory=list,
+    named_variants_marker: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "named-variants-marker",
             "type": "Element",
@@ -1433,125 +1521,133 @@ class Marker:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class PlaceholderValue:
     class Meta:
         name = "placeholderValue"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    placeholder_ref: Ref = attr.ib(
+    placeholder_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "placeholder-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    variants_definition_ref: Ref = attr.ib(
+    variants_definition_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "variantsDefinition-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    value: str = attr.ib(
+    value: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Placeholders:
     class Meta:
         name = "placeholders"
 
-    placeholder: List[Placeholder] = attr.ib(
-        factory=list,
+    placeholder: List[Placeholder] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Reference:
     class Meta:
         name = "reference"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    filename: str = attr.ib(
+    filename: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: ReferenceKind = attr.ib(
+    type_value: Optional[ReferenceKind] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    version: str = attr.ib(
+    version: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    attachment_pk: Optional[str] = attr.ib(
+    attachment_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-pk",
             "type": "Element",
         },
     )
-    attachment_path: Optional[str] = attr.ib(
+    attachment_path: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-path",
             "type": "Element",
         },
     )
-    attachment_filename: Optional[str] = attr.ib(
+    attachment_filename: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-filename",
             "type": "Element",
         },
     )
-    attachment_lastedited: Optional[str] = attr.ib(
+    attachment_lastedited: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-lastedited",
             "type": "Element",
         },
     )
-    attachment_lasteditor: Optional[str] = attr.ib(
+    attachment_lasteditor: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-lasteditor",
             "type": "Element",
         },
     )
-    attachment_file_pk: Optional[str] = attr.ib(
+    attachment_file_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-file-pk",
             "type": "Element",
         },
     )
-    old_versions: Optional[OldVersions] = attr.ib(
+    old_versions: Optional[OldVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
@@ -1560,13 +1656,13 @@ class Reference:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementProject:
     class Meta:
         name = "requirement-project"
 
-    content: List[object] = attr.ib(
-        factory=list,
+    content: List[object] = field(
+        default_factory=list,
         metadata={
             "type": "Wildcard",
             "namespace": "##any",
@@ -1589,13 +1685,13 @@ class RequirementProject:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementRefs:
     class Meta:
         name = "requirement-refs"
 
-    requirement_ref: List[Ref] = attr.ib(
-        factory=list,
+    requirement_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "requirement-ref",
             "type": "Element",
@@ -1603,13 +1699,13 @@ class RequirementRefs:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementRepositories:
     class Meta:
         name = "requirement-repositories"
 
-    requirement_repository: List[RequirementRepository] = attr.ib(
-        factory=list,
+    requirement_repository: List[RequirementRepository] = field(
+        default_factory=list,
         metadata={
             "name": "requirement-repository",
             "type": "Element",
@@ -1617,20 +1713,20 @@ class RequirementRepositories:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Roles:
     class Meta:
         name = "roles"
 
-    role: List[ProjectRole] = attr.ib(
-        factory=list,
+    role: List[ProjectRole] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
             "min_occurs": 1,
             "max_occurs": 5,
         },
     )
-    read_only: Optional[bool] = attr.ib(
+    read_only: Optional[bool] = field(
         default=None,
         metadata={
             "name": "read-only",
@@ -1639,13 +1735,13 @@ class Roles:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class SequencePath:
     class Meta:
         name = "sequence-path"
 
-    sequence_ref: List[Ref] = attr.ib(
-        factory=list,
+    sequence_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "sequence-ref",
             "type": "Element",
@@ -1653,124 +1749,136 @@ class SequencePath:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testcycle:
     class Meta:
         name = "testcycle"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    created_time: str = attr.ib(
+    created_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "createdTime",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    startdate: str = attr.ib(
+    startdate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    enddate: str = attr.ib(
+    enddate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: ProjectStatus = attr.ib(
+    status: Optional[ProjectStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    visible_for_testers: Optional[bool] = attr.ib(
+    visible_for_testers: Optional[bool] = field(
         default=None,
         metadata={
             "name": "visibleForTesters",
             "type": "Element",
         },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testing_intelligence: str = attr.ib(
+    testing_intelligence: Optional[str] = field(
+        default=None,
         metadata={
             "name": "testingIntelligence",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UdfDefinition:
     class Meta:
         name = "udf-definition"
 
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: UdfDefinitionType = attr.ib(
+    type_value: Optional[UdfDefinitionType] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    repository_id: str = attr.ib(
+    repository_id: Optional[str] = field(
+        default=None,
         metadata={
             "name": "repository-id",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Udfs:
     class Meta:
         name = "udfs"
 
-    udf: List[UdfValue] = attr.ib(
-        factory=list,
+    udf: List[UdfValue] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserMappings:
     class Meta:
         name = "user-mappings"
 
-    user_mapping: List[UserMapping] = attr.ib(
-        factory=list,
+    user_mapping: List[UserMapping] = field(
+        default_factory=list,
         metadata={
             "name": "user-mapping",
             "type": "Element",
@@ -1778,59 +1886,64 @@ class UserMappings:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserDefinedField:
     class Meta:
         name = "userDefinedField"
 
-    udfpk: str = attr.ib(
+    udfpk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    value: str = attr.ib(
+    value: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_name: str = attr.ib(
+    udf_name: Optional[str] = field(
+        default=None,
         metadata={
             "name": "udfName",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udf_type: UdfType = attr.ib(
+    udf_type: Optional[UdfType] = field(
+        default=None,
         metadata={
             "name": "udfType",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: int = attr.ib(
+    ordering: Optional[int] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Value:
     class Meta:
         name = "value"
 
-    default_value: Optional[bool] = attr.ib(
+    default_value: Optional[bool] = field(
         default=None,
         metadata={
             "name": "default-value",
             "type": "Attribute",
         },
     )
-    content: List[object] = attr.ib(
-        factory=list,
+    content: List[object] = field(
+        default_factory=list,
         metadata={
             "type": "Wildcard",
             "namespace": "##any",
@@ -1873,13 +1986,13 @@ class Value:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class VariantsDefinitions:
     class Meta:
         name = "variantsDefinitions"
 
-    variants_definition: List[VariantsDefinition] = attr.ib(
-        factory=list,
+    variants_definition: List[VariantsDefinition] = field(
+        default_factory=list,
         metadata={
             "name": "variantsDefinition",
             "type": "Element",
@@ -1887,56 +2000,58 @@ class VariantsDefinitions:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class VariantsMarker:
     class Meta:
         name = "variantsMarker"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    variants_definition_ref: Ref = attr.ib(
+    variants_definition_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "variantsDefinition-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class VisibilityGroup:
     class Meta:
         name = "visibilityGroup"
 
-    label: List[Label] = attr.ib(
-        factory=list,
+    label: List[Label] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Warnings:
     class Meta:
         name = "warnings"
 
-    warning: List[Message] = attr.ib(
-        factory=list,
+    warning: List[Message] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DefectUserDefinedFields:
-    defect_user_defined_field: List[DefectUserDefinedField] = attr.ib(
-        factory=list,
+    defect_user_defined_field: List[DefectUserDefinedField] = field(
+        default_factory=list,
         metadata={
             "name": "DefectUserDefinedField",
             "type": "Element",
@@ -1944,10 +2059,10 @@ class DefectUserDefinedFields:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserDefinedFieldsDefinition:
-    user_defined_field: List[UserDefinedFieldDefinition] = attr.ib(
-        factory=list,
+    user_defined_field: List[UserDefinedFieldDefinition] = field(
+        default_factory=list,
         metadata={
             "name": "UserDefinedField",
             "type": "Element",
@@ -1955,60 +2070,63 @@ class UserDefinedFieldsDefinition:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class CallParameter:
     class Meta:
         name = "call-parameter"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    parameter_datatype_ref: Ref = attr.ib(
+    parameter_datatype_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "parameter-datatype-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    parent_parameter_ref: Optional[object] = attr.ib(
+    parent_parameter_ref: Optional[object] = field(
         default=None,
         metadata={
             "name": "parent-parameter-ref",
             "type": "Element",
         },
     )
-    sequence_path: Optional[SequencePath] = attr.ib(
+    sequence_path: Optional[SequencePath] = field(
         default=None,
         metadata={
             "name": "sequence-path",
             "type": "Element",
         },
     )
-    instances_array_ref: Optional[Ref] = attr.ib(
+    instances_array_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "instances-array-ref",
             "type": "Element",
         },
     )
-    representative_ref: Optional[Ref] = attr.ib(
+    representative_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "representative-ref",
             "type": "Element",
         },
     )
-    type_value: CallParameterType = attr.ib(
+    type_value: Optional[CallParameterType] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    default_value: Optional[bool] = attr.ib(
+    default_value: Optional[bool] = field(
         default=None,
         metadata={
             "name": "default-value",
@@ -2017,20 +2135,20 @@ class CallParameter:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Conditions:
     class Meta:
         name = "conditions"
 
-    condition: List[ConditionRef] = attr.ib(
-        factory=list,
+    condition: List[ConditionRef] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DmSettings:
     """
     :ivar pk:
@@ -2057,127 +2175,146 @@ class DmSettings:
     class Meta:
         name = "dm-settings"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    system: str = attr.ib(
+    system: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    project: str = attr.ib(
+    project: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    readlogin: str = attr.ib(
+    readlogin: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    firstsync: str = attr.ib(
+    firstsync: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    syncinterval: str = attr.ib(
+    syncinterval: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    statusattribute: str = attr.ib(
+    statusattribute: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    statussyncoption: str = attr.ib(
+    statussyncoption: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    statusdefaultvalue: str = attr.ib(
+    statusdefaultvalue: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    priorityattribute: str = attr.ib(
+    priorityattribute: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    prioritysyncoption: str = attr.ib(
+    prioritysyncoption: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    prioritydefaultvalue: str = attr.ib(
+    prioritydefaultvalue: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    classattribute: str = attr.ib(
+    classattribute: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    classsyncoption: str = attr.ib(
+    classsyncoption: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    classdefaultvalue: str = attr.ib(
+    classdefaultvalue: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status_mapping: StatusMapping = attr.ib(
+    status_mapping: Optional[StatusMapping] = field(
+        default=None,
         metadata={
             "name": "status-mapping",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    priority_mapping: PriorityMapping = attr.ib(
+    priority_mapping: Optional[PriorityMapping] = field(
+        default=None,
         metadata={
             "name": "priority-mapping",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    class_mapping: ClassMapping = attr.ib(
+    class_mapping: Optional[ClassMapping] = field(
+        default=None,
         metadata={
             "name": "class-mapping",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user_mappings: UserMappings = attr.ib(
+    user_mappings: Optional[UserMappings] = field(
+        default=None,
         metadata={
             "name": "user-mappings",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ErrorId:
     """
     :ivar pk:
@@ -2203,116 +2340,130 @@ class ErrorId:
     class Meta:
         name = "error-id"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    title: str = attr.ib(
+    title: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: str = attr.ib(
+    status: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    priority: str = attr.ib(
+    priority: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    classification: str = attr.ib(
+    classification: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    tester: str = attr.ib(
+    tester: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    last_edited: str = attr.ib(
+    last_edited: Optional[str] = field(
+        default=None,
         metadata={
             "name": "lastEdited",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    created: List[str] = attr.ib(
-        factory=list,
+    created: List[str] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    used_in_cycles: List[str] = attr.ib(
-        factory=list,
+    used_in_cycles: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "used-in-cycles",
             "type": "Element",
         },
     )
-    last_editor: str = attr.ib(
+    last_editor: Optional[str] = field(
+        default=None,
         metadata={
             "name": "lastEditor",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    dm_system: str = attr.ib(
+    dm_system: Optional[str] = field(
+        default=None,
         metadata={
             "name": "dmSystem",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    dm_project: str = attr.ib(
+    dm_project: Optional[str] = field(
+        default=None,
         metadata={
             "name": "dmProject",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    identical_version_pk: str = attr.ib(
+    identical_version_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "identicalVersionPK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    error_id_references: ErrorIdReferences = attr.ib(
+    error_id_references: Optional[ErrorIdReferences] = field(
+        default=None,
         metadata={
             "name": "error-id-references",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udfs: List[Udfs] = attr.ib(
-        factory=list,
+    udfs: List[Udfs] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    old_versions: Optional[OldVersions] = attr.ib(
+    old_versions: Optional[OldVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
@@ -2321,13 +2472,13 @@ class ErrorId:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Fields:
     class Meta:
         name = "fields"
 
-    field_value: List[Field] = attr.ib(
-        factory=list,
+    field_value: List[Field] = field(
+        default_factory=list,
         metadata={
             "name": "field",
             "type": "Element",
@@ -2335,13 +2486,13 @@ class Fields:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class IdenticalVersionMetawordMapping:
     class Meta:
         name = "identical-version-metaword-mapping"
 
-    identical_version_metaword: List[IdenticalVersionMetaword] = attr.ib(
-        factory=list,
+    identical_version_metaword: List[IdenticalVersionMetaword] = field(
+        default_factory=list,
         metadata={
             "name": "identical-version-metaword",
             "type": "Element",
@@ -2349,45 +2500,49 @@ class IdenticalVersionMetawordMapping:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Labels:
     class Meta:
         name = "labels"
 
-    public: VisibilityGroup = attr.ib(
+    public: Optional[VisibilityGroup] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    private: VisibilityGroup = attr.ib(
+    private: Optional[VisibilityGroup] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class LibraryLabels:
     class Meta:
         name = "libraryLabels"
 
-    local: LibraryLabelGroup = attr.ib(
+    local: Optional[LibraryLabelGroup] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    foreign: ForeignLibraryLabelGroup = attr.ib(
+    foreign: Optional[ForeignLibraryLabelGroup] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Parameter:
     """
     :ivar pk:
@@ -2402,47 +2557,52 @@ class Parameter:
     class Meta:
         name = "parameter"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    datatype_ref: Ref = attr.ib(
+    datatype_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "datatype-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    definition_type: DefinitionType = attr.ib(
+    definition_type: Optional[DefinitionType] = field(
+        default=None,
         metadata={
             "name": "definition-type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    use_type: UseType = attr.ib(
+    use_type: Optional[UseType] = field(
+        default=None,
         metadata={
             "name": "use-type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    default_value: Optional[DefaultValue] = attr.ib(
+    default_value: Optional[DefaultValue] = field(
         default=None,
         metadata={
             "name": "default-value",
             "type": "Element",
         },
     )
-    signature_uid: Optional[str] = attr.ib(
+    signature_uid: Optional[str] = field(
         default=None,
         metadata={
             "name": "signature-uid",
@@ -2451,13 +2611,13 @@ class Parameter:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class PlaceholderValues:
     class Meta:
         name = "placeholderValues"
 
-    placeholder_value: List[PlaceholderValue] = attr.ib(
-        factory=list,
+    placeholder_value: List[PlaceholderValue] = field(
+        default_factory=list,
         metadata={
             "name": "placeholderValue",
             "type": "Element",
@@ -2465,13 +2625,13 @@ class PlaceholderValues:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ProjectUser:
     class Meta:
         name = "project-user"
 
-    content: List[object] = attr.ib(
-        factory=list,
+    content: List[object] = field(
+        default_factory=list,
         metadata={
             "type": "Wildcard",
             "namespace": "##any",
@@ -2490,33 +2650,33 @@ class ProjectUser:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class References:
     class Meta:
         name = "references"
 
-    reference: List[Reference] = attr.ib(
-        factory=list,
+    reference: List[Reference] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    reference_ref: List[Ref] = attr.ib(
-        factory=list,
+    reference_ref: List[Ref] = field(
+        default_factory=list,
         metadata={
             "name": "reference-ref",
             "type": "Element",
         },
     )
-    reference_name: List[str] = attr.ib(
-        factory=list,
+    reference_name: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "reference-name",
             "type": "Element",
         },
     )
-    type_value: List[str] = attr.ib(
-        factory=list,
+    type_value: List[str] = field(
+        default_factory=list,
         metadata={
             "name": "type",
             "type": "Element",
@@ -2524,108 +2684,116 @@ class References:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementProjects:
     class Meta:
         name = "requirement-projects"
 
-    project: List[RequirementProject] = attr.ib(
-        factory=list,
+    project: List[RequirementProject] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementUdfs:
     class Meta:
         name = "requirement-udfs"
 
-    udf: List[UdfDefinition] = attr.ib(
-        factory=list,
+    udf: List[UdfDefinition] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class TestElementVersionInfo:
     class Meta:
         name = "test-element-version-info"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user: str = attr.ib(
+    user: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    comment: str = attr.ib(
+    comment: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    date: str = attr.ib(
+    date: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: str = attr.ib(
+    status: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: str = attr.ib(
+    type_value: Optional[str] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    labels: LabelsRef = attr.ib(
+    labels: Optional[LabelsRef] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testcycles:
     class Meta:
         name = "testcycles"
 
-    testcycle: List[Testcycle] = attr.ib(
-        factory=list,
+    testcycle: List[Testcycle] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class UserDefinedFields:
     class Meta:
         name = "userDefinedFields"
 
-    user_defined_field: List[UserDefinedField] = attr.ib(
-        factory=list,
+    user_defined_field: List[UserDefinedField] = field(
+        default_factory=list,
         metadata={
             "name": "userDefinedField",
             "type": "Element",
@@ -2633,26 +2801,26 @@ class UserDefinedFields:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Values:
     class Meta:
         name = "values"
 
-    value: List[Value] = attr.ib(
-        factory=list,
+    value: List[Value] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class VariantsMarkers:
     class Meta:
         name = "variantsMarkers"
 
-    variants_marker: List[VariantsMarker] = attr.ib(
-        factory=list,
+    variants_marker: List[VariantsMarker] = field(
+        default_factory=list,
         metadata={
             "name": "variantsMarker",
             "type": "Element",
@@ -2660,39 +2828,41 @@ class VariantsMarkers:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ConditionVersion(TestElementVersionInfo):
     class Meta:
         name = "condition-version"
 
-    element: "Condition" = attr.ib(
+    element: Optional["Condition"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DatatypeVersion(TestElementVersionInfo):
     class Meta:
         name = "datatype-version"
 
-    element: "Datatype" = attr.ib(
+    element: Optional["Datatype"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ErrorIds:
     class Meta:
         name = "error-ids"
 
-    error_id: List[ErrorId] = attr.ib(
-        factory=list,
+    error_id: List[ErrorId] = field(
+        default_factory=list,
         metadata={
             "name": "error-id",
             "type": "Element",
@@ -2700,232 +2870,262 @@ class ErrorIds:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Instance:
     class Meta:
         name = "instance"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    values: Values = attr.ib(
+    values: Optional[Values] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class InteractionVersion(TestElementVersionInfo):
     class Meta:
         name = "interaction-version"
 
-    element: "Interaction" = attr.ib(
+    element: Optional["Interaction"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ParameterCombinationExec:
     class Meta:
         name = "parameter-combination-exec"
 
-    specification_parameter_combination_ref: Ref = attr.ib(
+    specification_parameter_combination_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "specification-parameter-combination-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: ActivityStatus = attr.ib(
+    status: Optional[ActivityStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    execution_status: ExecutionStatus = attr.ib(
+    execution_status: Optional[ExecutionStatus] = field(
+        default=None,
         metadata={
             "name": "execution-status",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    verdict: VerdictStatus = attr.ib(
+    verdict: Optional[VerdictStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    comment: str = attr.ib(
+    comment: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_comment: str = attr.ib(
+    html_comment: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-comment",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    uid: str = attr.ib(
+    uid: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    tester: str = attr.ib(
+    tester: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    actual_time: str = attr.ib(
+    actual_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "actual-time",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    planned_time: str = attr.ib(
+    planned_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "planned-time",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    error_ids: ErrorIdRefs = attr.ib(
+    error_ids: Optional[ErrorIdRefs] = field(
+        default=None,
         metadata={
             "name": "error-ids",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    keywords: Keywords = attr.ib(
+    keywords: Optional[Keywords] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user_defined_fields: UserDefinedFields = attr.ib(
+    user_defined_fields: Optional[UserDefinedFields] = field(
+        default=None,
         metadata={
             "name": "userDefinedFields",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    values: Values = attr.ib(
+    values: Optional[Values] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    references: References = attr.ib(
+    references: Optional[References] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ParameterCombinationSpec:
     class Meta:
         name = "parameter-combination-spec"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    comment: str = attr.ib(
+    comment: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_comment: str = attr.ib(
+    html_comment: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-comment",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    uid: str = attr.ib(
+    uid: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    keywords: Keywords = attr.ib(
+    keywords: Optional[Keywords] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    edited_requirements: RequirementRefs = attr.ib(
+    edited_requirements: Optional[RequirementRefs] = field(
+        default=None,
         metadata={
             "name": "edited-requirements",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    non_edited_requirements: RequirementRefs = attr.ib(
+    non_edited_requirements: Optional[RequirementRefs] = field(
+        default=None,
         metadata={
             "name": "non-edited-requirements",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user_defined_fields: UserDefinedFields = attr.ib(
+    user_defined_fields: Optional[UserDefinedFields] = field(
+        default=None,
         metadata={
             "name": "userDefinedFields",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    values: Values = attr.ib(
+    values: Optional[Values] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ParameterValues:
     class Meta:
         name = "parameter-values"
 
-    call_parameter: List[CallParameter] = attr.ib(
-        factory=list,
+    call_parameter: List[CallParameter] = field(
+        default_factory=list,
         metadata={
             "name": "call-parameter",
             "type": "Element",
@@ -2933,20 +3133,20 @@ class ParameterValues:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Parameters:
     class Meta:
         name = "parameters"
 
-    parameter: List[Parameter] = attr.ib(
-        factory=list,
+    parameter: List[Parameter] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ProjectDetails:
     """
     :ivar name:
@@ -2975,324 +3175,355 @@ class ProjectDetails:
     class Meta:
         name = "project-details"
 
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    id: str = attr.ib(
+    id: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testobjectname: str = attr.ib(
+    testobjectname: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    state: str = attr.ib(
+    state: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    customername: str = attr.ib(
+    customername: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    customeradress: str = attr.ib(
+    customeradress: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    contactperson: str = attr.ib(
+    contactperson: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testlab: str = attr.ib(
+    testlab: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    checklocation: str = attr.ib(
+    checklocation: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    visible_for_testers: Optional[bool] = attr.ib(
+    visible_for_testers: Optional[bool] = field(
         default=None,
         metadata={
             "name": "visibleForTesters",
             "type": "Element",
         },
     )
-    startdate: str = attr.ib(
+    startdate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    enddate: str = attr.ib(
+    enddate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: ProjectStatus = attr.ib(
+    status: Optional[ProjectStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testing_intelligence: str = attr.ib(
+    testing_intelligence: Optional[str] = field(
+        default=None,
         metadata={
             "name": "testingIntelligence",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    created_time: str = attr.ib(
+    created_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "createdTime",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    settings: Settings = attr.ib(
+    settings: Optional[Settings] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    requirement_repositories: RequirementRepositories = attr.ib(
+    requirement_repositories: Optional[RequirementRepositories] = field(
+        default=None,
         metadata={
             "name": "requirement-repositories",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    requirement_projects: RequirementProjects = attr.ib(
+    requirement_projects: Optional[RequirementProjects] = field(
+        default=None,
         metadata={
             "name": "requirement-projects",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    requirement_udfs: RequirementUdfs = attr.ib(
+    requirement_udfs: Optional[RequirementUdfs] = field(
+        default=None,
         metadata={
             "name": "requirement-udfs",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Representative:
     class Meta:
         name = "representative"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: Optional[RepresentativeType] = attr.ib(
+    type_value: Optional[RepresentativeType] = field(
         default=None,
         metadata={
             "name": "type",
             "type": "Element",
         },
     )
-    placeholder_ref: Optional[Ref] = attr.ib(
+    placeholder_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "placeholder-ref",
             "type": "Element",
         },
     )
-    attachment_pk: Optional[str] = attr.ib(
+    attachment_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-pk",
             "type": "Element",
         },
     )
-    attachment_path: Optional[str] = attr.ib(
+    attachment_path: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-path",
             "type": "Element",
         },
     )
-    attachment_filename: Optional[str] = attr.ib(
+    attachment_filename: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-filename",
             "type": "Element",
         },
     )
-    attachment_lastedited: Optional[str] = attr.ib(
+    attachment_lastedited: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-lastedited",
             "type": "Element",
         },
     )
-    attachment_contentpath: Optional[str] = attr.ib(
+    attachment_contentpath: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-contentpath",
             "type": "Element",
         },
     )
-    attachment_lasteditor: Optional[str] = attr.ib(
+    attachment_lasteditor: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-lasteditor",
             "type": "Element",
         },
     )
-    attachment_file_pk: Optional[str] = attr.ib(
+    attachment_file_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "attachment-file-pk",
             "type": "Element",
         },
     )
-    values: Values = attr.ib(
+    values: Optional[Values] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class SubdivisionVersion(TestElementVersionInfo):
     class Meta:
         name = "subdivision-version"
 
-    element: "Subdivision" = attr.ib(
+    element: Optional["Subdivision"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class TestElement:
     class Meta:
         name = "test-element"
 
-    version: Optional[TestElementVersionInfo] = attr.ib(
+    version: Optional[TestElementVersionInfo] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    uid: Optional[str] = attr.ib(
+    uid: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    locker: str = attr.ib(
+    locker: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: Optional[str] = attr.ib(
+    html_description: Optional[str] = field(
         default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
         },
     )
-    history_pk: str = attr.ib(
+    history_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "historyPK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    identical_version_pk: str = attr.ib(
+    identical_version_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "identicalVersionPK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    references: Optional[References] = attr.ib(
+    references: Optional[References] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    library_pk: Optional[str] = attr.ib(
+    library_pk: Optional[str] = field(
         default=None,
         metadata={
             "name": "libraryPK",
             "type": "Element",
         },
     )
-    parent_uid: Optional[str] = attr.ib(
+    parent_uid: Optional[str] = field(
         default=None,
         metadata={
             "name": "parentUID",
@@ -3301,117 +3532,125 @@ class TestElement:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Userroles:
     class Meta:
         name = "userroles"
 
-    user: List[ProjectUser] = attr.ib(
-        factory=list,
+    user: List[ProjectUser] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ConditionVersions:
     class Meta:
         name = "condition-versions"
 
-    version: List[ConditionVersion] = attr.ib(
-        factory=list,
+    version: List[ConditionVersion] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class DatatypeVersions:
     class Meta:
         name = "datatype-versions"
 
-    version: List[DatatypeVersion] = attr.ib(
-        factory=list,
+    version: List[DatatypeVersion] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Instances:
     class Meta:
         name = "instances"
 
-    instance: List[Instance] = attr.ib(
-        factory=list,
+    instance: List[Instance] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class InteractionCall:
     class Meta:
         name = "interaction-call"
 
-    interaction_ref: Ref = attr.ib(
+    interaction_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "interaction-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    comment: str = attr.ib(
+    comment: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_comment: str = attr.ib(
+    html_comment: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-comment",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: InteractionCallType = attr.ib(
+    type_value: Optional[InteractionCallType] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    phase: InteractionCallPhase = attr.ib(
+    phase: Optional[InteractionCallPhase] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    parameter_values: ParameterValues = attr.ib(
+    parameter_values: Optional[ParameterValues] = field(
+        default=None,
         metadata={
             "name": "parameter-values",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    marker: Optional[Marker] = attr.ib(
+    marker: Optional[Marker] = field(
         default=None,
         metadata={
             "type": "Element",
@@ -3419,26 +3658,26 @@ class InteractionCall:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class InteractionVersions:
     class Meta:
         name = "interaction-versions"
 
-    version: List[InteractionVersion] = attr.ib(
-        factory=list,
+    version: List[InteractionVersion] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ParameterCombinationsExec:
     class Meta:
         name = "parameter-combinations-exec"
 
-    parameter_combination: List[ParameterCombinationExec] = attr.ib(
-        factory=list,
+    parameter_combination: List[ParameterCombinationExec] = field(
+        default_factory=list,
         metadata={
             "name": "parameter-combination",
             "type": "Element",
@@ -3446,13 +3685,13 @@ class ParameterCombinationsExec:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ParameterCombinationsSpec:
     class Meta:
         name = "parameter-combinations-spec"
 
-    parameter_combination: List[ParameterCombinationSpec] = attr.ib(
-        factory=list,
+    parameter_combination: List[ParameterCombinationSpec] = field(
+        default_factory=list,
         metadata={
             "name": "parameter-combination",
             "type": "Element",
@@ -3460,39 +3699,39 @@ class ParameterCombinationsSpec:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Representatives:
     class Meta:
         name = "representatives"
 
-    representative: List[Representative] = attr.ib(
-        factory=list,
+    representative: List[Representative] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class SubdivisionVersions:
     class Meta:
         name = "subdivision-versions"
 
-    version: List[SubdivisionVersion] = attr.ib(
-        factory=list,
+    version: List[SubdivisionVersion] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class CallSequence:
     class Meta:
         name = "call-sequence"
 
-    interaction_call: List[InteractionCall] = attr.ib(
-        factory=list,
+    interaction_call: List[InteractionCall] = field(
+        default_factory=list,
         metadata={
             "name": "interaction-call",
             "type": "Element",
@@ -3500,19 +3739,19 @@ class CallSequence:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Condition(TestElement):
     class Meta:
         name = "condition"
 
-    old_versions: Optional[ConditionVersions] = attr.ib(
+    old_versions: Optional[ConditionVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
             "type": "Element",
         },
     )
-    type_value: str = attr.ib(
+    type_value: str = field(
         init=False,
         default="condition",
         metadata={
@@ -3522,171 +3761,193 @@ class Condition(TestElement):
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class EquivalenceClass:
     class Meta:
         name = "equivalence-class"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    default_representative_ref: Ref = attr.ib(
+    default_representative_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "default-representative-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    representatives: Representatives = attr.ib(
+    representatives: Optional[Representatives] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Execution:
     class Meta:
         name = "execution"
 
-    testcycle_ref: Ref = attr.ib(
+    testcycle_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "testcycle-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    specification_ref: Ref = attr.ib(
+    specification_ref: Optional[Ref] = field(
+        default=None,
         metadata={
             "name": "specification-ref",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    details: "ExecutionDetails" = attr.ib(
+    details: Optional["ExecutionDetails"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    execution_status: ExecutionStatus = attr.ib(
+    execution_status: Optional[ExecutionStatus] = field(
+        default=None,
         metadata={
             "name": "execution-status",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    verdict: VerdictStatus = attr.ib(
+    verdict: Optional[VerdictStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    planned_time: str = attr.ib(
+    planned_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "planned-time",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    actual_time: str = attr.ib(
+    actual_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "actual-time",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    script_path: str = attr.ib(
+    script_path: Optional[str] = field(
+        default=None,
         metadata={
             "name": "script-path",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    execution_engine: str = attr.ib(
+    execution_engine: Optional[str] = field(
+        default=None,
         metadata={
             "name": "execution-engine",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    protocol_location: str = attr.ib(
+    protocol_location: Optional[str] = field(
+        default=None,
         metadata={
             "name": "protocol-location",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    verdict_evaluator: str = attr.ib(
+    verdict_evaluator: Optional[str] = field(
+        default=None,
         metadata={
             "name": "verdict-evaluator",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    comments: str = attr.ib(
+    comments: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_comments: str = attr.ib(
+    html_comments: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-comments",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    keywords: Keywords = attr.ib(
+    keywords: Optional[Keywords] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user_defined_fields: UserDefinedFields = attr.ib(
+    user_defined_fields: Optional[UserDefinedFields] = field(
+        default=None,
         metadata={
             "name": "userDefinedFields",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    exec_logfiles: ExecLogfiles = attr.ib(
+    exec_logfiles: Optional[ExecLogfiles] = field(
+        default=None,
         metadata={
             "name": "exec-logfiles",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    parameter_combinations: Optional[ParameterCombinationsExec] = attr.ib(
+    parameter_combinations: Optional[ParameterCombinationsExec] = field(
         default=None,
         metadata={
             "name": "parameter-combinations",
             "type": "Element",
         },
     )
-    old_versions: Optional[OldVersions] = attr.ib(
+    old_versions: Optional[OldVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
@@ -3695,76 +3956,81 @@ class Execution:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class InstancesArray:
     class Meta:
         name = "instances-array"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    ordering: str = attr.ib(
+    ordering: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    instances: Instances = attr.ib(
+    instances: Optional[Instances] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Subdivision(TestElement):
     class Meta:
         name = "subdivision"
 
-    library_information: Optional[LibraryInformation] = attr.ib(
+    library_information: Optional[LibraryInformation] = field(
         default=None,
         metadata={
             "name": "libraryInformation",
             "type": "Element",
         },
     )
-    called_libraries: Optional[CalledLibraries] = attr.ib(
+    called_libraries: Optional[CalledLibraries] = field(
         default=None,
         metadata={
             "name": "called-libraries",
             "type": "Element",
         },
     )
-    old_versions: Optional[SubdivisionVersions] = attr.ib(
+    old_versions: Optional[SubdivisionVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
             "type": "Element",
         },
     )
-    element: List[TestElement] = attr.ib(
-        factory=list,
+    element: List[TestElement] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    type_value: str = attr.ib(
+    type_value: str = field(
         init=False,
         default="subdivision",
         metadata={
@@ -3774,13 +4040,13 @@ class Subdivision(TestElement):
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class EquivalenceClasses:
     class Meta:
         name = "equivalence-classes"
 
-    equivalence_class: List[EquivalenceClass] = attr.ib(
-        factory=list,
+    equivalence_class: List[EquivalenceClass] = field(
+        default_factory=list,
         metadata={
             "name": "equivalence-class",
             "type": "Element",
@@ -3788,26 +4054,26 @@ class EquivalenceClasses:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ExecutionCycles:
     class Meta:
         name = "execution-cycles"
 
-    execution: List[Execution] = attr.ib(
-        factory=list,
+    execution: List[Execution] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class InstancesArrays:
     class Meta:
         name = "instances-arrays"
 
-    instances_array: List[InstancesArray] = attr.ib(
-        factory=list,
+    instances_array: List[InstancesArray] = field(
+        default_factory=list,
         metadata={
             "name": "instances-array",
             "type": "Element",
@@ -3815,72 +4081,77 @@ class InstancesArrays:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Interaction(TestElement):
     class Meta:
         name = "interaction"
 
-    status: SpecificationStatus = attr.ib(
+    status: SpecificationStatus = field(
         default=SpecificationStatus.SPECSTATUS_INPROGRESS,
         metadata={
             "type": "Element",
             "required": True,
         },
     )
-    default_call_type: DefaultCallType = attr.ib(
+    default_call_type: Optional[DefaultCallType] = field(
+        default=None,
         metadata={
             "name": "default-call-type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    advanced_content: Optional[AdvancedContent] = attr.ib(
+    advanced_content: Optional[AdvancedContent] = field(
         default=None,
         metadata={
             "name": "advancedContent",
             "type": "Element",
         },
     )
-    preconditions: Conditions = attr.ib(
+    preconditions: Optional[Conditions] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    postconditions: Conditions = attr.ib(
+    postconditions: Optional[Conditions] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    parameters: Parameters = attr.ib(
+    parameters: Optional[Parameters] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    call_sequence: CallSequence = attr.ib(
+    call_sequence: Optional[CallSequence] = field(
+        default=None,
         metadata={
             "name": "call-sequence",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    identical_version_metaword_mapping: Optional[IdenticalVersionMetawordMapping] = attr.ib(
+    identical_version_metaword_mapping: Optional[IdenticalVersionMetawordMapping] = field(
         default=None,
         metadata={
             "name": "identical-version-metaword-mapping",
             "type": "Element",
         },
     )
-    old_versions: Optional[InteractionVersions] = attr.ib(
+    old_versions: Optional[InteractionVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
             "type": "Element",
         },
     )
-    type_value: str = attr.ib(
+    type_value: str = field(
         init=False,
         default="interaction",
         metadata={
@@ -3890,77 +4161,81 @@ class Interaction(TestElement):
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class TestElements:
     class Meta:
         name = "test-elements"
 
-    element: List[Subdivision] = attr.ib(
-        factory=list,
+    element: List[Subdivision] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Datatype(TestElement):
     class Meta:
         name = "datatype"
 
-    status: SpecificationStatus = attr.ib(
+    status: Optional[SpecificationStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    kind: Optional[KindOfDataType] = attr.ib(
+    kind: Optional[KindOfDataType] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    fields: Fields = attr.ib(
+    fields: Optional[Fields] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    instances_arrays: InstancesArrays = attr.ib(
+    instances_arrays: Optional[InstancesArrays] = field(
+        default=None,
         metadata={
             "name": "instances-arrays",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    equivalence_classes: EquivalenceClasses = attr.ib(
+    equivalence_classes: Optional[EquivalenceClasses] = field(
+        default=None,
         metadata={
             "name": "equivalence-classes",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    identical_version_datatype_mapping: Optional[IdenticalVersionDatatypeMapping] = attr.ib(
+    identical_version_datatype_mapping: Optional[IdenticalVersionDatatypeMapping] = field(
         default=None,
         metadata={
             "name": "identical-version-datatype-mapping",
             "type": "Element",
         },
     )
-    old_versions: Optional[DatatypeVersions] = attr.ib(
+    old_versions: Optional[DatatypeVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
             "type": "Element",
         },
     )
-    element: List[Interaction] = attr.ib(
-        factory=list,
+    element: List[Interaction] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    type_value: str = attr.ib(
+    type_value: str = field(
         init=False,
         default="datatype",
         metadata={
@@ -3970,85 +4245,92 @@ class Datatype(TestElement):
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Specification:
     class Meta:
         name = "specification"
 
-    details: "SpecificationDetails" = attr.ib(
+    details: Optional["SpecificationDetails"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    review_comments: Optional[str] = attr.ib(
+    review_comments: Optional[str] = field(
         default=None,
         metadata={
             "name": "review-comments",
             "type": "Element",
         },
     )
-    html_review_comments: Optional[str] = attr.ib(
+    html_review_comments: Optional[str] = field(
         default=None,
         metadata={
             "name": "html-review-comments",
             "type": "Element",
         },
     )
-    keywords: Keywords = attr.ib(
+    keywords: Optional[Keywords] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    edited_requirements: RequirementRefs = attr.ib(
+    edited_requirements: Optional[RequirementRefs] = field(
+        default=None,
         metadata={
             "name": "edited-requirements",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    non_edited_requirements: RequirementRefs = attr.ib(
+    non_edited_requirements: Optional[RequirementRefs] = field(
+        default=None,
         metadata={
             "name": "non-edited-requirements",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    user_defined_fields: UserDefinedFields = attr.ib(
+    user_defined_fields: Optional[UserDefinedFields] = field(
+        default=None,
         metadata={
             "name": "userDefinedFields",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    interaction: Optional[Interaction] = attr.ib(
+    interaction: Optional[Interaction] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    parameter_combinations: Optional[ParameterCombinationsSpec] = attr.ib(
+    parameter_combinations: Optional[ParameterCombinationsSpec] = field(
         default=None,
         metadata={
             "name": "parameter-combinations",
             "type": "Element",
         },
     )
-    old_versions: Optional[OldVersions] = attr.ib(
+    old_versions: Optional[OldVersions] = field(
         default=None,
         metadata={
             "name": "old-versions",
@@ -4057,121 +4339,134 @@ class Specification:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testcase:
     class Meta:
         name = "testcase"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    order_pos: str = attr.ib(
+    order_pos: Optional[str] = field(
+        default=None,
         metadata={
             "name": "order-pos",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    uid: Optional[str] = attr.ib(
+    uid: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    specification: Specification = attr.ib(
+    specification: Optional[Specification] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    automation: Automation = attr.ib(
+    automation: Optional[Automation] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    execution_cycles: ExecutionCycles = attr.ib(
+    execution_cycles: Optional[ExecutionCycles] = field(
+        default=None,
         metadata={
             "name": "execution-cycles",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testtheme:
     class Meta:
         name = "testtheme"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    order_pos: str = attr.ib(
+    order_pos: Optional[str] = field(
+        default=None,
         metadata={
             "name": "order-pos",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    uid: Optional[str] = attr.ib(
+    uid: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    specification: Specification = attr.ib(
+    specification: Optional[Specification] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    automation: Automation = attr.ib(
+    automation: Optional[Automation] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    execution_cycles: ExecutionCycles = attr.ib(
+    execution_cycles: Optional[ExecutionCycles] = field(
+        default=None,
         metadata={
             "name": "execution-cycles",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    children: "TestthemeChildren" = attr.ib(
+    children: Optional["TestthemeChildren"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Version:
     class Meta:
         name = "version"
 
-    content: List[object] = attr.ib(
-        factory=list,
+    content: List[object] = field(
+        default_factory=list,
         metadata={
             "type": "Wildcard",
             "namespace": "##any",
@@ -4246,118 +4541,134 @@ class Version:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Details:
     class Meta:
         name = "details"
 
-    version: Version = attr.ib(
+    version: Optional[Version] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    identical_version_pk: str = attr.ib(
+    identical_version_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "identicalVersionPK",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    locker: str = attr.ib(
+    locker: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    responsible: str = attr.ib(
+    responsible: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    reviewer: str = attr.ib(
+    reviewer: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    priority: TsePriority = attr.ib(
+    priority: Optional[TsePriority] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Requirement:
     class Meta:
         name = "requirement"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    id: str = attr.ib(
+    id: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    extended_id: str = attr.ib(
+    extended_id: Optional[str] = field(
+        default=None,
         metadata={
             "name": "extended-id",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    version: Version = attr.ib(
+    version: Optional[Version] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    owner: str = attr.ib(
+    owner: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: str = attr.ib(
+    status: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    priority: str = attr.ib(
+    priority: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    repository_id: str = attr.ib(
+    repository_id: Optional[str] = field(
+        default=None,
         metadata={
             "name": "repository-id",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    udfs: Optional[Udfs] = attr.ib(
+    udfs: Optional[Udfs] = field(
         default=None,
         metadata={
             "type": "Element",
@@ -4365,142 +4676,154 @@ class Requirement:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementNode:
     class Meta:
         name = "requirement-node"
 
-    requirement_pk: str = attr.ib(
+    requirement_pk: Optional[str] = field(
+        default=None,
         metadata={
             "name": "requirement-pk",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    name: str = attr.ib(
+    name: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    id: str = attr.ib(
+    id: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    version: Version = attr.ib(
+    version: Optional[Version] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    type_value: RequirementNodeType = attr.ib(
+    type_value: Optional[RequirementNodeType] = field(
+        default=None,
         metadata={
             "name": "type",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    children: "RequirementChildren" = attr.ib(
+    children: Optional["RequirementChildren"] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class TestthemeChildren:
     class Meta:
         name = "testtheme-children"
 
-    testtheme: List[Testtheme] = attr.ib(
-        factory=list,
+    testtheme: List[Testtheme] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
-    testcase: List[Testcase] = attr.ib(
-        factory=list,
+    testcase: List[Testcase] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testthemes:
     class Meta:
         name = "testthemes"
 
-    testtheme: List[Testtheme] = attr.ib(
-        factory=list,
+    testtheme: List[Testtheme] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class AutomationDetails(Details):
     class Meta:
         name = "automation-details"
 
-    status: AutomationStatus = attr.ib(
+    status: Optional[AutomationStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    target_date: str = attr.ib(
+    target_date: Optional[str] = field(
+        default=None,
         metadata={
             "name": "target-date",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    references: References = attr.ib(
+    references: Optional[References] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ExecutionDetails(Details):
     class Meta:
         name = "execution-details"
 
-    status: ActivityStatus = attr.ib(
+    status: Optional[ActivityStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    target_date: str = attr.ib(
+    target_date: Optional[str] = field(
+        default=None,
         metadata={
             "name": "target-date",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    references: References = attr.ib(
+    references: Optional[References] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class RequirementChildren:
     class Meta:
         name = "requirement-children"
 
-    requirement_node: List[RequirementNode] = attr.ib(
-        factory=list,
+    requirement_node: List[RequirementNode] = field(
+        default_factory=list,
         metadata={
             "name": "requirement-node",
             "type": "Element",
@@ -4508,76 +4831,79 @@ class RequirementChildren:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Requirements:
     class Meta:
         name = "requirements"
 
-    requirement: List[Requirement] = attr.ib(
-        factory=list,
+    requirement: List[Requirement] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class SpecificationDetails(Details):
     class Meta:
         name = "specification-details"
 
-    status: SpecificationStatus = attr.ib(
+    status: Optional[SpecificationStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    target_date: str = attr.ib(
+    target_date: Optional[str] = field(
+        default=None,
         metadata={
             "name": "target-date",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    references: References = attr.ib(
+    references: Optional[References] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Baseline:
     class Meta:
         name = "baseline"
 
-    details: Optional[BaselineDetails] = attr.ib(
+    details: Optional[BaselineDetails] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    children: Optional[RequirementChildren] = attr.ib(
+    children: Optional[RequirementChildren] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    project_pk_ref: Optional[Ref] = attr.ib(
+    project_pk_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "project-pk-ref",
             "type": "Element",
         },
     )
-    project: Optional[str] = attr.ib(
+    project: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    name: Optional[str] = attr.ib(
+    name: Optional[str] = field(
         default=None,
         metadata={
             "type": "Element",
@@ -4585,305 +4911,326 @@ class Baseline:
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Baselines:
     class Meta:
         name = "baselines"
 
-    baseline: List[Baseline] = attr.ib(
-        factory=list,
+    baseline: List[Baseline] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testobjectversion:
     class Meta:
         name = "testobjectversion"
 
-    pk: str = attr.ib(
+    pk: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    id: str = attr.ib(
+    id: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    startdate: str = attr.ib(
+    startdate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    enddate: str = attr.ib(
+    enddate: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    status: ProjectStatus = attr.ib(
+    status: Optional[ProjectStatus] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    created_time: str = attr.ib(
+    created_time: Optional[str] = field(
+        default=None,
         metadata={
             "name": "createdTime",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    visible_for_testers: Optional[bool] = attr.ib(
+    visible_for_testers: Optional[bool] = field(
         default=None,
         metadata={
             "name": "visibleForTesters",
             "type": "Element",
         },
     )
-    cloning_visibility: Optional[str] = attr.ib(
+    cloning_visibility: Optional[str] = field(
         default=None,
         metadata={
             "name": "cloningVisibility",
             "type": "Element",
         },
     )
-    base_tov: Optional[str] = attr.ib(
+    base_tov: Optional[str] = field(
         default=None,
         metadata={
             "name": "baseTOV",
             "type": "Element",
         },
     )
-    source_tov_ref: Optional[Ref] = attr.ib(
+    source_tov_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "sourceTOV-ref",
             "type": "Element",
         },
     )
-    variants_definition_ref: Optional[Ref] = attr.ib(
+    variants_definition_ref: Optional[Ref] = field(
         default=None,
         metadata={
             "name": "variantsDefinition-ref",
             "type": "Element",
         },
     )
-    description: str = attr.ib(
+    description: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    html_description: str = attr.ib(
+    html_description: Optional[str] = field(
+        default=None,
         metadata={
             "name": "html-description",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testing_intelligence: str = attr.ib(
+    testing_intelligence: Optional[str] = field(
+        default=None,
         metadata={
             "name": "testingIntelligence",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    baselines: Baselines = attr.ib(
+    baselines: Optional[Baselines] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    placeholders: Placeholders = attr.ib(
+    placeholders: Optional[Placeholders] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    variants_definitions: VariantsDefinitions = attr.ib(
+    variants_definitions: Optional[VariantsDefinitions] = field(
+        default=None,
         metadata={
             "name": "variantsDefinitions",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    variants_markers: VariantsMarkers = attr.ib(
+    variants_markers: Optional[VariantsMarkers] = field(
+        default=None,
         metadata={
             "name": "variantsMarkers",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    placeholder_values: PlaceholderValues = attr.ib(
+    placeholder_values: Optional[PlaceholderValues] = field(
+        default=None,
         metadata={
             "name": "placeholderValues",
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testcycles: Testcycles = attr.ib(
+    testcycles: Optional[Testcycles] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    testthemes: Testthemes = attr.ib(
+    testthemes: Optional[Testthemes] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    test_elements: TestElements = attr.ib(
+    test_elements: Optional[TestElements] = field(
+        default=None,
         metadata={
             "name": "test-elements",
             "type": "Element",
             "required": True,
-        }
+        },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class Testobjectversions:
     class Meta:
         name = "testobjectversions"
 
-    testobjectversion: List[Testobjectversion] = attr.ib(
-        factory=list,
+    testobjectversion: List[Testobjectversion] = field(
+        default_factory=list,
         metadata={
             "type": "Element",
         },
     )
 
 
-@attr.s(kw_only=True)
+@dataclass
 class ProjectDump:
     class Meta:
         name = "project-dump"
 
-    details: ProjectDetails = attr.ib(
+    details: Optional[ProjectDetails] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    userroles: Optional[Userroles] = attr.ib(
+    userroles: Optional[Userroles] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    user_defined_fields: Optional[UserDefinedFieldsDefinition] = attr.ib(
+    user_defined_fields: Optional[UserDefinedFieldsDefinition] = field(
         default=None,
         metadata={
             "name": "UserDefinedFields",
             "type": "Element",
         },
     )
-    defect_user_defined_fields: Optional[DefectUserDefinedFields] = attr.ib(
+    defect_user_defined_fields: Optional[DefectUserDefinedFields] = field(
         default=None,
         metadata={
             "name": "DefectUserDefinedFields",
             "type": "Element",
         },
     )
-    keywords: Optional[KeywordsDefinition] = attr.ib(
+    keywords: Optional[KeywordsDefinition] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    labels: Optional[Labels] = attr.ib(
+    labels: Optional[Labels] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    library_labels: Optional[LibraryLabels] = attr.ib(
+    library_labels: Optional[LibraryLabels] = field(
         default=None,
         metadata={
             "name": "library-labels",
             "type": "Element",
         },
     )
-    dm_settings: Optional[DmSettings] = attr.ib(
+    dm_settings: Optional[DmSettings] = field(
         default=None,
         metadata={
             "name": "dm-settings",
             "type": "Element",
         },
     )
-    error_ids: Optional[ErrorIds] = attr.ib(
+    error_ids: Optional[ErrorIds] = field(
         default=None,
         metadata={
             "name": "error-ids",
             "type": "Element",
         },
     )
-    references: Optional[References] = attr.ib(
+    references: Optional[References] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    requirement_baselines: Optional[Baselines] = attr.ib(
+    requirement_baselines: Optional[Baselines] = field(
         default=None,
         metadata={
             "name": "requirement-baselines",
             "type": "Element",
         },
     )
-    testobjectversions: Testobjectversions = attr.ib(
+    testobjectversions: Optional[Testobjectversions] = field(
+        default=None,
         metadata={
             "type": "Element",
             "required": True,
-        }
+        },
     )
-    requirements: Optional[Requirements] = attr.ib(
+    requirements: Optional[Requirements] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    referenced_user_names: Optional[ReferencedUserNames] = attr.ib(
+    referenced_user_names: Optional[ReferencedUserNames] = field(
         default=None,
         metadata={
             "name": "referenced-user-names",
             "type": "Element",
         },
     )
-    errors: Optional[Errors] = attr.ib(
+    errors: Optional[Errors] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    warnings: Optional[Warnings] = attr.ib(
+    warnings: Optional[Warnings] = field(
         default=None,
         metadata={
             "type": "Element",
         },
     )
-    version: str = attr.ib(
+    version: Optional[str] = field(
+        default=None,
         metadata={
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    build_number: str = attr.ib(
+    build_number: Optional[str] = field(
+        default=None,
         metadata={
             "name": "build-number",
             "type": "Attribute",
             "required": True,
-        }
+        },
     )
-    repository: Optional[str] = attr.ib(
+    repository: Optional[str] = field(
         default=None,
         metadata={
             "type": "Attribute",
