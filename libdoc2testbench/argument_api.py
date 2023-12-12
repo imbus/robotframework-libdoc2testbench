@@ -3,20 +3,16 @@ from typing import List, Optional
 from robot.running.arguments.argumentspec import ArgInfo
 
 try:
-    from robot.running.arguments.typeinfo import TypeInfo
-except ImportError:
-    try:
-        from robot.running.arguments.argumentspec import TypeInfo
-    except ImportError:
-        from robot.running.arguments.argumentspec import ArgInfo as TypeInfo
-
-try:
     from robot.utils import NOT_SET
 except ImportError:
     NOT_SET = ArgInfo.NOTSET
 
 
-def get_argument_type_names(argument_type: TypeInfo) -> List[str]:
+def get_argument_type_names(argument: ArgInfo) -> List[str]:
+    try:
+        argument_type = argument.type
+    except:
+        argument_type = argument  # above block does not work for rf5
     try:
         type_names = []
         if argument_type.is_union:

@@ -108,10 +108,7 @@ class InteractionCreator:
         for argument in keyword.args:
             if not requires_datatype_creation(argument):
                 continue
-            try:
-                arg_type_names = get_argument_type_names(argument.type)
-            except AttributeError:
-                arg_type_names = get_argument_type_names(argument)
+            arg_type_names = get_argument_type_names(argument)
             for arg_type in arg_type_names:
                 datatype = self.datatypes.get_datatype(arg_type)
                 break

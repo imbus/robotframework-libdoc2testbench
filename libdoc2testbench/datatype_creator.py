@@ -2,9 +2,9 @@ from enum import Enum
 from typing import Dict, List, Optional
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
+from robot.running.arguments.argumentspec import ArgInfo
 
 from libdoc2testbench.argument_api import (
-    TypeInfo,
     get_arg_kind_default_value,
     get_argument_type_names,
     requires_datatype_creation,
@@ -79,11 +79,8 @@ class DatatypeCreator:
         datatype_subdivision.element.extend(self.datatypes.get_datatypes())
         return datatype_subdivision
 
-    def map_argument_to_datatype(self, argument: TypeInfo) -> Optional[str]:
-        try:
-            arg_type_names = get_argument_type_names(argument.type)
-        except AttributeError:
-            arg_type_names = get_argument_type_names(argument)
+    def map_argument_to_datatype(self, argument: ArgInfo) -> Optional[str]:
+        arg_type_names = get_argument_type_names(argument)
         for arg_type in arg_type_names:
             datatype = self.datatypes.get_datatype(arg_type)
             if datatype:
@@ -111,10 +108,7 @@ class DatatypeCreator:
                 if not requires_datatype_creation(arg):
                     continue
                 datatype = self.map_argument_to_datatype(arg)
-                try:
-                    arg_type_names = get_argument_type_names(arg.type)
-                except AttributeError:
-                    arg_type_names = get_argument_type_names(arg)
+                arg_type_names = get_argument_type_names(arg)
                 arg_kind_default = get_arg_kind_default_value(arg.kind)
                 equivalence_class = self.datatypes.get_equivalence_class(
                     datatype.name, datatype.name
