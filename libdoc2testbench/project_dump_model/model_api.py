@@ -281,7 +281,7 @@ def create_reference(
     attachment_path: Union[str, None],
     attachment_filename: Union[str, None],
     attachment_file_pk: Union[str, None],
-    type_value: ReferenceKind = ReferenceKind.LINK,
+    type_value: ReferenceKind = ReferenceKind.ATTACHMENT,
     version: str = "",
     old_versions: Optional[OldVersions] = None,
 ) -> Reference:
