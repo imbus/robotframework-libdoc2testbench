@@ -1,3 +1,4 @@
+from itertools import chain
 from typing import List, Optional
 
 from robot.running.arguments.argumentspec import ArgInfo
@@ -8,29 +9,18 @@ except ImportError:
     NOT_SET = ArgInfo.NOTSET
 
 
-def _get_arg_sub_types(arg_type):
-    type_names = []
-    if arg_type.is_union:
-        for arg_type in arg_type.nested:
-            type_names.extend(_get_arg_sub_types(type))
-        return type_names
-    return [arg_type.name]
+def _get_arg_sub_types(arg_type) -> List:
+    if not arg_type.is_union:
+        return [arg_type.name]
+    nested_types = [_get_arg_sub_types(nested_type) for nested_type in arg_type.nested]
+    return list(chain.from_iterable(nested_types))
 
 
 def get_argument_type_names(argument: ArgInfo) -> List[str]:
     try:
-        argument_type = argument.type
-    except:
-        argument_type = argument  # above block does not work for rf5
-    try:
-        type_names = []
-        if argument_type.is_union:
-            for type in argument_type.nested:
-                type_names.extend(_get_arg_sub_types(type))
-            return type_names
-    except AttributeError:  # above block does not work for rf5
-        return [argument_type.name]
-    return [argument_type.name]
+        return _get_arg_sub_types(argument.type)
+    except AttributeError:
+        return [argument.name]  # above block does not work for rf5
 
 
 def get_arg_kind_default_value(argument_kind: str) -> Optional[str]:

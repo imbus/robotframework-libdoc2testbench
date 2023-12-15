@@ -117,7 +117,9 @@ class ProjectDumpBuilder:
             pk=self.pk_generator.get_pk(),
             name=subdivision_name,
             uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, libdoc.name),
-            html_description=f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>",
+            html_description=(
+                f"<html><p> Import of {libdoc.name} {libdoc.version}</p>{libdoc.doc}</html>"
+            ),
         )
         datatype_creator = DatatypeCreator(
             libdoc, self.pk_generator, self.uid_generator, self.created_datatypes
@@ -144,7 +146,7 @@ class ProjectDumpBuilder:
             encoding="UTF-8", pretty_print=True, ignore_default_attributes=False
         )
         serializer = XmlSerializer(config=config, context=context)
-        with open(path, 'w', encoding="utf-8") as project_dump:
+        with Path(path).open('w', encoding="utf-8") as project_dump:
             project_dump.write(serializer.render(self.project_dump))
 
     def initialize_project_dump(

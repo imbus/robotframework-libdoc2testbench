@@ -20,6 +20,7 @@ include_trailing_comma = false
 skip-string-normalization = true
 
 [tool.ruff]
+line-length = 100
 unfixable = [
     "UP007"
 ]
@@ -27,18 +28,13 @@ exclude = [
   "__pycache__",
   "config.py",
   "model.py",
-  "tests"
+  "tests",
+  "itb_project_export.py"
 ]
 ignore = [
-  "B008",
-  "B904",
-  "E501",
-  "N815",
-  "N803",
-  "N806",
-  "N812",
-  "N999",
-  "PLR0913",
+  "T201",
+  "B008", # Todo: fix later
+  "PLR0913", # Todo: fix later
 ]
 target-version = "py38"
 select = [

@@ -27,7 +27,8 @@ def create_libdocs_from_import_list(
         first_line = library_list.readline()
         if not re.fullmatch(r'\*+\s*import\s?list(\s?\**)\n?', first_line, re.IGNORECASE):
             sys.exit(
-                f"Import list {import_list} should contain the following header: *** Import List ***"
+                f"Import list {import_list} should contain the following header:"
+                f" *** Import List ***"
             )
         for line in library_list.read().splitlines():
             if not line.strip().startswith('#') and len(line.strip()) != 0:

@@ -45,7 +45,7 @@ class DatatypeStorage:
         if not eqc and create_eqc:
             try:
                 ordering = int(datatype.equivalence_classes.equivalence_class[-1].ordering) + 1024
-            except:
+            except IndexError:
                 ordering = 1024
             eqc = create_equivalence_class(
                 pk=self.pk_generator.get_pk(),
@@ -67,14 +67,15 @@ class DatatypeStorage:
     ) -> None:
         equivalence_class = self.get_equivalence_class(datatype_name, equivalence_class_name)
         existing_representatives = [
-            repr.name for repr in self._get_ec_representatives(equivalence_class)
+            representative.name
+            for representative in self._get_ec_representatives(equivalence_class)
         ]
         for member in members:
             if member in existing_representatives:
                 continue
             try:
-                ordering = int(equivalence_class.representatives.representative[-1]) + 1024
-            except:
+                ordering = int(equivalence_class.representatives.representative[-1].ordering) + 1024
+            except IndexError:
                 ordering = 1024
             equivalence_class.representatives.representative.append(
                 create_representative(

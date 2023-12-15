@@ -72,7 +72,11 @@ class InteractionCreator:
             uid=self.uid_generator.get_uid(
                 TestElementType.INTERACTION, keyword.name, self.libdoc.name
             ),
-            html_description=f"<html>{keyword.doc.replace('<br>', '<br/>').replace('<hr>', '<br/>')}</html>",
+            html_description=(
+                f"<html>"
+                f"{keyword.doc.replace('<br>', '<br/>').replace('<hr>', '<br/>')}"
+                f"</html>"
+            ),
             references=references,
             parameters=self.get_interaction_parameters(keyword),
         )
@@ -111,9 +115,10 @@ class InteractionCreator:
                 break
             if not datatype:
                 datatype = self.datatypes.get_datatype(argument.name)
-            if not datatype:
-                if argument.default_repr or get_arg_kind_default_value(argument.kind):
-                    datatype = self.datatypes.get_datatype("default_value")
+            if not datatype and (
+                argument.default_repr or get_arg_kind_default_value(argument.kind)
+            ):
+                datatype = self.datatypes.get_datatype("default_value")
             datatype_pk = datatype.pk if datatype else "-1"
 
             parameter = Parameter(
@@ -125,15 +130,15 @@ class InteractionCreator:
             )
             default_value = argument.default_repr or get_arg_kind_default_value(argument.kind)
 
-            repr = (
+            representative = (
                 self.datatypes.get_representative(datatype.name, default_value)
                 if datatype
                 else None
             )
-            if repr:
+            if representative:
                 parameter.default_value = DefaultValue(
                     type_value="1",
-                    representative_ref=Ref(pk=repr.pk),
+                    representative_ref=Ref(pk=representative.pk),
                     type_attribute=DefaultValueType.REPRESENTATIVE,
                 )
             parameters.parameter.append(parameter)

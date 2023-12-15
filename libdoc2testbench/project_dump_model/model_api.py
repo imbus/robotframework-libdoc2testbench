@@ -194,7 +194,7 @@ def create_project_details(
     html_description: str = "",
     description: str = "",
     created_time: str = "",
-    id: str = "",
+    id: str = "",  # noqa: A002
     state: str = "active",
     customername: str = "",
     customeradress: str = "",
@@ -236,7 +236,7 @@ def create_project_details(
 
 def create_testobjecversion(
     pk: str,
-    id: str = "",
+    id: str = "",  # noqa: A002
     startdate: str = "",
     enddate: str = "",
     status: ProjectStatus = ProjectStatus.ACTIVE,
@@ -301,14 +301,14 @@ def create_reference(
 def create_project_dump(
     repository: str,
     details: ProjectDetails,
-    testobjectversions: Testobjectversions = Testobjectversions(),
+    testobjectversions: Testobjectversions = None,
     version: str = "",
     build_number: str = "",
     references: Union[References, None] = None,
 ) -> ProjectDump:
     return ProjectDump(
         details=details,
-        testobjectversions=testobjectversions,
+        testobjectversions=testobjectversions or Testobjectversions(),
         version=version,
         build_number=build_number,
         repository=repository,
