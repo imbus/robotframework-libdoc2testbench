@@ -130,8 +130,8 @@ class DatatypeCreator:
 
     def get_enum_datatypes(self) -> List[Datatype]:
         enums = filter(lambda type_doc: type_doc.type == 'Enum', self.libdoc.type_docs)
-        self._ordering = 0
         for enum in enums:
+            self._ordering = 0
             representatives = Representatives(
                 representative=[
                     create_representative(
