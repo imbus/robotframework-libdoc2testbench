@@ -110,16 +110,18 @@ class InteractionCreator:
             if not requires_datatype_creation(argument):
                 continue
             arg_type_names = get_argument_type_names(argument)
+            datatype = None
             for arg_type in arg_type_names:
                 datatype = self.datatypes.get_datatype(arg_type)
-                break
+                if datatype:
+                    break
             if not datatype:
                 datatype = self.datatypes.get_datatype(argument.name)
             if not datatype and (
                 argument.default_repr or get_arg_kind_default_value(argument.kind)
             ):
                 datatype = self.datatypes.get_datatype("default_value")
-            datatype_pk = datatype.pk if datatype else "-1"
+            datatype_pk = datatype.pk if datatype and datatype.name != "default_value" else "-1"
 
             parameter = Parameter(
                 pk=self.pk_generator.get_pk(),

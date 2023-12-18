@@ -20,7 +20,7 @@ def get_argument_type_names(argument: ArgInfo) -> List[str]:
     try:
         return _get_arg_sub_types(argument.type)
     except AttributeError:
-        return [argument.name]  # above block does not work for rf5
+        return argument.types_reprs  # above block does not work for rf5
 
 
 def get_arg_kind_default_value(argument_kind: str) -> Optional[str]:
