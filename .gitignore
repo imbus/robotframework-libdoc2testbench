@@ -178,7 +178,6 @@ report.html
 selenium-screenshot-*.png
 
 ### testbench
-tb_xsd/
 test.xml
 test_libraries/
 
@@ -189,5 +188,10 @@ test_libraries/
 project-dump.zip
 project-dump.xml
 Browser.zip
-
+validate_model.py
+web_itorx_import_list.txt
+fix_model.py
+dump.bat
+*.zip
+testbench_xsd/
 
