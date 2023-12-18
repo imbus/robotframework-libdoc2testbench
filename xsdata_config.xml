@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config xmlns="http://pypi.org/project/xsdata" version="23.6">
+    <Output maxLineLength="79" subscriptableTypes="false" unionType="false">
+        <Package>libdoc2testbench.ProjectDumpModel</Package>
+    </Output>
+</Config>

@@ -1,53 +1,20 @@
-# Contributing
+## Setting up project for the first time
+1. Write all dependencies into setup.cfg (install_requires and extras_require).
+2. Create venv (python -m venv .venv) and activate it (".venv\scripts\activate" or "source .venv/bin/activate")
+3. Update pip (python -m pip install -U pip)
+3. Install pip-tools (pip install pip-tools)
+4. Update/Create `requirements.txt`
+    - with Development dependencies
+        > pip-compile --extra dev setup.cfg
+    - or only with Runtime dependencies
+        > pip-compile setup.cfg
+5. Install dependencies (pip install -U -r requirements.txt)
+6. Install project into local venv (pip install -e .[extra])
 
-## Development Environment Setup
-1. Install Python 3.7
+## Generate Dataclasses from xsd
+```xsdata testbench_xsd\itb-project-export.xsd --config .\xsdata_config.xml```
 
-2. Open a terminal in this repository
-
-3. Create the virtual environment .venv
-
-    > /path/to/python37/python -m venv .venv
-
-4. Activate the virtual environment
-
-    > .venv/scripts/activate
-
-4. Install the dependencies
-
-    > pip install -r requirements.txt
-
-
-## Build, Install and Run
-
-- Build and install the package
-    > pip install -e .
-
-- Run the application
-    > Libdoc2TestBench <LIBRARY> <output.zip>
-
-- Create a python wheel and publish it to pypi
-    createPip_whl_tar.bat / createPip_whl_tar.sh
+## Fix unreadable Enums in newly generated model
+```python .\fix_model.py .\libdoc2testbench\project_dump_model\itb_project_export.py```
 
 
-## Adding New Dependencies
-1. Install pip-tools (to pin dependencies)
-
-    > python -m pip install pip-tools
-
-2. In `setup.py` add a package to the corresponding section
-
-    - Development dependencies: `dev` extra under `options.extras_require`
-
-    - Runtime dependencies: `install-requires`
-
-3. Update `requirements.txt`
-    - Development dependencies
-
-        > pip-compile --extra dev
-
-    - Runtime dependencies
-    
-        > pip-compile
-
-4. Create a commit with `setup.py`, `requirements.txt`, `pyproject.toml` explaining why the dependency was added.
