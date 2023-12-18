@@ -4,6 +4,8 @@ include LICENSE
 
 # added by check-manifest
 exclude *.bat
+exclude *.sh
+exclude *.zip
 
 # added by check-manifest
 recursive-exclude res *.gif
