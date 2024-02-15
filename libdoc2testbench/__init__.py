@@ -8,7 +8,7 @@ try:
 except ImportError:
     NOT_SET = ArgInfo.NOTSET
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 
 def default_repr(self):

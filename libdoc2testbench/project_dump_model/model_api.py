@@ -10,6 +10,7 @@ from libdoc2testbench.project_dump_model.itb_project_export import (
     DefaultCallTypeName,
     EquivalenceClass,
     EquivalenceClasses,
+    Errors,
     Fields,
     InstancesArrays,
     Interaction,
@@ -22,6 +23,7 @@ from libdoc2testbench.project_dump_model.itb_project_export import (
     ProjectStatus,
     Ref,
     Reference,
+    ReferencedUserNames,
     ReferenceKind,
     References,
     Representative,
@@ -41,6 +43,7 @@ from libdoc2testbench.project_dump_model.itb_project_export import (
     Values,
     VariantsDefinitions,
     VariantsMarkers,
+    Warnings,
 )
 
 
@@ -305,6 +308,10 @@ def create_project_dump(
     version: str = "",
     build_number: str = "",
     references: Union[References, None] = None,
+    referenced_user_names: Union[ReferencedUserNames, None] = None,
+    errors: Union[Errors, None] = None,
+    warnings: Union[Warnings, None] = None,
+
 ) -> ProjectDump:
     return ProjectDump(
         details=details,
@@ -313,4 +320,7 @@ def create_project_dump(
         build_number=build_number,
         repository=repository,
         references=references,
+        referenced_user_names=referenced_user_names or ReferencedUserNames(),
+        errors=errors or Errors(),
+        warnings=warnings or Warnings()
     )
