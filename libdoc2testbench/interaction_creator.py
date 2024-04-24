@@ -25,6 +25,7 @@ from libdoc2testbench.project_dump_model.itb_project_export import (
     UseType,
 )
 from libdoc2testbench.project_dump_model.model_api import create_interaction
+from libdoc2testbench.special_tags import SpecialTags
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
 
 try:
@@ -50,13 +51,15 @@ class InteractionCreator:
             ArgInfo.VAR_NAMED: "** ",
             ArgInfo.NAMED_ONLY: "- ",
         }
+        self.special_tags = SpecialTags(libdoc)
+        self.ignored_keywords = self.special_tags.get_ignored_keywords()
 
     def get_interactions(
         self, keywords: List[KeywordDoc], reference_pk: Optional[str]
     ) -> List[Interaction]:
         interactions = {
             keyword.name: self.get_interaction_from_keyword(keyword, reference_pk)
-            for keyword in keywords
+            for keyword in keywords if keyword.name not in self.ignored_keywords
         }
         return dict(sorted(interactions.items())).values()
 
@@ -69,7 +72,7 @@ class InteractionCreator:
         return create_interaction(
             pk=self.pk_generator.get_pk(),
             name=keyword.name,
-            uid=self.uid_generator.get_uid(
+            uid=self.special_tags.get_uid(keyword) or self.uid_generator.get_uid(
                 TestElementType.INTERACTION, keyword.name, self.libdoc.name
             ),
             html_description=(

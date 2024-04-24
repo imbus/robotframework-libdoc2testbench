@@ -27,6 +27,7 @@ from libdoc2testbench.project_dump_model.model_api import (
     create_representative,
     create_subdivision,
 )
+from libdoc2testbench.special_tags import SpecialTags
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
 
 
@@ -49,6 +50,8 @@ class DatatypeCreator:
         self.pk_generator = pk_generator
         self.uid_generator = uid_generator
         self.datatypes = DatatypeStorage(pk_generator, uid_generator)
+        self.special_tags = SpecialTags(libdoc)
+        self.ignored_keywords = self.special_tags.get_ignored_keywords()
 
     @property
     def default_datatype(self):
@@ -104,6 +107,8 @@ class DatatypeCreator:
 
     def get_remaining_datatypes(self) -> None:
         for keyword in self.libdoc.keywords:
+            if keyword.name in self.ignored_keywords:
+                continue
             for arg in keyword.args:
                 if not requires_datatype_creation(arg):
                     continue

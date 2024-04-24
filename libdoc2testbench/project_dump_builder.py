@@ -28,6 +28,7 @@ from libdoc2testbench.project_dump_model.model_api import (
 )
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
 from libdoc2testbench.utils import print_stat, replace_invalid_characters
+from libdoc2testbench.special_tags import SpecialTags
 
 
 class ProjectDumpBuilder:
