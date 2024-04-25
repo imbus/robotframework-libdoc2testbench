@@ -34,7 +34,7 @@ class TestBenchImportGenerator:
         self.write_temp_dump()
         self.save_project_dump(project_dump_path)
 
-    def get_project_dump_path(self) -> str:
+    def get_project_dump_path(self) -> Path:
         project_dump_path = self.output_path
         if not project_dump_path:
             project_dump_path = (

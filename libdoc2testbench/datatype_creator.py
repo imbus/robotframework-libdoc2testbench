@@ -128,7 +128,7 @@ class DatatypeCreator:
                 if arg.default_repr == "${None}" or "None" in arg_type_names:
                     self.datatypes.add_equivalence_class_members(datatype.name, "None", ["${None}"])
 
-    def get_enum_datatypes(self) -> List[Datatype]:
+    def get_enum_datatypes(self) -> None:
         enums = filter(lambda type_doc: type_doc.type == 'Enum', self.libdoc.type_docs)
         for enum in enums:
             self._ordering = 0
@@ -161,7 +161,7 @@ class DatatypeCreator:
             )
             self.datatypes.add_datatype(enum.name, datatype)
 
-    def get_typed_dict_datatypes(self) -> List[Datatype]:
+    def get_typed_dict_datatypes(self) -> None:
         typed_dicts = filter(lambda type_doc: type_doc.type == 'TypedDict', self.libdoc.type_docs)
         self.typed_dict_dicts: Dict[str, Datatype] = {}
         for typed_dict in typed_dicts:
@@ -176,7 +176,7 @@ class DatatypeCreator:
             )
             self.datatypes.add_datatype(typed_dict.name, datatype)
 
-    def get_return_value_datatype(self) -> Datatype:
+    def get_return_value_datatype(self) -> None:
         datatype = create_datatype(
             pk=self.pk_generator.get_pk(),
             name="assigned_variable",
@@ -222,7 +222,7 @@ class DatatypeCreator:
         )
         self.datatypes.add_datatype("assigned_variable", datatype)
 
-    def create_default_datatype(self) -> Datatype:
+    def create_default_datatype(self) -> None:
         datatype = create_datatype(
             pk=self.pk_generator.get_pk(),
             name="default_value",
