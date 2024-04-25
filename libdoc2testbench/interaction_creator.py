@@ -72,11 +72,11 @@ class InteractionCreator:
             uid=self.uid_generator.get_uid(
                 TestElementType.INTERACTION, keyword.name, self.libdoc.name
             ),
-            # html_description=(
-            #     f"<html>"
-            #     f"{keyword.doc.replace('<br>', '<br/>').replace('<hr>', '<br/>')}"
-            #     f"</html>"
-            # ),
+            html_description=(
+                f"<html>"
+                f"{keyword.doc.replace('<br>', '<br/>').replace('<hr>', '<br/>')}"
+                f"</html>"
+            ),
             references=references,
             parameters=self.get_interaction_parameters(keyword),
         )

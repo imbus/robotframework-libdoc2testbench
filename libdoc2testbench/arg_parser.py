@@ -89,10 +89,10 @@ parser.add_argument(
 )
 parser.add_argument(
     '--created_datatypes',
-    default='ALL',
+    default='ENUMS',
     choices=['ALL', 'ENUMS', 'NONE'],
     help="""Option to specify if all Robot Framework datatypes should be
         created in TestBench (`ALL`), only the enum types (`ENUMS`) or if
         no datatype should be created and only generic parameters are used (`NONE`).
-        The default is `ALL`.""",
+        The default is `ENUMS`.""",
 )
