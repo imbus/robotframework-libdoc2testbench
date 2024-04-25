@@ -11,7 +11,13 @@ parser = argparse.ArgumentParser(
     prog='Libdoc2TestBench',
     epilog='Example: Libdoc2TestBench Browser Browser.zip',
 )
-parser.add_argument("library_or_resource", help="RF library or resource", nargs='?', default=None)
+parser.add_argument(
+    "library_or_resource",
+    help="""Path to Robot Framework library or resource,
+       to a directory containing libraries or an import list.""",
+    nargs='?',
+    default=None,
+)
 parser.add_argument(
     'outfile_path',
     nargs='?',

@@ -4,7 +4,7 @@ from pathlib import Path
 from zipfile import ZipFile
 
 from libdoc2testbench.datatype_creator import CreatedDatatypes
-from libdoc2testbench.libdoc_generation import get_library_documentations
+from libdoc2testbench.libdoc_generation import LibdocGenerator
 from libdoc2testbench.project_dump_builder import ProjectDumpBuilder
 
 
@@ -25,13 +25,10 @@ class TestBenchImportGenerator:
         self.created_datatypes: CreatedDatatypes = CreatedDatatypes[cli_args.created_datatypes]
 
     def create_project_dump(self) -> None:
-        self.libdocs = get_library_documentations(
-            self.library_or_resource,
-            self.lib_name,
-            self.lib_version,
-            self.doc_format,
-            self.spec_format,
+        libdoc_genertor = LibdocGenerator(
+            self.lib_name, self.lib_version, self.doc_format, self.spec_format
         )
+        self.libdocs = libdoc_genertor.get_library_documentations(self.library_or_resource)
         project_dump_path = self.get_project_dump_path()
         self.check_for_existing_dump(project_dump_path)
         self.write_temp_dump()
@@ -41,7 +38,9 @@ class TestBenchImportGenerator:
         project_dump_path = self.output_path
         if not project_dump_path:
             project_dump_path = (
-                f"{self.libdocs[0].name}.zip" if len(self.libdocs) == 1 else "project-dump.zip"
+                f"{next(iter(self.libdocs.items()))[1].name}.zip"
+                if len(self.libdocs) == 1
+                else "project-dump.zip"
             )
         elif Path(self.output_path).suffix.lower() not in [".zip", ".xml"]:
             sys.exit("Output path must end with '.xml' or '.zip'")
@@ -55,8 +54,8 @@ class TestBenchImportGenerator:
             self.attachment,
             self.created_datatypes,
         )
-        for libdoc in self.libdocs:
-            project_dump.add_library_subdivision(libdoc, self.lib_name_ext, self.res_name_ext)
+        for path, libdoc in self.libdocs.items():
+            project_dump.add_library_subdivision(libdoc, path, self.lib_name_ext, self.res_name_ext)
         self.temp_path = Path.cwd() / Path("project-dump.xml")
         project_dump.write_project_dump(self.temp_path)
 
@@ -76,7 +75,7 @@ class TestBenchImportGenerator:
         print(f"Successfully written TestBench project dump to: \n{Path(dump_path).resolve()}")
 
     def write_zip_dump(self, project_dump_zip: Path):
-        resources = list(filter(lambda libdoc: libdoc.type == "RESOURCE", self.libdocs))
+        resources = list(filter(lambda libdoc: libdoc.type == "RESOURCE", self.libdocs.values()))
         with ZipFile(project_dump_zip, 'w') as zip_file:
             zip_file.write(self.temp_path, 'project-dump.xml')
             if resources and self.attachment:
