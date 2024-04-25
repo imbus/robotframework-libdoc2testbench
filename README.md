@@ -125,6 +125,8 @@ There are several optional arguments, that follow the structure of the robot.lib
 ___
 
 ### Change log
+* 1.3
+    * Added posibility to specify path to a directory containing different library files. Libdoc2TestBench will create the test element structure analog to the structure of the specified directory.
 * 1.2
     * Added library keyword return types with RobotFramework version >= 7
     * Added datatype creation options with default values
