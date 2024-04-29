@@ -38,8 +38,6 @@ class Configuration:
     documentation_format: DocumentationFormat
     library_root: str
     resource_root: str
-    library_version: Optional[str]
-    library_name: Optional[str]
     repository_id: str
     specification_format: SpecificationFormat
     library_name_extension: str
@@ -57,8 +55,6 @@ class Configuration:
         docFormat = cli_args.docformat or toml_config.get("documentation_format")
         libraryRoot = cli_args.libraryroot or toml_config.get("library_root")
         resourceRoot = cli_args.resourceroot or toml_config.get("resource_root")
-        library_version = cli_args.libversion or toml_config.get("library_version")
-        library_name = cli_args.libname or toml_config.get("library_name")
         repositoryId = cli_args.repository or toml_config.get("repository_id")
         specFormat = cli_args.specdocformat or toml_config.get("specification_format")
         libraryNameExtension = cli_args.library_name_extension or toml_config.get(
@@ -77,8 +73,6 @@ class Configuration:
             else DocumentationFormat.ROBOT,
             library_root=libraryRoot or "RF",
             resource_root=resourceRoot or "Resource",
-            library_version=library_version,
-            library_name=library_name,
             repository_id=repositoryId or "iTB_RF",
             specification_format=SpecificationFormat[specFormat]
             if specFormat

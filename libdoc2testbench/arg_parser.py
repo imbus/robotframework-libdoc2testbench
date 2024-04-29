@@ -48,11 +48,6 @@ parser.add_argument(
     help='Defines the subdivision name which contains the imported Robot Framework resources.',
 )
 parser.add_argument(
-    '--libversion',
-    help="Sets the version of the documented library or resource written in the description.",
-)
-parser.add_argument('--libname', help="Sets the name of the documented library or resource.")
-parser.add_argument(
     '-r',
     '--repository',
     help='Sets the repository id of the TestBench import. Default = iTB_RF',

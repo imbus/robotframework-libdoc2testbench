@@ -114,8 +114,6 @@ There are several optional arguments, that follow the structure of the robot.lib
 | `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
 | `--libraryroot LIBRARYROOT`| Defines the subdivision name which contains the imported Robot Framework libraries. Default is ``RF``.
 | `--resourceroot RESOURCEROOT` |Defines the subdivision name which contains the imported Robot Framework resources. Default is ``Resource``.
-| `--libversion LIBVERSION` | Sets the version of the documented library or resource written in the description.
-| `--libname` 	| Sets the name of the documented library or resource. 	|  	|
 | `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
 | `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
@@ -127,6 +125,7 @@ ___
 ### Change log
 * 1.3
     * Added posibility to specify path to a directory containing different library files. Libdoc2TestBench will create the test element structure analog to the structure of the specified directory.
+    * Removed legacy options ``libname`` and ``libversion``.
 * 1.2
     * Added library keyword return types with RobotFramework version >= 7
     * Added datatype creation options with default values
