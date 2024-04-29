@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Dict, Optional
 
 from robot.libdocpkg.robotbuilder import LibraryDoc
@@ -9,6 +8,7 @@ from libdoc2testbench.argument_api import (
     get_argument_type_names,
     requires_datatype_creation,
 )
+from libdoc2testbench.configuration import CreatedDatatypes
 from libdoc2testbench.datatype_storage import DatatypeStorage
 from libdoc2testbench.pk_generator import PKGenerator
 from libdoc2testbench.project_dump_model import (
@@ -28,12 +28,6 @@ from libdoc2testbench.project_dump_model.model_api import (
     create_subdivision,
 )
 from libdoc2testbench.uid_generator import TestElementType, UidGenerator
-
-
-class CreatedDatatypes(Enum):
-    ALL = "ALL"
-    ENUMS = "ENUMS"
-    NONE = "NONE"
 
 
 class DatatypeCreator:

@@ -16,12 +16,10 @@ parser.add_argument(
     help="""Path to Robot Framework library or resource,
        to a directory containing libraries or an import list.""",
     nargs='?',
-    default=None,
 )
 parser.add_argument(
     'outfile_path',
     nargs='?',
-    default='',
     help="""Optional argument to specify the path of the created project-dump.
       Can be a .zip or .xml file. Default = project-dump.zip""",
 )
@@ -44,12 +42,10 @@ parser.add_argument(
 parser.add_argument(
     '--libraryroot',
     help='Defines the subdivision name which contains the imported Robot Framework libraries.',
-    default='RF',
 )
 parser.add_argument(
     '--resourceroot',
     help='Defines the subdivision name which contains the imported Robot Framework resources.',
-    default='Resource',
 )
 parser.add_argument(
     '--libversion',
@@ -60,12 +56,10 @@ parser.add_argument(
     '-r',
     '--repository',
     help='Sets the repository id of the TestBench import. Default = iTB_RF',
-    default='iTB_RF',
 )
 parser.add_argument(
     '-s',
     '--specdocformat',
-    default='HTML',
     choices=['HTML', 'RAW'],
     help="""Specifies the documentation format used with XML and JSON spec files.
         `raw` means preserving the original documentation format and `html` means
@@ -80,16 +74,13 @@ parser.add_argument(
 parser.add_argument(
     '--library_name_extension',
     help='Adds an extension to the name of all Robot Framework Library subdivisions in TestBench.',
-    default=' [Robot-Library]',
 )
 parser.add_argument(
     '--resource_name_extension',
     help='Adds an extension to the name of all Robot Framework Resource subdivisions in TestBench.',
-    default=' [Robot-Resource]',
 )
 parser.add_argument(
     '--created_datatypes',
-    default='ENUMS',
     choices=['ALL', 'ENUMS', 'NONE'],
     help="""Option to specify if all Robot Framework datatypes should be
         created in TestBench (`ALL`), only the enum types (`ENUMS`) or if

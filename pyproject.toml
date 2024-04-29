@@ -2,6 +2,18 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.libdoc2testbench]
+# output_path = "dump1.zip"
+attachment = false
+# created_datatypes = "ALL"
+# documentation_format = "HTML"
+# library_name_extension = "[Robot-Library]"
+library_root = "Robot"
+# repository_id ="abc"
+# resource_name_extension = "[Robot-Resourceeee]"
+resource_root = "Robot"
+# specification_format = "RAW"
+
 [tool.mypy]
 python_version = "3.8"
 ignore_missing_imports = true

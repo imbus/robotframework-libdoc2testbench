@@ -37,9 +37,9 @@ class LibdocGenerator:
     ) -> LibraryDoc:
         try:
             library_documentation = LibraryDocumentation(
-                str(lib_or_res), self.lib_name, self.lib_version, self.doc_format
+                str(lib_or_res), self.lib_name, self.lib_version, self.doc_format.value
             )
-            if self.spec_format == 'HTML':
+            if self.spec_format.value == 'HTML':
                 library_documentation.convert_docs_to_html()
             return library_documentation
         except Exception as e:

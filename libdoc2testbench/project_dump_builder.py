@@ -54,18 +54,17 @@ class ProjectDumpBuilder:
         self.root_subdivisions = []
 
     def _add_reference(self, libdoc: LibraryDoc) -> None:
-        if libdoc.type == 'RESOURCE' and self.create_attachment_references:
-            self.reference_pk = self.pk_generator.get_pk()
-            attachment_name = str(Path(libdoc.source).name)
-            reference = create_reference(
-                pk=self.reference_pk,
-                attachment_path=str(Path(libdoc.source).parent.resolve()),
-                filename=attachment_name,
-                attachment_pk=self.pk_generator.get_pk(),
-                attachment_filename=attachment_name,
-                attachment_file_pk=self.pk_generator.get_pk(),
-            )
-            self.project_dump.references.reference.append(reference)
+        self.reference_pk = self.pk_generator.get_pk()
+        attachment_name = str(Path(libdoc.source).name)
+        reference = create_reference(
+            pk=self.reference_pk,
+            attachment_path=str(Path(libdoc.source).parent.resolve()),
+            filename=attachment_name,
+            attachment_pk=self.pk_generator.get_pk(),
+            attachment_filename=attachment_name,
+            attachment_file_pk=self.pk_generator.get_pk(),
+        )
+        self.project_dump.references.reference.append(reference)
 
     def add_library_subdivision(
         self,
@@ -79,6 +78,8 @@ class ProjectDumpBuilder:
         name_extension = (
             resource_name_extension if libdoc.type == 'RESOURCE' else library_name_extension
         )
+        if libdoc.type == 'RESOURCE' and self.create_attachment_references:
+            self._add_reference(libdoc)
         subdivision = self.create_library_subdivision_from_libdoc(
             libdoc, f"{library_name}{name_extension}"
         )
@@ -144,7 +145,7 @@ class ProjectDumpBuilder:
         interaction_creator = InteractionCreator(
             libdoc, datatype_creator.datatypes, self.pk_generator, self.uid_generator
         )
-        interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
+        # interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         library_subdivision.element.extend(
             interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         )
