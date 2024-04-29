@@ -114,7 +114,7 @@ class ProjectDumpBuilder:
                     pk=self.pk_generator.get_pk(),
                     name=parent,
                     description="Robot Framework keyword import",
-                    uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, parent),
+                    uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, subdivision_path),
                 )
                 previous_subdivison.element.append(subdivision)
         return subdivision

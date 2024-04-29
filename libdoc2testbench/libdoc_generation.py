@@ -1,6 +1,5 @@
 import re
 import sys
-from os.path import commonpath
 from pathlib import Path
 from typing import Dict, Union
 
@@ -16,18 +15,26 @@ class LibdocGenerator:
         self.spec_format = spec_format
 
     def get_library_documentations(self, path_or_lib: str) -> Dict[str, LibraryDoc]:
-        if not Path(path_or_lib).exists():
-            return {path_or_lib: self._create_libdoc(path_or_lib)}
         library_path = Path(path_or_lib)
         if library_path.suffix in [".resource", ".py"]:
             return {library_path.name: self._create_libdoc(library_path)}
-        if library_path.is_dir():
-            libdocs = self._create_libdocs_from_directory_structure(library_path)
-        else:
-            libdocs = self._create_libdocs_from_import_list(library_path)
-        return libdocs
+        try:
+            library_documentation = self._create_libdoc(path_or_lib, False)
+            if len(library_documentation.keywords) == 0:
+                raise ValueError
+            return {path_or_lib: library_documentation}
+        except Exception:
+            if not Path(path_or_lib).exists():
+                return {path_or_lib: self._create_libdoc(path_or_lib)}
+            if library_path.is_dir():
+                libdocs = self._create_libdocs_from_directory_structure(library_path)
+            else:
+                libdocs = self._create_libdocs_from_import_list(library_path)
+            return libdocs
 
-    def _create_libdoc(self, lib_or_res: Union[Path, str]) -> LibraryDoc:
+    def _create_libdoc(
+        self, lib_or_res: Union[Path, str], exit_on_failure: bool = True
+    ) -> LibraryDoc:
         try:
             library_documentation = LibraryDocumentation(
                 str(lib_or_res), self.lib_name, self.lib_version, self.doc_format
@@ -35,18 +42,17 @@ class LibdocGenerator:
             if self.spec_format == 'HTML':
                 library_documentation.convert_docs_to_html()
             return library_documentation
-        except Exception:
-            sys.exit(f"The requested module {lib_or_res} could not be found.")
+        except Exception as e:
+            if exit_on_failure:
+                sys.exit(f"The requested module '{lib_or_res}' could not be found.")
+            raise e
 
     def _create_libdocs_from_directory_structure(self, directory: Path) -> Dict[str, LibraryDoc]:
         library_files = list(directory.glob('**/*.resource'))
         library_files.extend(list(directory.glob('**/*.py')))
-        library_posix_paths = [file.as_posix() for file in library_files]
-        common_path = Path(commonpath(library_posix_paths)).as_posix()
-        return {
-            str(file).replace(f"{common_path}/", ""): self._create_libdoc(file)
-            for file in library_posix_paths
-        }
+        if not library_files:
+            sys.exit("Directory doesn't contain any '*.resource' or '*.py' files.")
+        return {file.as_posix(): self._create_libdoc(file) for file in library_files}
 
     def _create_libdocs_from_import_list(self, import_list: Path) -> Dict[str, LibraryDoc]:
         library_documentations = {}
