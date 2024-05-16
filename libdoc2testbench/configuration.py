@@ -2,7 +2,7 @@ import sys
 from argparse import Namespace
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -43,10 +43,15 @@ class Configuration:
     library_name_extension: str
     resource_name_extension: str
     created_datatypes: CreatedDatatypes
+    excluded_paths: Optional[List[str]]
 
     @classmethod
     def from_cli_args(cls, cli_args: Namespace):
-        with Path.open(Path.cwd() / "pyproject.toml", "rb") as f:
+        try:
+            f = Path.open(Path.cwd() / "pyproject.toml", "rb")
+        except FileNotFoundError:
+            toml_dict = {}
+        else:
             toml_dict = tomllib.load(f)
         toml_config = toml_dict.get("tool", {}).get("libdoc2testbench", {})
 
@@ -64,6 +69,7 @@ class Configuration:
             "resource_name_extension"
         )
         createdDatatypes = cli_args.created_datatypes or toml_config.get("created_datatypes")
+        excludedPaths = toml_config.get("excluded_paths")
         return cls(
             input_path=cli_args.library_or_resource,
             output_path=outputPath,
@@ -82,6 +88,7 @@ class Configuration:
             created_datatypes=CreatedDatatypes[createdDatatypes]
             if createdDatatypes
             else CreatedDatatypes.ENUMS,
+            excluded_paths=excludedPaths,
         )
 
         # self.library_or_resource: str = cli_args.library_or_resource

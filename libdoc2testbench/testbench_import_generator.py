@@ -13,10 +13,9 @@ class TestBenchImportGenerator:
 
     def create_project_dump(self) -> None:
         libdoc_genertor = LibdocGenerator(
-            self.config.library_name,
-            self.config.library_version,
             self.config.documentation_format,
             self.config.specification_format,
+            self.config.excluded_paths,
         )
         self.libdocs = libdoc_genertor.get_library_documentations(self.config.input_path)
         project_dump_path = self.get_project_dump_path()

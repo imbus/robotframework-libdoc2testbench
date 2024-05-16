@@ -9,10 +9,13 @@ attachment = false
 # documentation_format = "HTML"
 # library_name_extension = "[Robot-Library]"
 library_root = "Robot"
-# repository_id ="abc"
-# resource_name_extension = "[Robot-Resourceeee]"
+# repository_id ="itb-RF"
+# resource_name_extension = "[Robot-Resource]"
 resource_root = "Robot"
 # specification_format = "RAW"
+# excluded_paths = [
+#   "**/test_libraries",
+#   ]
 
 [tool.mypy]
 python_version = "3.8"
