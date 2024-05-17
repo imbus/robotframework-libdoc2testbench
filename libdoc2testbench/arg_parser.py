@@ -89,6 +89,6 @@ parser.add_argument(
     action='append',
     default=[],
     help="""Option to exclude python and
-                     resource files from generated project import. Paths can be specified as relative paths
-                     from the current working directory (with glob pattern support).""",
+            resource files from generated project import. Paths can be specified as relative paths
+            from the current working directory (with glob pattern support).""",
 )

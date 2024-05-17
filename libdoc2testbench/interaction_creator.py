@@ -59,7 +59,8 @@ class InteractionCreator:
     ) -> List[Interaction]:
         interactions = {
             keyword.name: self.get_interaction_from_keyword(keyword, reference_pk)
-            for keyword in keywords if keyword.name not in self.ignored_keywords
+            for keyword in keywords
+            if keyword.name not in self.ignored_keywords
         }
         return dict(sorted(interactions.items())).values()
 
@@ -72,7 +73,8 @@ class InteractionCreator:
         return create_interaction(
             pk=self.pk_generator.get_pk(),
             name=keyword.name,
-            uid=self.special_tags.get_uid(keyword) or self.uid_generator.get_uid(
+            uid=self.special_tags.get_uid(keyword)
+            or self.uid_generator.get_uid(
                 TestElementType.INTERACTION, keyword.name, self.libdoc.name
             ),
             html_description=(

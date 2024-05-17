@@ -18,7 +18,6 @@ class LibdocGenerator:
         self.excluded_paths = self._get_excluded_paths()
 
     def get_library_documentations(self, path_or_lib: str) -> Dict[str, LibraryDoc]:
-        # library_path = Path(path_or_lib).absolute().relative_to(Path.cwd())
         library_path = Path(relpath(Path(path_or_lib), Path.cwd()))
         if self.excluded_paths.get(library_path.absolute()):
             return {}
@@ -68,7 +67,9 @@ class LibdocGenerator:
         if not library_files:
             sys.exit("Directory doesn't contain any '*.resource' or '*.py' files.")
         return {
-            Path(Path(directory.name) / relpath(Path(file), directory)).as_posix(): self._create_libdoc(file)
+            Path(
+                Path(directory.name) / relpath(Path(file), directory)
+            ).as_posix(): self._create_libdoc(file)
             for file in library_files
             if not self.excluded_paths.get(file.absolute())
         }
