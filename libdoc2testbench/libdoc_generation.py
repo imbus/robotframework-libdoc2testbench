@@ -68,7 +68,7 @@ class LibdocGenerator:
         if not library_files:
             sys.exit("Directory doesn't contain any '*.resource' or '*.py' files.")
         return {
-            file.as_posix(): self._create_libdoc(file)
+            Path(Path(directory.name) / relpath(Path(file), directory)).as_posix(): self._create_libdoc(file)
             for file in library_files
             if not self.excluded_paths.get(file.absolute())
         }
