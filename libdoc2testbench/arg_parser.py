@@ -82,3 +82,13 @@ parser.add_argument(
         no datatype should be created and only generic parameters are used (`NONE`).
         The default is `ENUMS`.""",
 )
+
+parser.add_argument(
+    '-e',
+    '--excluded_paths',
+    action='append',
+    default=[],
+    help="""Option to exclude python and
+                     resource files from generated project import. Paths can be specified as relative paths
+                     from the current working directory (with glob pattern support).""",
+)

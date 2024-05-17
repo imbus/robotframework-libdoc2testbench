@@ -69,7 +69,7 @@ class Configuration:
             "resource_name_extension"
         )
         createdDatatypes = cli_args.created_datatypes or toml_config.get("created_datatypes")
-        excludedPaths = toml_config.get("excluded_paths")
+        excludedPaths = [*cli_args.excluded_paths, *toml_config.get("excluded_paths", [])]
         return cls(
             input_path=cli_args.library_or_resource,
             output_path=outputPath,
