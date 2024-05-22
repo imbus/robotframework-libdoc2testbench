@@ -3,9 +3,11 @@ from typing import List, Optional
 
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
+import sys
 
 
 class SpecialTags:
+    found_uids = []
     def __init__(self, libdoc: LibraryDoc) -> None:
         self.libdoc = libdoc
 
@@ -20,5 +22,9 @@ class SpecialTags:
         for tag in keyword.tags:
             match = re.match(r"^tb:uid:(?P<uid>.*)", tag)
             if match:
-                return match.group('uid')
+                uid = match.group('uid')
+                if uid in self.found_uids:
+                    sys.exit(f"ERROR: Tag 'tb:uid:{uid}' is used for multiple keywords. Project import stopped...")
+                self.found_uids.append(uid)
+                return uid
         return None

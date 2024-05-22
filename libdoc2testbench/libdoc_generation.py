@@ -8,6 +8,7 @@ from robot.libdocpkg import LibraryDocumentation
 from robot.libdocpkg.robotbuilder import LibraryDoc
 
 
+
 class LibdocGenerator:
     def __init__(
         self, doc_format: str, spec_format: str, exclude_patterns: Optional[List[str]]
@@ -16,6 +17,17 @@ class LibdocGenerator:
         self.spec_format = spec_format
         self.exclude_patterns = exclude_patterns
         self.excluded_paths = self._get_excluded_paths()
+        self.default_excludes = [
+            ".direnv/",
+            ".eggs/",
+            ".git/",
+            ".hg/",
+            ".nox/",
+            ".tox/",
+            ".venv/",
+            "venv/",
+            ".svn/",
+        ]
 
     def get_library_documentations(self, path_or_lib: str) -> Dict[str, LibraryDoc]:
         library_path = Path(relpath(Path(path_or_lib), Path.cwd()))
@@ -62,8 +74,13 @@ class LibdocGenerator:
         return paths
 
     def _create_libdocs_from_directory_structure(self, directory: Path) -> Dict[str, LibraryDoc]:
-        library_files = list(directory.glob('**/*.resource'))
-        library_files.extend(list(directory.glob('**/*.py')))
+        matches = directory.rglob("*")
+        library_files = [
+            file
+            for file in matches
+            if file.suffix in [".resource", ".py"]
+            and not any(exclude in file.as_posix() for exclude in self.default_excludes)
+        ]
         if not library_files:
             sys.exit("Directory doesn't contain any '*.resource' or '*.py' files.")
         return {
