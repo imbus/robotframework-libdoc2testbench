@@ -1,6 +1,6 @@
 # Libdoc2TestBench
-Robot Framework Libdoc extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) import formats.
-It can be used to generate Testbench interactions and datatypes from Robotframework libraries.
+Libdoc2TestBench is a Robot Framework extension that generates import formats compatible with imbus [TestBench](https://www.imbus.de/en/testbench-enterprise).
+It can be used to generate Testbench interactions and data types from Robot Framework libraries.
 ___
 
 ### Installation:
@@ -16,76 +16,50 @@ ___
 ### Usage:
 
 There are three main use cases:
-* Import official Robot Framework librarys
-* Import custom Robot Framework librarys
+* Import official Robot Framework libraries
+* Import custom Robot Framework libraries
 * Import Robot Framework resource files
 
-#### Import official Robot Framework librarys
+#### Import Official Robot Framework Libraries
 
 ![LibDoc2TestBench command demo](res/example_usage.gif)
 
-For the most basic usage you just have to pass a Robot Framework library as an argument to the ``Libdoc2TestBench`` command.
-``Libdoc2TestBench`` will create a zip-file with the name of the library in the current working directory. This zip-file can be imported to TestBench in order to use Robot Framework keywords from within TestBench.
+For the most basic usage, simply pass a Robot Framework library as an argument to the ``Libdoc2TestBench`` command. ``Libdoc2TestBench`` will create a zip file with the name of the library in the current working directory. This zip file can be imported into TestBench to use Robot Framework keywords within TestBench.
 
 ```bash
 Libdoc2TestBench <LIBRARY>
 ```
-The `<LIBRARY>` argument corresponds to the Robot Framework library name that you would use to import the library in the ``*** Settings ***`` of a robot/resource file.
-The second positional argument can be used to specify the name of the generated zip-file:
+The ``<LIBRARY>`` argument corresponds to the Robot Framework library name that you would use to import the library in the ``*** Settings ***`` section of a robot/resource file. The second positional argument can be used to specify the name of the generated zip file:
 
 ```bash
 Libdoc2TestBench <LIBRARY> <output.zip>
 ```
 
 #### Import the generated TestBench zip-file
-The generated zip-file can be imported via the `Import Project...` command in the Project Management view of the imbus TestBench:
+
+The generated zip file can be imported via the ``Import Project...`` command in the Project Management view of the imbus TestBench:
 
 ![Import Project Demo](res/projectmanagement_view.gif)
 
-Afterwards you'll find your imported RF library, the different interactions and the datatypes in the Test Elements view:
+Afterwards, you'll find your imported Robot Framework library, the different interactions, and the data types in the Test Elements view:
 
 ![Test Element View](res/test_element_view.png)
 
-The imported Testelements can be copied into another testbench project. When copying, it is important that the test elements remain in the same subdivisions.
+The imported test elements can be copied into another TestBench project.
 
 #### Import custom robotframework librarys
 
-Libdoc2Testbench can also be used to import custom Robot Framework librarys.
-
-Example for a custom library:
-```python
-class mycustomlibrary(object):
-    def print_hello_world(self):
-        print("Hello World")
-```
+Libdoc2TestBench can also be used to import custom Robot Framework libraries or resource files. For that purpose, you can specify the path to your Python or resource file or to a directory containing multiple libraries. If a directory is given as an input argument, Libdoc2TestBench searches all subdirectories recursively and creates the same subdirectory structure in TestBench.
 
 Example Libdoc2Testbench usage:
 
 ```bash
-Libdoc2TestBench mycustomlibrary.py
-```
-
-#### Import Robot Framework resource files
-
-Libdoc2Testbench can also be used to import Robot Framework resource files.
-
-Example for a resource file:
-
-```robotframework
-*** Keywords ***
-print hello world
-	log	Hello World
-```
-
-Example Libdoc2Testbench usage:
-
-```bash
-Libdoc2TestBench path/to/keywords.resource
+Libdoc2TestBench path/to/mycustomlibrary.py
 ```
 
 #### Importing multiple librarys and resource files at once
 
-Libdoc2Testbench can be used to import multiple librarys and resource files at once. A special robot framework section is used for this use case.
+Libdoc2Testbench can be used to import multiple librarys and resource files at once. A special Robot Framework section is used for this use case.
 
 Example for a import List:
 
@@ -100,12 +74,12 @@ myresource.resource
 Example Libdoc2Testbench usage:
 
 ```bash
-Libdoc2TestBench importlist.robot
+Libdoc2TestBench importlist.libdoc
 ```
 
 ___
 ### Command line arguments
-There are several optional arguments, that follow the structure of the robot.libdoc module. When generating imports from a RF library, these values should already be set up correctly. You may overwrite the docformat and other meta data by setting the associated arguments written below.
+There are several optional arguments that follow the structure of the ``robot.libdoc`` module. When generating imports from a Robot Framework library, these values should already be set up correctly. You may overwrite the ``docformat`` and other metadata by setting the associated arguments written below.
 
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
