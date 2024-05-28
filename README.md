@@ -78,7 +78,30 @@ Libdoc2TestBench import_list.libdoc
 ```
 
 ___
-### Command line arguments
+### Support for pyproject.toml configuration
+The options specified in the [Command line arguments](#cli)section can also be used in a ``pyproject.toml`` file. By simply adding a new section in your TOML file called ``[tool.libdoc2testbench]``, you can specify the libdoc2testbench options by using their full names."
+
+```
+[tool.libdoc2testbench]
+created_datatypes = "ENUMS"
+library_root = "Robot"
+resource_root = "Robot"
+library_name_extension = "[Robot-Library]"
+resource_name_extension = "[Robot-Resource]"
+excluded_paths = [
+  "**/*.py",
+  ]
+```
+
+### Exclude single keywords from the import
+Sometimes we don't want to import every single keyword of a custom library or resource file into TestBench. To mark those keywords that should not be imported into TestBench, we can add a tag to those keywords. For that purpose, we can either use the Robot Framework built-in tag ``robot:private`` or ``tb:ignore``.
+
+### Link a Robot Framework keyword to an already existing TestBench interaction
+In case an interaction is already created in TestBench which should, in a next step, be implemented in Robot Framework, the UID of the already existing interaction needs to be linked to the new keyword. Otherwise, the keyword will be imported into TestBench as a new interaction. For that purpose, the ``tb:uid:<unique_id>`` tag can be added to the keyword to set the specific unique ID with which it should be imported.
+
+
+___
+### Command line arguments <a name="cli"></a>
 There are several optional arguments that follow the structure of the ``robot.libdoc`` module. When generating imports from a Robot Framework library, these values should already be set up correctly. You may overwrite the ``docformat`` and other metadata by setting the associated arguments written below.
 
 | Arguments 	| Description 	| Allowed Values 	|
