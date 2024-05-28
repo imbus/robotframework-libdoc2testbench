@@ -57,11 +57,11 @@ class Configuration:
 
         outputPath = cli_args.outfile_path or toml_config.get("output_path")
         attachment_config = cli_args.attachment or toml_config.get("attachment")
-        docFormat = cli_args.docformat or toml_config.get("documentation_format")
-        libraryRoot = cli_args.libraryroot or toml_config.get("library_root")
-        resourceRoot = cli_args.resourceroot or toml_config.get("resource_root")
-        repositoryId = cli_args.repository or toml_config.get("repository_id")
-        specFormat = cli_args.specdocformat or toml_config.get("specification_format")
+        docFormat = cli_args.documentation_format or toml_config.get("documentation_format")
+        libraryRoot = cli_args.library_root or toml_config.get("library_root")
+        resourceRoot = cli_args.resource_root or toml_config.get("resource_root")
+        repositoryId = cli_args.repository_id or toml_config.get("repository_id")
+        specFormat = cli_args.specification_format or toml_config.get("specification_format")
         libraryNameExtension = cli_args.library_name_extension or toml_config.get(
             "library_name_extension"
         )

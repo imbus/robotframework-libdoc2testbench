@@ -1,9 +1,9 @@
 import re
+import sys
 from typing import List, Optional
 
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
-import sys
 
 
 class SpecialTags:

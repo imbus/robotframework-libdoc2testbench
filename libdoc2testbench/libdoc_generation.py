@@ -8,7 +8,6 @@ from robot.libdocpkg import LibraryDocumentation
 from robot.libdocpkg.robotbuilder import LibraryDoc
 
 
-
 class LibdocGenerator:
     def __init__(
         self, doc_format: str, spec_format: str, exclude_patterns: Optional[List[str]]

@@ -1,6 +1,6 @@
 # Libdoc2TestBench
 Libdoc2TestBench is a Robot Framework extension that generates import formats compatible with imbus [TestBench](https://www.imbus.de/en/testbench-enterprise).
-It can be used to generate Testbench interactions and data types from Robot Framework libraries.
+It can be used to generate Testbench interactions and datatypes from Robot Framework libraries.
 ___
 
 ### Installation:
@@ -35,17 +35,17 @@ The ``<LIBRARY>`` argument corresponds to the Robot Framework library name that 
 Libdoc2TestBench <LIBRARY> <output.zip>
 ```
 
-#### Import the generated TestBench zip-file
+#### Import the generated TestBench zip file
 
-The generated zip file can be imported via the ``Import Project...`` command in the Project Management view of the imbus TestBench:
+The generated zip file can be imported via the ``Import Project...`` menu entry in the Project Management view of imbus TestBench:
 
 ![Import Project Demo](res/projectmanagement_view.gif)
 
-Afterwards, you'll find your imported Robot Framework library, the different interactions, and the data types in the Test Elements view:
+Afterwards, you'll find your imported Robot Framework library, the different interactions and the datatypes in the Test Elements view:
 
 ![Test Element View](res/test_element_view.png)
 
-The imported test elements can be copied into another TestBench project.
+The imported test elements can be copied to any other TestBench project.
 
 #### Import custom robotframework librarys
 
@@ -59,7 +59,7 @@ Libdoc2TestBench path/to/mycustomlibrary.py
 
 #### Importing multiple librarys and resource files at once
 
-Libdoc2Testbench can be used to import multiple librarys and resource files at once. A special Robot Framework section is used for this use case.
+Libdoc2TestBench can be used to import multiple libraries and resource files at once. This can be achieved by specifying a special Robot Framework section called ``*** Import List ***`` and passing the file that contains this section as the input argument to Libdoc2TestBench.
 
 Example for a import List:
 
@@ -74,7 +74,7 @@ myresource.resource
 Example Libdoc2Testbench usage:
 
 ```bash
-Libdoc2TestBench importlist.libdoc
+Libdoc2TestBench import_list.libdoc
 ```
 
 ___
@@ -83,28 +83,30 @@ There are several optional arguments that follow the structure of the ``robot.li
 
 | Arguments 	| Description 	| Allowed Values 	|
 |-	|-	|-	|
-| `-h`, `--help` | Show the help message and exit
-| `-a`, `--attachment` |  Defines if the resource file, which has been used to generate the interactions, will be attached to those interactions.
-| `-F FORMAT`, `--docformat FORMAT` 	| Specifies the source documentation format.  Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText.  The default value can be specified in library source code and the initial default value is `ROBOT`. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
-| `--libraryroot LIBRARYROOT`| Defines the subdivision name which contains the imported Robot Framework libraries. Default is ``RF``.
-| `--resourceroot RESOURCEROOT` |Defines the subdivision name which contains the imported Robot Framework resources. Default is ``Resource``.
-| `-r REPOSITORY`, `--repository REPOSITORY`| Sets the repository id of the TestBench import. The default is `iTB_RF`.||
-| `-s SPECFORMAT`, `--specdocformat SPECFORMAT` 	| Specifies the documentation format used with XML and JSON spec files.  `RAW` means preserving the original documentation format and `HTML` means converting documentation to HTML.  The default is `HTML`. 	| `HTML` `RAW` 	|
+| `-h`, `--help` | Provides information on how to use Libdoc2TestBench.
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
-| `--library_name_extension` | Adds an extension to the name of an Robot Framework library subdivision in TestBench. Often used in combination with the `rfLibraryRegex` in `testbench2robotframework`.  Default is `[Robot-Library]`.||
-| `--resource_name_extension` | Adds an extension to the name of an Robot Framework resource subdivision in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
-| `--created_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (`ALL`), only the enum types (`ENUMS`) or if no datatype should be created and only generic parameters are used (`NONE`). The default is `ENUMS`. ||
+| `-a`, `--attachment` |  Specifies whether the resource file, which has been used to generate the interactions, will be attached to those interactions.
+| `-F <FORMAT>`, `--documentation_format <FORMAT>` 	| Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in the library source code, and the initial default value is ``ROBOT``. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `--library_root <LIBRARYROOT>`| Defines the subdivision name that contains the imported Robot Framework libraries. Default is ``RF``.
+| `--resource_root <RESOURCEROOT>` | Defines the subdivision name that contains the imported Robot Framework resources. Default is ``Resource``.
+| `-r <REPOSITORY>`, `--repository_id <REPOSITORY>`| Sets the repository ID of the TestBench import. The default is `iTB_RF`. ||
+| `-s <SPECFORMAT>`, `--specification_format <SPECFORMAT>` | Specifies the documentation format used with XML and JSON spec files. ``RAW`` means preserving the original documentation format, and ``HTML`` means converting documentation to ``HTML``. The default is ``HTML``. 	| `HTML` `RAW` 	|
+| `--library_name_extension` | Adds an extension to the name of all Robot Framework library subdivisions in TestBench. Often used in combination with the ``rfLibraryRegex`` in ``testbench2robotframework``. The default is ``[Robot-Library]``.||
+| `--resource_name_extension` | Adds an extension to the name of all Robot Framework resource subdivisions in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
+| `--created_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (``ALL``), only the enum types (``ENUMS``), or if no datatype should be created and only generic parameters are used (``NONE``). The default is ``ENUMS``. | ``ALL`` ``ENUMS`` ``NONE`` |
+| `--excluded_paths` | Option to specify paths that will be ignored when generating the TestBench import. It can contain paths or glob patterns relative to the current working directory. ||
 ___
 
 ### Change log
 * 1.3
-    * Added posibility to specify path to a directory containing different library files. Libdoc2TestBench will create the test element structure analog to the structure of the specified directory.
+    * Added the possibility to specify the path to a directory containing different library files. Libdoc2TestBench will create the test element structure analogously to the structure of the specified directory.
+    * Added support for ``pyproject.toml`` files.
     * Removed legacy options ``libname`` and ``libversion``.
 * 1.2
-    * Added library keyword return types with RobotFramework version >= 7
-    * Added datatype creation options with default values
-    * Removed `--xml` cli option
-    * Removed `--temp` cli option
+    * Added library keyword return types with Robot Framework version >= 7.
+    * Added datatype creation options with default values.
+    * Removed the `--xml` cli option
+    * Removed the `--temp` cli option
 * 1.1
     * Added TestBench datatypes
     * Added default values
@@ -117,7 +119,7 @@ ___
         * info command for printing Libdoc2TestBench/Robot Framework/Python version to console
         * support for resource-files (attachment support coming soon)
     * FIX:
-        * only create `_Datatype` subdivison in libraries when data types are present
+        * only create `_Datatype` subdivison in libraries when datatypes are present
         * `Resource` subdivison is now in the correct parent subdivision
         * Updated README.md / package help-messages to reflect changes
 * 1.0rc1

@@ -27,38 +27,37 @@ parser.add_argument(
     '-a',
     '--attachment',
     action='store_true',
-    help="""Defines if the resource file, which has been used
-      to generate the interactions, will be attached to those interactions.""",
+    help="""Specifies whether the resource file, which has been used to generate the interactions,
+      will be attached to those interactions.""",
 )
 parser.add_argument(
     '-F',
-    '--docformat',
+    '--documentation_format',
     choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
-    help="""Specifies the source documentation format.
-      Possible values are Robot Framework's documentation format,
-       HTML, plain text, and reStructuredText. The default value can be
-         specified in library source code and the initial default value is `ROBOT`.""",
+    help="""Specifies the source documentation format. Possible values are Robot Framework's
+      documentation format, HTML, plain text, and reStructuredText. The default value can be
+        specified in the library source code, and the initial default value is ``ROBOT``.""",
 )
 parser.add_argument(
-    '--libraryroot',
-    help='Defines the subdivision name which contains the imported Robot Framework libraries.',
+    '--library_root',
+    help='Defines the subdivision name that contains the imported Robot Framework libraries.',
 )
 parser.add_argument(
-    '--resourceroot',
-    help='Defines the subdivision name which contains the imported Robot Framework resources.',
+    '--resource_root',
+    help='Defines the subdivision name that contains the imported Robot Framework resources.',
 )
 parser.add_argument(
     '-r',
-    '--repository',
-    help='Sets the repository id of the TestBench import. Default = iTB_RF',
+    '--repository_id',
+    help='Sets the repository ID of the TestBench import. Default = iTB_RF',
 )
 parser.add_argument(
     '-s',
-    '--specdocformat',
+    '--specification_format',
     choices=['HTML', 'RAW'],
     help="""Specifies the documentation format used with XML and JSON spec files.
-        `raw` means preserving the original documentation format and `html` means
-        converting documentation to HTML. The default is `html`.""",
+      ``RAW`` means preserving the original documentation format, and ``HTML``
+        means converting documentation to ``HTML``. The default is ``HTML``.""",
 )
 parser.add_argument(
     '--version',
@@ -68,7 +67,7 @@ parser.add_argument(
 )
 parser.add_argument(
     '--library_name_extension',
-    help='Adds an extension to the name of all Robot Framework Library subdivisions in TestBench.',
+    help='Adds an extension to the name of all Robot Framework library subdivisions in TestBench.',
 )
 parser.add_argument(
     '--resource_name_extension',
@@ -77,18 +76,15 @@ parser.add_argument(
 parser.add_argument(
     '--created_datatypes',
     choices=['ALL', 'ENUMS', 'NONE'],
-    help="""Option to specify if all Robot Framework datatypes should be
-        created in TestBench (`ALL`), only the enum types (`ENUMS`) or if
-        no datatype should be created and only generic parameters are used (`NONE`).
-        The default is `ENUMS`.""",
+    help="""Option to specify if all Robot Framework datatypes should be created in TestBench
+      (``ALL``), only the enum types (``ENUMS``), or if no datatype should be created and
+        only generic parameters are used (``NONE``). The default is ``ENUMS``.""",
 )
-
 parser.add_argument(
     '-e',
     '--excluded_paths',
     action='append',
     default=[],
-    help="""Option to exclude python and
-            resource files from generated project import. Paths can be specified as relative paths
-            from the current working directory (with glob pattern support).""",
+    help="""Option to specify paths that will be ignored when generating the TestBench import.
+      It can contain paths or glob patterns relative to the current working directory.""",
 )
