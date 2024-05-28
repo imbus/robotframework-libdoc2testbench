@@ -1,6 +1,6 @@
 # Libdoc2TestBench
-Libdoc2TestBench is a Robot Framework extension that generates import formats compatible with imbus [TestBench](https://www.imbus.de/en/testbench-enterprise).
-It can be used to generate Testbench interactions and datatypes from Robot Framework libraries.
+Libdoc2TestBench is a Robot Framework Libdoc extension that generates import formats compatible with imbus [TestBench](https://www.imbus.de/en/testbench-enterprise).
+It can be used to generate TestBench interactions and datatypes from Robot Framework libraries.
 ___
 
 ### Installation:
@@ -79,7 +79,7 @@ Libdoc2TestBench import_list.libdoc
 
 ___
 ### Support for pyproject.toml configuration
-The options specified in the [Command line arguments](#cli)section can also be used in a ``pyproject.toml`` file. By simply adding a new section in your TOML file called ``[tool.libdoc2testbench]``, you can specify the libdoc2testbench options by using their full names."
+The options specified in the [Command line arguments](#cli) section can also be used in a ``pyproject.toml`` file. By simply adding a new section in your TOML file called ``[tool.libdoc2testbench]``, you can specify the libdoc2testbench options by using their full names."
 
 ```
 [tool.libdoc2testbench]
