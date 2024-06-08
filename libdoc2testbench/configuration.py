@@ -29,6 +29,13 @@ class SpecificationFormat(Enum):
     RAW = "RAW"
     HTML = "HTML"
 
+def find_pyproject_toml():
+        current_dir = Path().cwd()
+        for parent in [current_dir] + list(current_dir.parents):
+            potential_pyproject = parent / 'pyproject.toml'
+            if potential_pyproject.is_file():
+                return potential_pyproject
+        return None
 
 @dataclass
 class Configuration:
@@ -47,12 +54,15 @@ class Configuration:
 
     @classmethod
     def from_cli_args(cls, cli_args: Namespace):
-        try:
-            f = Path.open(Path.cwd() / "pyproject.toml", "rb")
-        except FileNotFoundError:
-            toml_dict = {}
-        else:
-            toml_dict = tomllib.load(f)
+        pyproject_toml = find_pyproject_toml()
+        toml_dict = {}
+        if pyproject_toml:
+            try:
+                f = Path.open(pyproject_toml, "rb")
+            except FileNotFoundError:
+                toml_dict = {}
+            else:
+                toml_dict = tomllib.load(f)
         toml_config = toml_dict.get("tool", {}).get("libdoc2testbench", {})
 
         outputPath = cli_args.outfile_path or toml_config.get("output_path")
