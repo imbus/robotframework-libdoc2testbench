@@ -29,7 +29,7 @@ class LibdocGenerator:
         ]
 
     def get_library_documentations(self, path_or_lib: str) -> Dict[str, LibraryDoc]:
-        library_path = Path(relpath(Path(path_or_lib), Path.cwd()))
+        library_path = Path(path_or_lib)
         if self.excluded_paths.get(library_path.absolute()):
             return {}
         if library_path.is_file():
@@ -37,14 +37,14 @@ class LibdocGenerator:
                 return {library_path.name: self._create_libdoc(library_path)}
             return self._create_libdocs_from_import_list(library_path)
         try:
-            library_documentation = self._create_libdoc(library_path)
+            library_documentation = self._create_libdoc(library_path.name)
             if len(library_documentation.keywords) == 0:
                 return self._create_libdocs_from_directory_structure(library_path)
             return {library_path.name: library_documentation}
         except Exception as e:
             if library_path.is_dir():
                 return self._create_libdocs_from_directory_structure(library_path)
-            raise e
+            sys.exit(e)
 
     def _create_libdoc(self, lib_or_res: Union[Path, str]) -> LibraryDoc:
         try:
@@ -55,7 +55,7 @@ class LibdocGenerator:
                 library_documentation.convert_docs_to_html()
             return library_documentation
         except Exception:
-            sys.exit(f"The requested module or path '{lib_or_res}' could not be found.")
+            raise RuntimeError(f"The requested module or path '{lib_or_res}' could not be found.")
 
     def _get_excluded_paths(self):
         paths = {}
