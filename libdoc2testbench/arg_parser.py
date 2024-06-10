@@ -12,13 +12,13 @@ parser = argparse.ArgumentParser(
     epilog='Example: Libdoc2TestBench Browser Browser.zip',
 )
 parser.add_argument(
-    "library_or_resource",
+    "library",
     help="""Path to Robot Framework library or resource,
        to a directory containing libraries or an import list.""",
     nargs='?',
 )
 parser.add_argument(
-    'outfile_path',
+    'output',
     nargs='?',
     help="""Optional argument to specify the path of the created project-dump.
       Can be a .zip or .xml file. Default = project-dump.zip""",
@@ -32,28 +32,28 @@ parser.add_argument(
 )
 parser.add_argument(
     '-F',
-    '--documentation_format',
+    '--documentation-format',
     choices=['ROBOT', 'HTML', 'TEXT', 'REST'],
     help="""Specifies the source documentation format. Possible values are Robot Framework's
       documentation format, HTML, plain text, and reStructuredText. The default value can be
         specified in the library source code, and the initial default value is ``ROBOT``.""",
 )
 parser.add_argument(
-    '--library_root',
+    '--library-root',
     help='Defines the subdivision name that contains the imported Robot Framework libraries.',
 )
 parser.add_argument(
-    '--resource_root',
+    '--resource-root',
     help='Defines the subdivision name that contains the imported Robot Framework resources.',
 )
 parser.add_argument(
     '-r',
-    '--repository_id',
+    '--repository',
     help='Sets the repository ID of the TestBench import. Default = iTB_RF',
 )
 parser.add_argument(
     '-s',
-    '--specification_format',
+    '--specification-format',
     choices=['HTML', 'RAW'],
     help="""Specifies the documentation format used with XML and JSON spec files.
       ``RAW`` means preserving the original documentation format, and ``HTML``
@@ -66,15 +66,15 @@ parser.add_argument(
     help='Writes the Libdoc2TestBench, Robot Framework and Python version to console.',
 )
 parser.add_argument(
-    '--library_name_extension',
+    '--library-name-extension',
     help='Adds an extension to the name of all Robot Framework library subdivisions in TestBench.',
 )
 parser.add_argument(
-    '--resource_name_extension',
+    '--resource-name-extension',
     help='Adds an extension to the name of all Robot Framework Resource subdivisions in TestBench.',
 )
 parser.add_argument(
-    '--created_datatypes',
+    '--created-datatypes',
     choices=['ALL', 'ENUMS', 'NONE'],
     help="""Option to specify if all Robot Framework datatypes should be created in TestBench
       (``ALL``), only the enum types (``ENUMS``), or if no datatype should be created and
@@ -82,7 +82,7 @@ parser.add_argument(
 )
 parser.add_argument(
     '-e',
-    '--excluded_paths',
+    '--excluded-paths',
     action='append',
     default=[],
     help="""Option to specify paths that will be ignored when generating the TestBench import.

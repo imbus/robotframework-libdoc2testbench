@@ -29,13 +29,15 @@ class SpecificationFormat(Enum):
     RAW = "RAW"
     HTML = "HTML"
 
+
 def find_pyproject_toml():
-        current_dir = Path().cwd()
-        for parent in [current_dir] + list(current_dir.parents):
-            potential_pyproject = parent / 'pyproject.toml'
-            if potential_pyproject.is_file():
-                return potential_pyproject
-        return None
+    current_dir = Path().cwd()
+    for parent in [current_dir] + list(current_dir.parents):
+        potential_pyproject = parent / 'pyproject.toml'
+        if potential_pyproject.is_file():
+            return potential_pyproject
+    return None
+
 
 @dataclass
 class Configuration:
@@ -65,12 +67,12 @@ class Configuration:
                 toml_dict = tomllib.load(f)
         toml_config = toml_dict.get("tool", {}).get("libdoc2testbench", {})
 
-        outputPath = cli_args.outfile_path or toml_config.get("output_path")
+        outputPath = cli_args.output or toml_config.get("output_path")
         attachment_config = cli_args.attachment or toml_config.get("attachment")
         docFormat = cli_args.documentation_format or toml_config.get("documentation_format")
         libraryRoot = cli_args.library_root or toml_config.get("library_root")
         resourceRoot = cli_args.resource_root or toml_config.get("resource_root")
-        repositoryId = cli_args.repository_id or toml_config.get("repository_id")
+        repositoryId = cli_args.repository or toml_config.get("repository_id")
         specFormat = cli_args.specification_format or toml_config.get("specification_format")
         libraryNameExtension = cli_args.library_name_extension or toml_config.get(
             "library_name_extension"
@@ -81,7 +83,7 @@ class Configuration:
         createdDatatypes = cli_args.created_datatypes or toml_config.get("created_datatypes")
         excludedPaths = [*cli_args.excluded_paths, *toml_config.get("excluded_paths", [])]
         return cls(
-            input_path=cli_args.library_or_resource,
+            input_path=cli_args.library,
             output_path=outputPath,
             attachment=attachment_config or False,
             documentation_format=DocumentationFormat[docFormat]

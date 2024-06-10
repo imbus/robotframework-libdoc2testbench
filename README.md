@@ -109,15 +109,15 @@ There are several optional arguments that follow the structure of the ``robot.li
 | `-h`, `--help` | Provides information on how to use Libdoc2TestBench.
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `-a`, `--attachment` |  Specifies whether the resource file, which has been used to generate the interactions, will be attached to those interactions.
-| `-F <FORMAT>`, `--documentation_format <FORMAT>` 	| Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in the library source code, and the initial default value is ``ROBOT``. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
-| `--library_root <LIBRARYROOT>`| Defines the subdivision name that contains the imported Robot Framework libraries. Default is ``RF``.
-| `--resource_root <RESOURCEROOT>` | Defines the subdivision name that contains the imported Robot Framework resources. Default is ``Resource``.
-| `-r <REPOSITORY>`, `--repository_id <REPOSITORY>`| Sets the repository ID of the TestBench import. The default is `iTB_RF`. ||
-| `-s <SPECFORMAT>`, `--specification_format <SPECFORMAT>` | Specifies the documentation format used with XML and JSON spec files. ``RAW`` means preserving the original documentation format, and ``HTML`` means converting documentation to ``HTML``. The default is ``HTML``. 	| `HTML` `RAW` 	|
-| `--library_name_extension` | Adds an extension to the name of all Robot Framework library subdivisions in TestBench. Often used in combination with the ``rfLibraryRegex`` in ``testbench2robotframework``. The default is ``[Robot-Library]``.||
-| `--resource_name_extension` | Adds an extension to the name of all Robot Framework resource subdivisions in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
-| `--created_datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (``ALL``), only the enum types (``ENUMS``), or if no datatype should be created and only generic parameters are used (``NONE``). The default is ``ENUMS``. | ``ALL`` ``ENUMS`` ``NONE`` |
-| `--excluded_paths` | Option to specify paths that will be ignored when generating the TestBench import. It can contain paths or glob patterns relative to the current working directory. ||
+| `-F <FORMAT>`, `--documentation-format <FORMAT>` 	| Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in the library source code, and the initial default value is ``ROBOT``. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `--library-root <LIBRARYROOT>`| Defines the subdivision name that contains the imported Robot Framework libraries. Default is ``RF``.
+| `--resource-root <RESOURCEROOT>` | Defines the subdivision name that contains the imported Robot Framework resources. Default is ``Resource``.
+| `-r <REPOSITORY>`, `--repository <REPOSITORY>`| Sets the repository ID of the TestBench import. The default is `iTB_RF`. ||
+| `-s <SPECFORMAT>`, `--specification-format <SPECFORMAT>` | Specifies the documentation format used with XML and JSON spec files. ``RAW`` means preserving the original documentation format, and ``HTML`` means converting documentation to ``HTML``. The default is ``HTML``. 	| `HTML` `RAW` 	|
+| `--library-name-extension` | Adds an extension to the name of all Robot Framework library subdivisions in TestBench. Often used in combination with the ``rfLibraryRegex`` in ``testbench2robotframework``. The default is ``[Robot-Library]``.||
+| `--resource-name-extension` | Adds an extension to the name of all Robot Framework resource subdivisions in TestBench. Often used in combination with the `rfResourceRegex` in `testbench2robotframework`. Default is `[Robot-Resource]`.||
+| `--created-datatypes` | Option to specify if all Robot Framework datatypes should be created in TestBench (``ALL``), only the enum types (``ENUMS``), or if no datatype should be created and only generic parameters are used (``NONE``). The default is ``ENUMS``. | ``ALL`` ``ENUMS`` ``NONE`` |
+| `--excluded-paths` | Option to specify paths that will be ignored when generating the TestBench import. It can contain paths or glob patterns relative to the current working directory. ||
 ___
 
 ### Change log

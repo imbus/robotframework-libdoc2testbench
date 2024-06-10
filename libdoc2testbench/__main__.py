@@ -17,7 +17,7 @@ def run():
             f"Libdoc2TestBench {__version__} [Robot Framework {robot.version.get_full_version()}]"
         )
         sys.exit()
-    library = args.library_or_resource
+    library = args.library
     if not library:
         sys.exit("Libdoc2TestBench error: Missing required argument 'library_or_resource'")
     TestBenchImportGenerator(config).create_project_dump()

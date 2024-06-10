@@ -8,6 +8,7 @@ from robot.libdocpkg.robotbuilder import LibraryDoc
 
 class SpecialTags:
     found_uids = []
+
     def __init__(self, libdoc: LibraryDoc) -> None:
         self.libdoc = libdoc
 
@@ -24,7 +25,10 @@ class SpecialTags:
             if match:
                 uid = match.group('uid')
                 if uid in self.found_uids:
-                    sys.exit(f"ERROR: Tag 'tb:uid:{uid}' is used for multiple keywords. Project import stopped...")
+                    sys.exit(
+                        f"""ERROR: Tag 'tb:uid:{uid}' is used in multiple keywords.
+                              Project import stopped..."""
+                    )
                 self.found_uids.append(uid)
                 return uid
         return None
