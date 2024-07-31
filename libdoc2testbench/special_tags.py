@@ -1,13 +1,13 @@
 import re
 import sys
-from typing import List, Optional
+from typing import ClassVar, List, Optional
 
 from robot.libdocpkg.model import KeywordDoc
 from robot.libdocpkg.robotbuilder import LibraryDoc
 
 
 class SpecialTags:
-    found_uids = []
+    found_uids: ClassVar = []
 
     def __init__(self, libdoc: LibraryDoc) -> None:
         self.libdoc = libdoc

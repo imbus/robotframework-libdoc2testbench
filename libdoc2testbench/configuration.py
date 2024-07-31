@@ -32,7 +32,7 @@ class SpecificationFormat(Enum):
 
 def find_pyproject_toml():
     current_dir = Path().cwd()
-    for parent in [current_dir] + list(current_dir.parents):
+    for parent in [current_dir, *list(current_dir.parents)]:
         potential_pyproject = parent / 'pyproject.toml'
         if potential_pyproject.is_file():
             return potential_pyproject

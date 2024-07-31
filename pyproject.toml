@@ -13,9 +13,10 @@ library_root = "Robot"
 # resource_name_extension = "[Robot-Resource]"
 resource_root = "Robot"
 # specification_format = "RAW"
-# excluded_paths = [
-#   "**/test_libraries",
-#   ]
+excluded_paths = [
+  # "**/test_libraries",
+  "**/libdoc2testbench"
+  ]
 
 [tool.mypy]
 python_version = "3.8"
@@ -26,7 +27,10 @@ warn_return_any = true
 warn_no_return = true
 warn_unreachable = true
 pretty = true
-exclude = ["test_libraries/"]
+exclude = [
+  "test_libraries/",
+  "libdoc2testbench/project_dump_model/"
+]
 
 [tool.black]
 target-version = ['py38']
@@ -48,6 +52,8 @@ exclude = [
 ]
 ignore = [
   "T201",
+  "N806",
+  "B904",
   "B008", # Todo: fix later
   "PLR0913", # Todo: fix later
 ]
