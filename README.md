@@ -1,5 +1,5 @@
 # Libdoc2TestBench
-Robot Framework Libdoc extension that generates imbus [TestBench Enterprise](https://www.imbus.de/en/testbench-enterprise) import formats.
+Robot Framework Libdoc extension that generates [TestBench](https://www.testbench.com) import formats.
 It can be used to generate Testbench interactions and datatypes from Robotframework libraries.
 ___
 
