@@ -38,8 +38,8 @@ classifiers = [
   "Framework :: Robot Framework"
 ]
 dependencies = [
-  "click >= 8.0",
   "robotframework >= 5.0",
+  "xsdata",
   "tomli; python_version < '3.11'",
 ]
 
@@ -66,6 +66,7 @@ include = [
 dev = [
   "build",
   "check-manifest",
+  "xsdata[cli]",
   "flit",
   "invoke",
   "mypy",
