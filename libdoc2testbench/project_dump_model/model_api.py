@@ -311,7 +311,6 @@ def create_project_dump(
     referenced_user_names: Union[ReferencedUserNames, None] = None,
     errors: Union[Errors, None] = None,
     warnings: Union[Warnings, None] = None,
-
 ) -> ProjectDump:
     return ProjectDump(
         details=details,
@@ -322,5 +321,5 @@ def create_project_dump(
         references=references,
         referenced_user_names=referenced_user_names or ReferencedUserNames(),
         errors=errors or Errors(),
-        warnings=warnings or Warnings()
+        warnings=warnings or Warnings(),
     )

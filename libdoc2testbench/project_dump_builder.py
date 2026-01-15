@@ -51,63 +51,79 @@ class ProjectDumpBuilder:
         self.project_dump = self.initialize_project_dump(
             version="3.0", build_number="230202/6a0c", repository=repository
         )
+        self.root_subdivisions = []
+
+    def _add_reference(self, libdoc: LibraryDoc) -> None:
+        self.reference_pk = self.pk_generator.get_pk()
+        attachment_name = str(Path(libdoc.source).name)
+        reference = create_reference(
+            pk=self.reference_pk,
+            attachment_path=str(Path(libdoc.source).parent.resolve()),
+            filename=attachment_name,
+            attachment_pk=self.pk_generator.get_pk(),
+            attachment_filename=attachment_name,
+            attachment_file_pk=self.pk_generator.get_pk(),
+        )
+        self.project_dump.references.reference.append(reference)
 
     def add_library_subdivision(
-        self, libdoc: LibraryDoc, library_name_extension: str, resource_name_extension: str
+        self,
+        libdoc: LibraryDoc,
+        subdivision_path: str,
+        library_name_extension: str,
+        resource_name_extension: str,
     ):
         self.reference_pk = None
         library_name = replace_invalid_characters(libdoc.name)
-        if libdoc.type == 'RESOURCE':
-            resource_subdivision = self.create_resource_subdivision(
-                libdoc, f"{library_name}{resource_name_extension}"
+        name_extension = (
+            resource_name_extension if libdoc.type == 'RESOURCE' else library_name_extension
+        )
+        if libdoc.type == 'RESOURCE' and self.create_attachment_references:
+            self._add_reference(libdoc)
+        subdivision = self.create_library_subdivision_from_libdoc(
+            libdoc, f"{library_name}{name_extension}"
+        )
+        parent = self._get_parent_subdivison(subdivision_path, bool(libdoc.type == 'RESOURCE'))
+        parent.element.append(subdivision)
+
+    def _get_parent_subdivison(self, subdivision_path: str, resource: bool) -> Subdivision:
+        root_name = self.resource_root_name if resource else self.library_root_name
+        subdivision = next(
+            filter(lambda subdivision: subdivision.name == root_name, self.root_subdivisions), None
+        )
+        if not subdivision:
+            subdivision = create_subdivision(
+                pk=self.pk_generator.get_pk(),
+                name=root_name,
+                description="Robot Framework keyword import",
+                uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, root_name),
             )
-            self.resource_root_subdivision.element.append(resource_subdivision)
-        else:
-            library_subdivision = self.create_library_subdivision(
-                libdoc, f"{library_name}{library_name_extension}"
+            self.root_subdivisions.append(subdivision)
+            self.project_dump.testobjectversions.testobjectversion[0].test_elements.element.append(
+                subdivision
             )
-            self.library_root_subdivision.element.append(library_subdivision)
+        parents = subdivision_path.split('/')
+        parents.pop()
+        for parent in parents:
+            previous_subdivison = subdivision
+            subdivision = next(
+                filter(lambda subdivision: subdivision.name == parent, previous_subdivison.element),
+                None,
+            )
+            if not subdivision:
+                subdivision = create_subdivision(
+                    pk=self.pk_generator.get_pk(),
+                    name=parent,
+                    description="Robot Framework keyword import",
+                    uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, subdivision_path),
+                )
+                previous_subdivison.element.append(subdivision)
+        return subdivision
 
     def create_library_subdivision(self, libdoc: LibraryDoc, subdivision_name: str) -> Subdivision:
-        if not self.other_library_created:
-            self.library_root_subdivision = create_subdivision(
-                pk=self.pk_generator.get_pk(),
-                name=self.library_root_name,
-                description="Robot Framework Libraries",
-                uid=self.uid_generator.get_uid(TestElementType.SUBDIVISION, self.library_root_name),
-            )
-            self.project_dump.testobjectversions.testobjectversion[0].test_elements.element.append(
-                self.library_root_subdivision
-            )
-            self.other_library_created = True
         return self.create_library_subdivision_from_libdoc(libdoc, subdivision_name)
 
     def create_resource_subdivision(self, libdoc: LibraryDoc, subdivision_name: str) -> Subdivision:
-        if not self.other_resource_created:
-            self.resource_root_subdivision = create_subdivision(
-                pk=self.pk_generator.get_pk(),
-                name=self.resource_root_name,
-                description="Robot Framework Resource Files",
-                uid=self.uid_generator.get_uid(
-                    TestElementType.SUBDIVISION, self.resource_root_name
-                ),
-            )
-            self.project_dump.testobjectversions.testobjectversion[0].test_elements.element.append(
-                self.resource_root_subdivision
-            )
-            self.other_resource_created = True
-        if self.create_attachment_references:
-            self.reference_pk = self.pk_generator.get_pk()
-            attachment_name = str(Path(libdoc.source).name)
-            reference = create_reference(
-                pk=self.reference_pk,
-                attachment_path=str(Path(libdoc.source).parent.resolve()),
-                filename=attachment_name,
-                attachment_pk=self.pk_generator.get_pk(),
-                attachment_filename=attachment_name,
-                attachment_file_pk=self.pk_generator.get_pk(),
-            )
-            self.project_dump.references.reference.append(reference)
         return self.create_library_subdivision_from_libdoc(libdoc, subdivision_name)
 
     def create_library_subdivision_from_libdoc(
@@ -129,7 +145,7 @@ class ProjectDumpBuilder:
         interaction_creator = InteractionCreator(
             libdoc, datatype_creator.datatypes, self.pk_generator, self.uid_generator
         )
-        interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
+        # interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         library_subdivision.element.extend(
             interaction_creator.get_interactions(libdoc.keywords, self.reference_pk)
         )

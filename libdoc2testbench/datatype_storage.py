@@ -28,7 +28,7 @@ class DatatypeStorage:
     def add_datatype(self, name: str, datatype: Datatype) -> None:
         self._datatypes[name] = datatype
 
-    def get_datatypes(self) -> List[Datatype]:
+    def get_datatypes(self) -> Dict[str, Datatype]:
         return dict(sorted(self._datatypes.items())).values()
 
     def get_datatype(self, name: str):

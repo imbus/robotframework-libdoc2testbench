@@ -1,3 +1,5 @@
+"""Robot Framework Libdoc Extension that generates imbus TestBench Library import formats."""
+
 from enum import Enum
 
 from robot.running.arguments.argumentspec import ArgInfo
@@ -8,7 +10,7 @@ try:
 except ImportError:
     NOT_SET = ArgInfo.NOTSET
 
-__version__ = "1.2.1"
+__version__ = "1.3b1"
 
 
 def default_repr(self):
