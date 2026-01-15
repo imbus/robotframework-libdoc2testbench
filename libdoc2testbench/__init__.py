@@ -1,3 +1,5 @@
+"""Robot Framework Libdoc Extension that generates imbus TestBench Library import formats."""
+
 from enum import Enum
 
 from robot.running.arguments.argumentspec import ArgInfo

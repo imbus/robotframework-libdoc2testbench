@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core >=3.8,<4"]
+build-backend = "flit_core.buildapi"
 
 [tool.libdoc2testbench]
 # output_path = "dump1.zip"
@@ -16,10 +16,68 @@ resource_root = "Robot"
 excluded_paths = [
   # "**/test_libraries",
   "**/libdoc2testbench"
-  ]
+]
+
+
+[project]
+name = "robotframework-libdoc2testbench"
+authors = [{name = "imbus AG", email = "support@imbus.de"}]
+description = "Robot Framework Libdoc Extension that generates imbus TestBench Library import formats."
+requires-python = ">= 3.9"
+readme = "README.md"
+license = {text = "Apache 2.0 License"}
+dynamic = ["version"]
+classifiers = [
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: Apache Software License",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Testing :: Acceptance",
+  "Framework :: Robot Framework"
+]
+dependencies = [
+  "click >= 8.0",
+  "robotframework >= 5.0",
+  "tomli; python_version < '3.11'",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/imbus/robotframework-libdoc2testbench"
+
+
+[project.scripts]
+libdoc2testbench = "libdoc2testbench.__main__:run"
+Libdoc2TestBench = "libdoc2testbench.__main__:run"
+
+[tool.flit.module]
+name = "libdoc2testbench"
+
+
+[tool.flit.sdist]
+include = [
+    "libdoc2testbench/**/*.json",
+]
+
+
+[project.optional-dependencies]
+dev = [
+  "build",
+  "check-manifest",
+  "flit",
+  "invoke",
+  "mypy",
+  "pylint",
+  "pytest",
+  "pytest-cov",
+  "pytest-spec",
+  "ruff",
+]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 ignore_missing_imports = true
 no_implicit_optional = true
 strict_optional = true
@@ -32,11 +90,6 @@ exclude = [
   "libdoc2testbench/project_dump_model/"
 ]
 
-[tool.black]
-target-version = ['py38']
-line-length = 100
-include_trailing_comma = false
-skip-string-normalization = true
 
 [tool.ruff]
 line-length = 100
@@ -57,7 +110,7 @@ ignore = [
   "B008", # Todo: fix later
   "PLR0913", # Todo: fix later
 ]
-target-version = "py38"
+target-version = "py39"
 select = [
   "E",
   "F",

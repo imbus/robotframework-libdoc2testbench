@@ -153,5 +153,5 @@ ___
 Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
 ___
 ### Dependencies
- - python >= 3.8
+ - python >= 3.9
  - [robotframework](https://github.com/robotframework/robotframework) >= 5.0.0
