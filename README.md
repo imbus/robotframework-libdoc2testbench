@@ -1,7 +1,7 @@
 # Libdoc2TestBench
 
-Libdoc2TestBench is a Robot Framework Libdoc extension that generates import formats compatible with imbus [TestBench](https://www.imbus.de/en/testbench-enterprise).
-It can be used to generate TestBench interactions and datatypes from Robot Framework libraries.
+Libdoc2TestBench is a Robot Framework Libdoc extension that generates import formats compatible with [TestBench](https://www.imbus.de/en/testbench-enterprise).
+It can be used to generate TestBench keywords and datatypes from Robot Framework libraries.
 
 
 ## Documentation
