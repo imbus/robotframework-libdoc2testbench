@@ -4,11 +4,11 @@
 #
 #    pip-compile pyproject.toml
 #
-robotframework==6.1.1
+robotframework==7.4.2
     # via robotframework-libdoc2testbench (pyproject.toml)
-tomli==2.0.1 ; python_version < "3.11"
+tomli==2.4.1 ; python_version < "3.11"
     # via robotframework-libdoc2testbench (pyproject.toml)
-typing-extensions==4.15.0
+typing-extensions==4.16.0
     # via xsdata
-xsdata==25.7
+xsdata==26.2
     # via robotframework-libdoc2testbench (pyproject.toml)
