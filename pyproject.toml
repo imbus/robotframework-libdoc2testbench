@@ -15,32 +15,32 @@ resource_root = "Robot"
 # specification_format = "RAW"
 excluded_paths = [
   # "**/test_libraries",
-  "**/libdoc2testbench"
+  "**/libdoc2testbench",
 ]
 
 
 [project]
 name = "robotframework-libdoc2testbench"
-authors = [{name = "imbus AG", email = "support@imbus.de"}]
+authors = [{ name = "imbus AG", email = "support@imbus.de" }]
 description = "Robot Framework Libdoc Extension that generates imbus TestBench Library import formats."
-requires-python = ">= 3.9"
+requires-python = ">= 3.11"
 readme = "README.md"
-license = {text = "Apache 2.0 License"}
+license = { text = "Apache 2.0 License" }
 dynamic = ["version"]
 classifiers = [
   "Environment :: Console",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.11",
   "Operating System :: OS Independent",
   "License :: OSI Approved :: Apache Software License",
   "Topic :: Software Development :: Testing",
   "Topic :: Software Development :: Testing :: Acceptance",
-  "Framework :: Robot Framework"
+  "Framework :: Robot Framework",
 ]
 dependencies = [
   "robotframework >= 5.0",
   "xsdata",
-  "tomli; python_version < '3.11'",
+  "markdown",
 ]
 
 
@@ -57,9 +57,7 @@ name = "libdoc2testbench"
 
 
 [tool.flit.sdist]
-include = [
-    "libdoc2testbench/**/*.json",
-]
+include = ["libdoc2testbench/**/*.json"]
 
 
 [project.optional-dependencies]
@@ -78,7 +76,7 @@ dev = [
 ]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 ignore_missing_imports = true
 no_implicit_optional = true
 strict_optional = true
@@ -86,32 +84,27 @@ warn_return_any = true
 warn_no_return = true
 warn_unreachable = true
 pretty = true
-exclude = [
-  "test_libraries/",
-  "libdoc2testbench/project_dump_model/"
-]
+exclude = ["test_libraries/", "libdoc2testbench/project_dump_model/"]
 
 
 [tool.ruff]
 line-length = 100
-unfixable = [
-    "UP007"
-]
+unfixable = ["UP007"]
 exclude = [
   "__pycache__",
   "config.py",
   "model.py",
   "tests",
-  "itb_project_export.py"
+  "itb_project_export.py",
 ]
 ignore = [
   "T201",
   "N806",
   "B904",
-  "B008", # Todo: fix later
+  "B008",    # Todo: fix later
   "PLR0913", # Todo: fix later
 ]
-target-version = "py39"
+target-version = "py311"
 select = [
   "E",
   "F",
@@ -137,5 +130,5 @@ select = [
   "RSE",
   "RET",
   "SIM",
-  "RUF"
+  "RUF",
 ]

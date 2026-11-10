@@ -7,10 +7,15 @@ from typing import Dict, List, Optional, Union
 from robot.libdocpkg import LibraryDocumentation
 from robot.libdocpkg.robotbuilder import LibraryDoc
 
+from libdoc2testbench.configuration import DocumentationFormat, SpecificationFormat
+
 
 class LibdocGenerator:
     def __init__(
-        self, doc_format: str, spec_format: str, exclude_patterns: Optional[List[str]]
+        self,
+        doc_format: Optional[DocumentationFormat],
+        spec_format: SpecificationFormat,
+        exclude_patterns: Optional[List[str]],
     ) -> None:
         self.doc_format = doc_format
         self.spec_format = spec_format
@@ -49,13 +54,15 @@ class LibdocGenerator:
     def _create_libdoc(self, lib_or_res: Union[Path, str]) -> LibraryDoc:
         try:
             library_documentation = LibraryDocumentation(
-                str(lib_or_res), doc_format=self.doc_format.value
+                str(lib_or_res), doc_format=self.doc_format.value if self.doc_format else None
             )
             if self.spec_format.value == 'HTML':
                 library_documentation.convert_docs_to_html()
             return library_documentation
-        except Exception:
-            raise RuntimeError(f"The requested module or path '{lib_or_res}' could not be found.")
+        except Exception as e:
+            raise RuntimeError(
+                f"The requested module or path '{lib_or_res}' could not be documented: {e}"
+            ) from e
 
     def _get_excluded_paths(self):
         paths = {}

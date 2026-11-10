@@ -1,15 +1,9 @@
-import sys
+import tomllib
 from argparse import Namespace
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
-
 from pathlib import Path
+from typing import List, Optional
 
 
 class CreatedDatatypes(Enum):
@@ -20,6 +14,7 @@ class CreatedDatatypes(Enum):
 
 class DocumentationFormat(Enum):
     ROBOT = "ROBOT"
+    MARKDOWN = "MARKDOWN"
     HTML = "HTML"
     TEXT = "TEXT"
     REST = "REST"
@@ -33,7 +28,7 @@ class SpecificationFormat(Enum):
 def find_pyproject_toml():
     current_dir = Path().cwd()
     for parent in [current_dir, *list(current_dir.parents)]:
-        potential_pyproject = parent / 'pyproject.toml'
+        potential_pyproject = parent / "pyproject.toml"
         if potential_pyproject.is_file():
             return potential_pyproject
     return None
@@ -44,7 +39,8 @@ class Configuration:
     input_path: str
     output_path: Optional[str]
     attachment: bool
-    documentation_format: DocumentationFormat
+    documentation_format: Optional[DocumentationFormat]
+    testbench_version: str
     library_root: str
     resource_root: str
     repository_id: str
@@ -70,6 +66,7 @@ class Configuration:
         outputPath = cli_args.output or toml_config.get("output_path")
         attachment_config = cli_args.attachment or toml_config.get("attachment")
         docFormat = cli_args.documentation_format or toml_config.get("documentation_format")
+        tb_version = cli_args.testbench_version or toml_config.get("testbench_version")
         libraryRoot = cli_args.library_root or toml_config.get("library_root")
         resourceRoot = cli_args.resource_root or toml_config.get("resource_root")
         repositoryId = cli_args.repository or toml_config.get("repository_id")
@@ -86,9 +83,8 @@ class Configuration:
             input_path=cli_args.library,
             output_path=outputPath,
             attachment=attachment_config or False,
-            documentation_format=DocumentationFormat[docFormat]
-            if docFormat
-            else DocumentationFormat.ROBOT,
+            documentation_format=DocumentationFormat[docFormat] if docFormat else None,
+            testbench_version=tb_version or "4.2",
             library_root=libraryRoot or "RF",
             resource_root=resourceRoot or "Resource",
             repository_id=repositoryId or "iTB_RF",
