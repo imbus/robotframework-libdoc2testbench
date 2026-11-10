@@ -34,6 +34,7 @@ class ProjectDumpBuilder:
     def __init__(
         self,
         repository: str,
+        testbench_version: str,
         library_root_name: str,
         resource_root_name: str,
         create_attachment_references: bool,
@@ -49,7 +50,7 @@ class ProjectDumpBuilder:
         self.pk_generator = PKGenerator()
         self.uid_generator = UidGenerator(repository)
         self.project_dump = self.initialize_project_dump(
-            version="3.0", build_number="230202/6a0c", repository=repository
+            version=testbench_version, build_number="230202/6a0c", repository=repository
         )
         self.root_subdivisions = []
 
@@ -76,14 +77,14 @@ class ProjectDumpBuilder:
         self.reference_pk = None
         library_name = replace_invalid_characters(libdoc.name)
         name_extension = (
-            resource_name_extension if libdoc.type == 'RESOURCE' else library_name_extension
+            resource_name_extension if libdoc.type == "RESOURCE" else library_name_extension
         )
-        if libdoc.type == 'RESOURCE' and self.create_attachment_references:
+        if libdoc.type == "RESOURCE" and self.create_attachment_references:
             self._add_reference(libdoc)
         subdivision = self.create_library_subdivision_from_libdoc(
             libdoc, f"{library_name}{name_extension}"
         )
-        parent = self._get_parent_subdivison(subdivision_path, bool(libdoc.type == 'RESOURCE'))
+        parent = self._get_parent_subdivison(subdivision_path, bool(libdoc.type == "RESOURCE"))
         parent.element.append(subdivision)
 
     def _get_parent_subdivison(self, subdivision_path: str, resource: bool) -> Subdivision:
@@ -102,7 +103,7 @@ class ProjectDumpBuilder:
             self.project_dump.testobjectversions.testobjectversion[0].test_elements.element.append(
                 subdivision
             )
-        parents = subdivision_path.split('/')
+        parents = subdivision_path.split("/")
         parents.pop()
         for parent in parents:
             previous_subdivison = subdivision
@@ -162,13 +163,13 @@ class ProjectDumpBuilder:
             encoding="UTF-8", pretty_print=True, ignore_default_attributes=False
         )
         serializer = XmlSerializer(config=config, context=context)
-        with Path(path).open('w', encoding="utf-8") as project_dump:
+        with Path(path).open("w", encoding="utf-8") as project_dump:
             project_dump.write(serializer.render(self.project_dump))
 
     def initialize_project_dump(
         self, version: str, build_number: str, repository: str
     ) -> ProjectDump:
-        creation_time = datetime.now(tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S %z')
+        creation_time = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S %z")
         references = References(reference=[]) if self.create_attachment_references else None
         return create_project_dump(
             version=version,

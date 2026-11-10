@@ -38,6 +38,7 @@ class TestBenchImportGenerator:
     def write_temp_dump(self) -> None:
         project_dump = ProjectDumpBuilder(
             self.config.repository_id,
+            self.config.testbench_version,
             self.config.library_root,
             self.config.resource_root,
             self.config.attachment,
@@ -56,8 +57,8 @@ class TestBenchImportGenerator:
     def check_for_existing_dump(self, dump: Path) -> None:
         if dump.is_file():
             user_input = input(f"'{dump}' already exists... overwrite? y/n? \n")
-            if user_input.lower() not in ['y', 'yes']:
-                sys.exit('Stopped execution - file was not changed.')
+            if user_input.lower() not in ["y", "yes"]:
+                sys.exit("Stopped execution - file was not changed.")
             Path(dump).unlink()
 
     def save_project_dump(self, dump_path: Path):
@@ -73,8 +74,8 @@ class TestBenchImportGenerator:
         resources = {
             path: libdoc for path, libdoc in self.libdocs.items() if libdoc.type == "RESOURCE"
         }
-        with ZipFile(project_dump_zip, 'w') as zip_file:
-            zip_file.write(self.temp_path, 'project-dump.xml')
+        with ZipFile(project_dump_zip, "w") as zip_file:
+            zip_file.write(self.temp_path, "project-dump.xml")
             if resources and self.config.attachment:
                 for resource_path, libdoc in resources.items():
                     if Path(libdoc.source).exists():
