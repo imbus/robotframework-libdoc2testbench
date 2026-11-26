@@ -109,7 +109,7 @@ There are several optional arguments that follow the structure of the ``robot.li
 | `-h`, `--help` | Provides information on how to use Libdoc2TestBench.
 | `--version`, `--info` 	| Writes the Libdoc2TestBench, Robot Framework and Python version to console. 	|  	|
 | `-a`, `--attachment` |  Specifies whether the resource file, which has been used to generate the interactions, will be attached to those interactions.
-| `-F <FORMAT>`, `--documentation-format <FORMAT>` 	| Specifies the source documentation format. Possible values are Robot Framework's documentation format, HTML, plain text, and reStructuredText. The default value can be specified in the library source code, and the initial default value is ``ROBOT``. 	| `ROBOT` `HTML` `TEXT` `REST` 	|
+| `-F <FORMAT>`, `--documentation-format <FORMAT>` 	| Specifies the source documentation format. Possible values are Robot Framework's documentation format, Markdown (Robot Framework 7.5+), HTML, plain text, and reStructuredText. The default value can be specified in the library source code, and the initial default value is ``ROBOT``. 	| `ROBOT` `MARKDOWN` `HTML` `TEXT` `REST` 	|
 | `--library-root <LIBRARYROOT>`| Defines the subdivision name that contains the imported Robot Framework libraries. Default is ``RF``.
 | `--resource-root <RESOURCEROOT>` | Defines the subdivision name that contains the imported Robot Framework resources. Default is ``Resource``.
 | `-r <REPOSITORY>`, `--repository <REPOSITORY>`| Sets the repository ID of the TestBench import. The default is `iTB_RF`. ||
@@ -122,6 +122,9 @@ ___
 
 ### Change log
 * 1.3
+    * Support for Robot Framework 7.5: libraries documented in Markdown (including the standard libraries) are now converted correctly. The `markdown` package is installed as a dependency and `MARKDOWN` is accepted by `--documentation-format`.
+    * The source documentation format now defaults to the format declared by the library instead of always `ROBOT`.
+    * Errors while loading a library now report the underlying reason instead of a generic "could not be found" message.
     * Added the possibility to specify the path to a directory containing different library files. Libdoc2TestBench will create the test element structure analogously to the structure of the specified directory.
     * Added support for ``pyproject.toml`` files.
     * Removed legacy options ``libname`` and ``libversion``.
@@ -153,5 +156,5 @@ ___
 Distributed under the [Apache-2.0 license](https://github.com/imbus/robotframework-libdoc2testbench/blob/main/LICENSE). See [LICENSE](LICENSE) for more information.
 ___
 ### Dependencies
- - python >= 3.9
+ - python >= 3.11
  - [robotframework](https://github.com/robotframework/robotframework) >= 5.0.0
